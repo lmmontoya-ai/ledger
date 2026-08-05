@@ -15,9 +15,20 @@ Claims that one AI system can anticipate another — the premise behind monitori
 - **Stakes without trained refusals.** Consequential harm through broken contracts and drained budgets, not through content that providers filter and models are trained to refuse.
 - **A real forecast to inject.** Because replay yields a partner's true policy, an oracle exists — so "does anticipation improve coordination" becomes a causal question with a format-matched control.
 
+## Documents
+
+The environment and the research conducted on it are specified separately, and the environment does not depend on the research.
+
+- [`docs/ENVIRONMENT_DESIGN.md`](docs/ENVIRONMENT_DESIGN.md) — the world, its actions, its economy, what an agent sees, and how to implement it. Self-contained. Read §2 to learn the game in two minutes and §7 to see exactly what a player reads.
+- [`docs/EXPERIMENT_PLAN.md`](docs/EXPERIMENT_PLAN.md) — the prediction study: research questions, instrument, the register of eleven experiments, sequencing, and what each result would mean.
+
 ## Status
 
-Pre-pilot. The complete specification is in [`docs/ENVIRONMENT_DESIGN.md`](docs/ENVIRONMENT_DESIGN.md) — self-contained, and the ground truth for implementation.
+Pre-pilot. Nothing implemented yet; the specifications are the deliverable.
+
+## Token budget
+
+The environment's own text is overhead, so it is capped. A player reads a fixed system block (~430 tokens, byte-identical in every call and therefore cached) plus a state board and a one-line-per-tick history that together stay **under 600 tokens even at the final tick**. A golden test enforces this. The equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call, so the layout is worth 3–5× on the cost of any study run here.
 
 ## Design at a glance
 
