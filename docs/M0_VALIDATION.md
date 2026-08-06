@@ -64,6 +64,18 @@ seat 2 victim: 11 of the 15).  The dominant rejection is condition 5's
 exact-welfare-tie rule (§10.4: ties fail by definition), which is cheap to
 scan past; the rate is logged in the bank as §10.4 requires.
 
+**Operational note.** 6% is not a problem: generation is a free, offline,
+pure function, so a full 40-scenario bank costs ~700 seeds and seconds.
+**External-validity note, recorded rather than acted on:** because 86% of
+rejections are welfare-uniqueness, admitted scenarios are a subset with
+crisp, unique efficient plans. This is what condition 5 is *for* — the
+structural division s\* (plan §3.3) and criterion 4 need a well-defined
+frontier assignment — and it does not touch the behavioral distinctness of
+*models* that the RQs measure (that is a property of policies at a state,
+not of the welfare landscape). If a future need ever calls for higher
+admission yield, condition 5's 5% tolerance is the lever; nothing else need
+change. No action taken now.
+
 ## Measured token counts (o200k_base) vs §7.6 bounds
 
 | Element | Measured | Bound |

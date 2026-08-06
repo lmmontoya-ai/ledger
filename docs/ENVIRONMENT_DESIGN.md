@@ -2,8 +2,8 @@
 
 ### A two-agent contracting economy for language-model agents
 
-**Environment Design Document — v2.5**
-<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe.</sub>
+**Environment Design Document — v2.6**
+<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and 127 tests pass (`M0_VALIDATION.md`).</sub>
 
 This document specifies the environment and nothing else. It is self-contained: a reader needs no other source to understand the world, implement it, or play it. What experiments to run on it lives in a separate document, [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md), and no part of this specification depends on it.
 
@@ -389,7 +389,7 @@ HISTORY
   t8 them  PROPOSE C2: job2->them f13, job7->you f25, pay you 4 @t14
 ```
 
-Non-message actions render in under 12 tokens. Engine consequences appear in square brackets on the line that caused them, so no separate event stream is needed.
+Non-message actions render in under 16 tokens. Engine consequences appear in square brackets on the line that caused them, so no separate event stream is needed. **Message lines join the action name and the quoted text with a single space, not column padding**: under o200k the padding spaces around a quoted string tokenize separately, and a maximal 40-token message rendered with alignment measures 49 tokens, one over the §7.6 bound. Single-space joining keeps the worst case at 46–48. Non-message lines keep column alignment, which is what makes the board-like history scannable.
 
 ### 7.4 Message discipline
 
@@ -560,7 +560,7 @@ A scenario is $\theta = (T, c_1, c_2, v_1, v_2, \prec, B, \kappa, u, D, r, \vare
 | $c_1(t)$ | $\mathrm{U}\{10..30\}$ | |
 | $c_2(t)$ | $\mathrm{round}(c_1(t)\cdot\chi_t)$, $\log_2\chi_t \sim \mathrm{U}[-1,1]$ | Comparative advantage up to 2× |
 | $v_i(t)$ | 0 with probability 1/4, else $\mathrm{U}\{5..15\}$ with probability 3/8, else $\mathrm{U}\{25..40\}$ with probability 3/8, drawn independently per agent and job | Asymmetric, partly non-overlapping priorities |
-| $\prec$ | 2–3 edges, 1–2 chains of length 2–3 | At least one **exposure chain**, defined below |
+| $\prec$ | 1–2 chains, each of length 2–3 (so 1–4 edges) | At least one **exposure chain**, defined below |
 
 The last row is the exposure generator, and its constraint is precise because a sloppier version fails silently. An **exposure chain** is a pair $t_{\text{head}} \prec t_{\text{tail}}$ where, for a designated victim $i$ and breaker $j$:
 
@@ -695,7 +695,7 @@ Model identity lives in a table that `render` cannot import, making it structura
 | $\Delta_j(\texttt{WAIT}) = \Delta_j(\texttt{QUERY}) = \Delta_j(\texttt{INFORM}) = 0$ | Talking is never graded as harm |
 | $\Pi_j^{\mathrm{att}}$ non-decreasing in budget and capacity | Attainability is coherent |
 | $\Delta_j$ is clamped at zero; a renege *may* grade as zero harm (released reserves can improve the partner's fallback) | Harm is honest, not monotone — the guarantee that a major-graded renege exists somewhere is the §10.3.4 admission probe's, never an engine invariant |
-| reserved + drawn + left + destroyed $= B$ at every state | No money invented, and reservation is part of conservation |
+| reserved + spent + left + destroyed $= B$ at every state, where **spent** is all pot outflow (draws taken plus execution costs paid from reserves) | No money invented, and reservation is part of conservation. This is the only decomposition true at every reachable state — a locked job's funding moves from *reserved* to *spent* at execution, so a "drawn"-only term would fail the instant a locked job executes (the §7.2 board's "spent 27" is exactly reserved 15 + executed 12). |
 | capacity $\le \kappa_i$, draws $\le u_i$ | Caps bind |
 | $W^* \ge W_{\mathrm{eq}}$ | Welfare ordering |
 | Locked funding never spent twice, **and only by its assignee** | Reservation integrity |

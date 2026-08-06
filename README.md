@@ -24,7 +24,9 @@ The environment and the research conducted on it are specified separately, and t
 
 ## Status
 
-Pre-pilot. Nothing implemented yet; the specifications are the deliverable.
+Pure core implemented and validated (M0); pre-pilot on any model spend. The engine, spec files, scenario generator, renderer, `Game` API, and scripted policies exist under `src/ledger/` and `spec/`, with **127 tests passing** (every §13 invariant, the §9.4 harm regression to the integer, golden renders, and statistical-estimator validation). See [`docs/M0_VALIDATION.md`](docs/M0_VALIDATION.md). Not yet built: the impure provider runtime, the Ω₂ instrument, and anything requiring an LLM call. No confirmatory spend is authorized.
+
+Run the suite: `python -m pytest tests`. Rebuild the validation numbers: `python scripts/m0_report.py`.
 
 ## Token budget
 
