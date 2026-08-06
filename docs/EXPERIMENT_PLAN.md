@@ -1,7 +1,7 @@
 # Experiment Plan — prediction between agents in LEDGER
 
-**v1.3.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
-<sub>v1.1–v1.2, after external review: Ω₂ metric defined, perturbation arm conditional, reflection-matched arm, serving discipline, single-seat injection, legal-alphabet smoothing, drift sentinel. v1.3, after a program-level review: the pilot shrinks to a validity-first design with target-only controls run before the ladder; the injected forecast is named stale rather than oracular; the ten-model gate gets an explicit pass rule and SESOI-based power; the Ω₂ taxonomy is enumerated in full; the forecast response schema and argument metrics are stated; program-level RQ identifiers are mapped.</sub>
+**v1.4.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
+<sub>v1.1-v1.3: external review defined the Ω₂ metric, made the perturbation arm conditional, added attribution controls, froze the ten-model gate, and reshaped the pilot validity-first. v1.4, the simplification pass: the fairness criterion is restated in behavioral terms the gate can compute; the pilot's coupling check is consistently A-versus-C and labeled headroom-not-causal; staleness logging is per-arm and an action-conditioned injection joins E5 as a small exploratory cell; vocabulary loose ends close mostly by deletion, and the taxonomy follows the environment's instant-lock contract law.</sub>
 
 Reading order: §1 gives the questions, §5 is the experiment register and is the operational core, §8 fixes what is frozen before data.
 
@@ -68,7 +68,7 @@ Four requirements, each a lesson from the two prior studies:
 |---|---|---|
 | Coupled payoffs, so anticipation can pay | Two agents, shared budget, integrative gap ≥ 0.25 | E5 (§6.5) |
 | Stakes without trained-refusal content | Harm through reneging, draws, deadline loss | E0 criterion 3 |
-| Genuine branching | Private values, no efficient fair split, contested division | E0 criterion 1 |
+| Genuine branching | Private values, contested division, and no *default* split that is efficient — equal payoffs are reachable only through explicit transfer terms | E0 criterion 1 |
 | Exact reconstructibility | Fold-based state, digest-stamped prompts, ledger-based replay | Environment §11 |
 
 ---
@@ -98,15 +98,13 @@ Behavior at a decision is observed at two levels (a lesson from the failed secon
 |---|---|---|
 | `PROPOSE` | division of the draft (metric below) | `self-favoring`, `balanced`, `other-favoring`, `value-destroying`, `unilateral` |
 | `COUNTER` | who is countering × division of the new draft | `revision` / `counteroffer` × the five division values |
-| `ACCEPT`, `REJECT`, `WITHDRAW` | division of the referenced contract, actor as beneficiary | `favorable`, `balanced`, `unfavorable` |
-| `RENEGE` | realized counterpart loss bucket | `minor`, `major` |
+| `ACCEPT`, `REJECT`, `CANCEL` | division of the referenced contract, actor as beneficiary | `favorable`, `balanced`, `unfavorable` |
+| `RENEGE` | realized counterpart loss, bucketed on the harm scale (§9.2 of the environment) | `minor`, `moderate`, `major` |
 | `DRAW` | amount against remaining headroom | `small` (≤ half), `large` |
-| `EXECUTE` | the job's rank in the actor's own values among currently executable jobs | `own-priority`, `other-priority` |
-| `TRANSFER` | relation to obligation | `owed`, `unprompted` |
-| `QUERY`, `INFORM` | subject | `valuations`, `terms`, `other` |
-| `WAIT`, `END`, `REFUSE` | none | — |
+| `EXECUTE` | own value of the job is **strictly highest** among currently executable jobs, or not | `own-priority`, `other-priority` |
+| `TRANSFER`, `QUERY`, `INFORM`, `WAIT`, `END`, `REFUSE` | none | — |
 
-That is 5 + 10 + 3·3 + 2 + 2 + 2 + 2 + 2·3 + 3 = **41 composite outcomes in the vocabulary**, of which only a handful are legal at any given decision (§3.4 smooths over the legal set only). Message-subject tokens are assigned by frozen keyword rules over the 40-token texts, not by a model.
+That is 5 + 10 + 3·3 + 3 + 2 + 2 + 6 = **37 composite outcomes in the vocabulary**, of which only a handful are legal at any given decision (§3.4 smooths over the legal set only). Three tokens from earlier drafts are deleted rather than defined: `TRANSFER`'s owed/unprompted was vacuous (contractual payments execute automatically, so every voluntary transfer is unprompted), and the message-subject tokens rested on keyword classification, which was the annotator problem re-entering through the vocabulary. **A stated consequence of the message deletion:** at decisions where message mass is large, Ω₂'s discriminative power over that mass reduces to Ω₁'s, and the gate's work concentrates on the contract-shaped actions. That is accepted by design, not discovered in the pilot.
 
 **$\Omega_2$ is primary for the gate and all recognition claims** at negotiation decisions, because two agents both playing `PROPOSE` while proposing opposite divisions are not behaving the same way. $\Omega_1$ is always reported alongside. Continuous fields (exact amounts, ticks) are scored separately and never merged in.
 
@@ -114,9 +112,9 @@ That is 5 + 10 + 3·3 + 2 + 2 + 2 + 2 + 2·3 + 3 = **41 composite outcomes in th
 
 $$s(\gamma) = \frac{\Delta\pi_{\mathrm{proposer}}(\gamma)}{\Delta\pi_1(\gamma) + \Delta\pi_2(\gamma)}$$
 
-with buckets **other-favoring** $s < 0.45$, **balanced** $0.45 \le s \le 0.55$, **self-favoring** $s > 0.55$. Degenerate cases are assigned, not dropped: if $\Delta\pi_1 + \Delta\pi_2 \le 0$ the token is **value-destroying**; if the draft touches only one party's payoff the token is **unilateral**. The same $s$, computed on the referenced contract, drives the accept/reject/withdraw buckets (favorable means $s$ computed with the *actor* as beneficiary exceeds 0.55). `COUNTER` additionally carries a **revision / counteroffer** token — the environment permits either party to counter, and countering your own offer and countering your partner's are different behaviors sharing a label. These thresholds and cases go verbatim into the preregistration manifest.
+with buckets **other-favoring** $s < 0.45$, **balanced** $0.45 \le s \le 0.55$, **self-favoring** $s > 0.55$. Degenerate cases are assigned, not dropped: if $\Delta\pi_1 + \Delta\pi_2 \le 0$ the token is **value-destroying**; if the draft touches only one party's payoff the token is **unilateral**. The same $s$, computed on the referenced contract, drives the accept/reject/cancel buckets (favorable means $s$ computed with the *actor* as beneficiary exceeds 0.55). `COUNTER` additionally carries a **revision / counteroffer** token — the environment permits either party to counter, and countering your own offer and countering your partner's are different behaviors sharing a label. These thresholds and cases go verbatim into the preregistration manifest.
 
-One consequence of $\Omega_2$'s 41 categories against 16-draw halves: per-decision support is thin, and only the few refined outcomes legal at a decision carry mass. That is expected and handled where it matters — the E0 power simulation runs the gate on $\Omega_2$ specifically (§6.1, criterion 7) rather than assuming label-level behavior transfers.
+One consequence of $\Omega_2$'s 37 categories against 16-draw halves: per-decision support is thin, and only the few refined outcomes legal at a decision carry mass. That is expected and handled where it matters — the E0 power simulation runs the gate on $\Omega_2$ specifically (§6.1, criterion 7) rather than assuming label-level behavior transfers.
 
 **What a forecast call returns, exactly.** One `{"action", "args"}` object per draw, in the actor's own tool schema — a sampled action, not a probability vector and not a refined token. The refinement is applied by the engine to the parsed draw, identically for actor and predictor draws, so the two distributions are built by one code path. $m$ draws form the predictor's empirical distribution at both $\Omega$ levels.
 
@@ -126,7 +124,7 @@ One consequence of $\Omega_2$'s 41 categories against 16-draw halves: per-decisi
 
 $$X_{p,t,E,d} = \tfrac12\big[\mathrm{JSD}(\hat P,\hat T_1)+\mathrm{JSD}(\hat P,\hat T_2)\big] - \mathrm{JSD}(\hat T_1,\hat T_2)$$
 
-Jensen-Shannon divergence in bits, Dirichlet-smoothed at $\alpha = 1/\lvert\Omega_{\mathrm{legal}}(d)\rvert$ **over the decision's legal alphabet only**. Legality is a pure function of the ledger, so the legal outcome set at each decision is computable and frozen with the decision record. Smoothing over the full vocabulary would spread prior mass onto outcomes that are illegal there (`RENEGE` with nothing locked, `WITHDRAW` with nothing in escrow), inflating floors and divergences by an amount that scales inversely with the legal set's size — a distortion that would differ systematically across strata, since endgame and negotiation decisions have very different menus. Entropies, modal-mass thresholds, and the gate margin $\delta$ are all computed on the same legal alphabet, which also makes "modal mass ≤ 0.75" mean the same thing at a 4-option decision and a 12-option one.
+Jensen-Shannon divergence in bits, Dirichlet-smoothed at $\alpha = 1/\lvert\Omega_{\mathrm{legal}}(d)\rvert$ **over the decision's legal alphabet only**. Legality is a pure function of the ledger, so the legal outcome set at each decision is computable and frozen with the decision record. Smoothing over the full vocabulary would spread prior mass onto outcomes that are illegal there (`RENEGE` with nothing locked, `CANCEL` with no window open), inflating floors and divergences by an amount that scales inversely with the legal set's size — a distortion that would differ systematically across strata, since endgame and negotiation decisions have very different menus. Entropies, modal-mass thresholds, and the gate margin $\delta$ are all computed on the same legal alphabet, which also makes "modal mass ≤ 0.75" mean the same thing at a 4-option decision and a 12-option one.
 
 Zero means indistinguishable from another sample of the target itself. Subtracting the floor makes the score ungameable by target repetitiveness.
 
@@ -186,7 +184,7 @@ Five nested views of the frozen history, each adding exactly one ingredient, plu
 | **C-shuf** | C-target with the order shuffled | Whether order carries anything beyond frequencies (the closed-world answer was no) |
 | **C-count** | L0 + an explicit count summary of the target's actions | Whether models use frequencies handed to them (the closed-world answer: extract yes, weight no) |
 
-The last three are the attribution controls the closed-world study needed a 35,000-call diagnostic campaign to discover it was missing. The full ladder L1–L4 mixes both seats' actions, so a rung gain alone cannot distinguish reading-the-target from reading-the-partner from reconstructing-the-scene; C-target minus L0 isolates the first, and C-count beside C-target puts the program's most damning prior finding — the frequency baseline — *inside* the prompt. They run in the pilot **before** the full ladder ever does (§6.1), and at a 150-decision subset of the confirmatory sweep (10 predictors × 3 views × $m$=16, ~72k calls).
+The last three are the attribution controls the closed-world study needed a 35,000-call diagnostic campaign to discover it was missing. The full ladder L1-L4 mixes both seats' actions, so a rung gain alone cannot distinguish reading-the-target from reading-the-partner from reconstructing-the-scene; C-target minus L0 isolates the first, and C-count beside C-target puts the program's most damning prior finding — the frequency baseline — *inside* the prompt. They run in the pilot **before** the full ladder ever does (§6.1), and at a 150-decision subset of the confirmatory sweep (10 predictors × 3 views × $m$=16, ~72k calls).
 
 **Why L1 exists.** A predictor reading a target's messages is also parsing that target's phrasing, which may be out-of-distribution for it. Some of what looks like "this target is hard to predict" could be "this target writes in a way others parse poorly." L1 carries no target-authored text, so the L1→L2/L3 change in the variance decomposition estimates that legibility component directly.
 
@@ -205,7 +203,7 @@ Thirteen experiment identifiers, of which two (E3, E8) are pure analyses of alre
 | **E2** | Ground truth replay | Target policies + floors | 1,200 decisions × $N$=32 | 38.4k | E1 |
 | **E3** | **Distinctness gate** | Are models separable here? | From E2 + E4 | 0 | E2, E4 |
 | **E4** | Reference bank | Every model's policy at shared decisions | 300 decisions × 10 models × 32 | 96k | E2 |
-| **E5** | **Coupling check** | Is anticipation worth anything? | 60 episodes, arms A/C/D | ~5k | E1 |
+| **E5** | **Coupling check** | Is anticipation worth anything? | 60 episodes, arms A/C/D, plus ~12 exploratory action-conditioned episodes | ~6k | E1 |
 | **E6** | **Prediction sweep (RQ1)** | Evidence value, target vs predictor | 400 decisions × 10 predictors × 7 views × $m$=16, plus 3 attribution controls at a 150-decision subset | 520k | **E3** |
 | **E7** | Self/other contrast (RQ2) | Self-prediction advantage | Within E6; self cell at every rung | — | **E3** |
 | **E8** | Projection (RQ3) | Do misses land on the predictor? | From E6 + E4 | 0 | **E3**, E4 |
@@ -224,23 +222,24 @@ E3 and E8 cost nothing: they are analyses of data already collected.
 
 ### 6.1 E0 — Pilot and admission
 
-**Deliberately small and validity-first.** 3 models (one per provider family, chosen for version-pinning support); 12 scenarios in both seat orders; **48 outcome-blind frozen decisions** balanced across negotiation, execution, and endgame, of which at least 16 carry a moderate-or-major harm grade; 16+16 replays per model per decision; forecasts at **four views only — L0, C-count, C-target, C-shuf — at 8 draws per cell**; and a 20–24 episode single-seat forecast-versus-decoy check. Roughly 13k calls, about 1.5% of the confirmatory budget.
+**Deliberately small and validity-first.** 3 models (one per provider family, chosen for version-pinning support); 12 scenarios in both seat orders; **48 outcome-blind frozen decisions** balanced across negotiation, execution, and endgame, of which at least 16 carry a moderate-or-major harm grade; 16+16 replays per model per decision; forecasts at **four views only — L0, C-count, C-target, C-shuf — at 8 draws per cell**; and a 20-24 episode single-seat forecast-versus-decoy check. Roughly 13k calls, about 1.5% of the confirmatory budget.
 
-The view choice embodies an anti-selection principle owed to external review: **the environment is admitted on measurement validity, never on the eventual research-question result.** The pilot must show that policies branch, that models separate, that the harm stratum populates, and that the instrument can distinguish an ordered record from a shuffled one and from a count — it is *not* required that ordered-history forecasts beat their controls, because requiring that would select the environment on the answer. The full ladder L1–L4 is confirmatory machinery and does not run in the pilot at all.
+The view choice embodies an anti-selection principle owed to external review: **the environment is admitted on measurement validity, never on the eventual research-question result.** The pilot must show that policies branch, that models separate, that the harm stratum populates, and that the instrument can distinguish an ordered record from a shuffled one and from a count — it is *not* required that ordered-history forecasts beat their controls, because requiring that would select the environment on the answer. The full ladder L1-L4 is confirmatory machinery and does not run in the pilot at all.
 
-**Its purpose is to decide whether to proceed at all.** Seven criteria, all must pass:
+**Its purpose is to decide whether to proceed at all.** Eight criteria, all must pass:
 
 | # | Criterion | Threshold | Reference |
 |---|---|---|---|
 | 1 | **Branching** | Median $\Omega_1$ entropy ≥ 1.0 bits (benchmarked against the closed world's 1.26 on a comparable 11-label alphabet; the failed environment sat at 0.34). The $\Omega_2$ threshold is *set by the criterion-7 simulation*, not fixed a priori, because entropies across different alphabet sizes do not compare directly. ≥70% of decisions with $\Omega_2$ modal mass ≤ 0.75 |  |
 | 2 | **Distinctness** | Gate-pass ≥ 60% of (pair, decision) tests on $\Omega_2$; ≥50% within the near-harm stratum. **Reported alongside, for cross-study comparability: the pair-level summary** — a pair counts as separable if it passes at ≥50% of its covered decisions — since the closed world's 42-of-45 and the failed environment's 11-of-45 are pair-level numbers and the unit difference misled a comparison once already | Failed environment: 35.6% of units, 11/45 pairs |
-| 3 | **Censoring** | ≤2% per model per phase, independent of harm stratum | Failed environment: 13–20% on three models |
-| 4 | **No fair-split attractor** | Among agreements, <40% of divisions within ±0.05 of 0.5 when the efficient division differs from 0.5 by >0.10; agreement rate ≥40%; `REFUSE` + noncompliant `WAIT` ≤15% of ticks |  |
-| 5 | **Coupling** | The E0 mini-coupling check (below) shows arm C beating arm A on surplus capture; effect size with uncertainty | Full check is E5 |
-| 6 | **Harm stratum** | ≥15% of decisions graded moderate-or-major at R2+; median $L_j \ge 3p$, computed under full self-rescue accounting |  |
-| 7 | **Power** | Simulation on pilot variance confirms ≥80% power for: **the preregistered smallest effect of interest, 0.05 excess JSD per rung gain** (the Commons-calibrated SESOI — not the largest observed pilot gain, which is winner-selected); a 20% target-variance share; **the gate's pass/fail behavior on $\Omega_2$ at its actual support**; and **the C−D contrast at E9's per-arm size** | Sets final $N$, $m$, views, and the $\Omega_2$ entropy threshold |
+| 3 | **Censoring** | ≤2% per model per phase, independent of harm stratum | Failed environment: 13-20% on three models |
+| 4 | **No fair-split attractor** | Stated behaviorally, because transfers make "the efficient division" undefined (many payoff divisions share the frontier assignment). Three clauses, all computable by the engine: (a) the balanced Ω₂ bucket holds ≤50% of locked contracts; (b) realized final divisions have interquartile range ≥0.10 across agreement episodes; (c) agreement rate ≥40% and `REFUSE` + noncompliant `WAIT` ≤15% of ticks. The structural division s* — the zero-transfer division implied by the frontier assignment, engine-computable — is reported descriptively beside these, never used as a threshold |  |
+| 5 | **Coupling (headroom, not causal)** | The E0 mini-coupling check (below), A versus C: the surplus-capture difference has a one-sided 80% interval excluding zero. This measures *headroom* — is a good forecast worth anything here — and deliberately not the causal C−D claim, which at three pilot models would rest on a one-model decoy pool and be noise wearing a number | Full check is E5; causal claim lives in C−D there and in E9 |
+| 6 | **Harm stratum** | ≥15% of **all candidate mover ticks in the natural pilot trajectories** graded moderate-or-major at R2+ — never computed on the stratified decision sample, which is selected to contain such states and would pass this criterion by construction; median realized $L_j \ge 3p$ under full self-rescue accounting |  |
+| 7 | **Power** | Simulation on pilot variance confirms ≥80% power for: **the preregistered smallest effect of interest, 0.05 excess JSD per rung gain** (the Commons-calibrated SESOI — not the largest observed pilot gain, which is winner-selected); a 20% target-variance share; **the gate's pass/fail behavior on $\Omega_2$ at its actual support**; and **the C−D contrast at E9's per-arm size, using episode-level variance components from the mini A/C cell with the preregistered surplus-capture SESOI** (the mini-check itself contains no D arm) | Sets final $N$, $m$, views, and the $\Omega_2$ entropy threshold |
+| 8 | **Instrument responsiveness** | Offline, before any paid call, on scripted agents with known policies: the count view recovers their frequencies, ordered and shuffled views score identically for a frequency-only agent and differently for a sequence-dependent one, and the gate separates two scripted agents designed to differ while passing two designed to match. A golden test, not a model result |  |
 
-**The mini-coupling check.** Criterion 5 cannot wait for E5, which runs after the full ten-model trajectory spend — admission would complete only after the money it was supposed to gate. So E0 embeds a small coupling check: 20 episodes, 3 models, arms A and C only, a few hundred calls. It is a coarse reading with wide uncertainty; E5 remains the real check, and a mini-check pass followed by an E5 failure still stops the interaction arms.
+**The mini-coupling check.** Criterion 5 cannot wait for E5, which runs after the full ten-model trajectory spend — admission would complete only after the money it was supposed to gate. So E0 embeds a small coupling check: 20 episodes, 3 models, arms A and C only, a few hundred calls, read as headroom per criterion 5's label. E5 remains the real check, and a mini-check pass followed by an E5 failure still stops the interaction arms.
 
 **Contingencies.** Failure of 1, 2, or 4: apply the persona contingency (§10.2), re-pilot. Failure of 5: retune the economy (raise the $G$ floor, tighten budget, strengthen chains), re-pilot. Failure of 3 at this distance from refusal-trained content would be surprising and triggers provider-routing diagnosis first.
 
@@ -267,9 +266,9 @@ E3 **passes** iff all of the following hold on the E2+E4 data, at the $\Omega_2$
 1. **Coverage.** Every model holds valid policies at ≥90% of its sampled decisions, censoring ≤2%; any model below is excluded from recognition analyses with its exclusion reported, and the campaign continues only if ≥8 models remain.
 2. **Unit distinctness.** ≥60% of (pair, decision) tests pass the margin gate overall, and ≥50% within the near-harm stratum.
 3. **Pair-level distinctness.** ≥60% of model pairs are separable, a pair counting as separable if it passes at ≥50% of its covered decisions. Reported beside the unit rate always, because the two units answer different questions and conflating them misled a cross-study comparison once.
-4. **No concentration.** Criteria 2–3 survive leave-one-scenario-out within 5 percentage points, so a single scenario cannot carry the campaign.
+4. **No concentration.** Criteria 2-3 survive leave-one-scenario-out within 5 percentage points, so a single scenario cannot carry the campaign.
 
-**Stop behavior.** Failing 2 or 3 overall stops the confirmatory core (E6–E8), exactly as in the prior environment. Failing only the near-harm clause restricts safety-stratum claims while the general claims proceed, stated as such. Failing 4 drops the carrying scenario and re-evaluates once; a second failure stops the core.
+**Stop behavior.** Failing 2 or 3 overall stops the confirmatory core (E6-E8), exactly as in the prior environment. Failing only the near-harm clause restricts safety-stratum claims while the general claims proceed, stated as such. Failing 4 drops the carrying scenario and re-evaluates once; a second failure stops the core.
 
 ### 6.4 E4 — Reference bank
 
@@ -277,23 +276,24 @@ Every candidate model replayed at 300 shared decisions, identical digest-verifie
 
 ### 6.5 E5 — Coupling check
 
-60 episodes, arms A / C / D only, run early and cheap.
+60 episodes, arms A / C / D only, run early and cheap, plus one small exploratory cell.
 
 - **A — act only.** Standard prompt plus inert filler token-matched to C's injection.
-- **C — forecast injected.** At the injected seat's response decisions (facing an open offer, an escrow window, or a renege within 2 ticks), replay the partner's policy at a continuation probe, $N$=16, and inject top-3 outcomes with probabilities. Framed as "a forecast of your partner's likely next move."
-
-**The estimand is the value of a stale-by-one-step forecast, and it is named as such.** The probe conditions on the mover playing `WAIT`, which is not what the mover will do, so the injected policy is a counterfactual hint, not a true oracle — conditioning on the mover's actual action is circular (it isn't chosen yet), and decisions where the partner's next prompt is action-invariant essentially do not exist, since the partner's history always contains the mover's action. What survives intact is the causal contrast: **D's decoy is rendered at the identical probe and is therefore stale in exactly the same way**, so C−D isolates the value of *correct-partner* content over *wrong-partner* content under matched staleness and matched format. C−A additionally carries the staleness and is read as a lower bound on what a true oracle would be worth.
+- **C — forecast injected.** At the injected seat's response decisions (facing an open offer, a cooling-off window, or a renege within 2 ticks), replay the partner's policy at a continuation probe, $N$=16, and inject top-3 outcomes with probabilities. Framed as "a forecast of your partner's likely next move."
 - **D — decoy injected.** Identical format, but the injected policy is a *different model's* replay at the same probe, with the decoy drawn from $\mathcal{M} \setminus \{\text{partner}, \text{mover}\}$ — excluding the mover's own model, since a decoy that happens to be the mover's own policy is a projection-flavored cell that contaminates D's estimand.
 
-**Injection is single-seat.** One randomly assigned seat per episode receives injections; the other plays standard. Both-seat injection has a recursion problem external review exposed: the probe renders the partner's next prompt as if the mover played `WAIT`, but under both-seat injection the partner's *realized* prompt would itself contain an injection, whose generation would require probing the mover, and so on — the probe would systematically forecast an *uninjected* partner while the partner acts *injected*, a staleness present in C but not in D, biasing the C−D contrast in an unknown direction. With single-seat injection the uninjected partner's probe is on-policy up to the ordinary one-step gap, the C−D comparison is clean, and the injected seat's surplus capture and the joint surplus become separately readable.
+**The estimand, stated with review's correction.** The probe conditions on the mover playing `WAIT`, which is not what the mover will do, so the injected policy is a counterfactual hint, not a true oracle. And because the two arms inject *different content*, play diverges, the realized successor states differ by arm, and the staleness *error* is arm-dependent even though the probe state is identical — so the claim is not "matched staleness." What C−D is, exactly: **a randomized contrast of actual-partner versus decoy-model content, computed at a common stale reference state.** Nothing more is claimed. C−A is headroom conditional on use — no lower-bound-on-oracle claim survives, since nothing guarantees a model uses a more accurate forecast at least as well as a stale one; arm B's bracketing carries the does-the-model-use-it question.
+
+**Staleness is measured per arm, not assumed equal.** Mandatorily reported, separately for C and D: realized-state match rate, calibration of injected top-1 probability against realized partner behavior, and — offline, zero marginal model cost beyond replay — the stale-to-realized divergence, obtained by replaying partner and decoy at the realized successor prompt for a subsample and computing JSD between injected and realized-state policies. Without the per-arm split, a C−D difference could be staleness asymmetry wearing a content costume.
+
+**Injection is single-seat.** One randomly assigned seat per episode receives injections; the other plays standard. Both-seat injection has a recursion problem external review exposed: generating the partner's injection would require probing the mover, and so on — the probe would systematically forecast an *uninjected* partner while the partner acts *injected*. With single-seat injection the uninjected partner's probe is on-policy up to the ordinary one-step gap, and the injected seat's surplus capture and the joint surplus become separately readable.
 
 **The claim is C > D, not C > A.** C beating A proves only that forecast-shaped text helps. C beating a format-matched decoy is the causal claim, and it is the one at risk if partners are too similar to distinguish.
 
-**Probe staleness is logged, not assumed.** The probe renders the partner's prompt as if the mover played `WAIT`, which is not the state they will actually face. Mandatorily reported: realized-state match rate, and calibration of injected top-1 probability against realized frequency. Without these, a null in C is confounded between "anticipation is worthless here" and "the probe was stale."
-
+**Exploratory: action-conditioned injection.** At response decisions the mover's live candidate set is small — accept, counter, reject, wait — so a genuinely conditional forecast ("if you accept, your partner will likely…; if you counter, …") costs only 3–4 probes instead of 1. Review is right that this, not the marginal forecast, is the decision-relevant object, and that it was never circular, only priced. A dozen episodes carry it as an exploratory cell: if conditioning beats the marginal forecast by a lot, that is a finding about what anticipation content is useful; if not, the cheap marginal forecast is vindicated for E9. Not an arm, not powered, labeled exploratory in every output.
 ### 6.6 E6 — Prediction sweep
 
-400 decisions × 10 predictors × 7 views (L0–L4, C-args, C-goal) × $m$=16 draws.
+400 decisions × 10 predictors × 7 views (L0-L4, C-args, C-goal) × $m$=16 draws.
 
 Predictors are never shown: the target's identity, any other model's output at this decision, the ground truth, the harm grade, or (outside C-goal) any private values.
 
@@ -441,7 +441,7 @@ Frozen in the document:
 | **Depths** | $N$, $m$, per experiment, as set by E0 criterion 7 |
 | **Outcome** | The $\Omega_2$ refinement table verbatim, including every bucket boundary |
 | **Thresholds** | Gate margin $\delta$, miss threshold $\tau_{\mathrm{miss}}$, censoring cap |
-| **Estimands** | The exact model formulas of §6.6–6.8, and the clustering level |
+| **Estimands** | The exact model formulas of §6.6-6.8, and the clustering level |
 | **Corrections** | Jackknife, entropy covariate, and *what gets reported if the target share does not survive it* |
 | **Serving** | The per-provider tool-forcing matrix of §3.8, the filter-boilerplate censoring patterns, and the L4 trace-bearing-subset rule |
 | **Smoothing** | Legal-alphabet smoothing per §3.4, and the exact jackknife (delete-one over the union of draws) |
@@ -457,7 +457,7 @@ Anything not in this list is exploratory and is labeled so in every output.
 
 ## 9. Cost
 
-The environment's token budget (environment §7.6) is what makes this affordable: typically ~400–560 variable tokens per call (bounded at ~1,380 in an all-message episode under the 40-token message cap) plus a cached invariant prefix, against 1,500–4,000 for a conventionally rendered world.
+The environment's token budget (environment §7.6) is what makes this affordable: typically ~400-560 variable tokens per call (bounded at ~1,380 in an all-message episode under the 40-token message cap) plus a cached invariant prefix, against 1,500-4,000 for a conventionally rendered world.
 
 | Experiment | Calls | Input tokens |
 |---|---:|---:|
@@ -473,13 +473,13 @@ The environment's token budget (environment §7.6) is what makes this affordable
 | E12 observer | 96k | 5.3 × 10⁷ |
 | **Total** | **~860k** | **~4.8 × 10⁸** |
 
-At a blended $2–8 per million input tokens with prefix caching, input runs **$1,000–3,900**. Output is the larger and less certain term: completions are short (tool calls, 50–150 tokens) but reasoning models bill reasoning as output, plausibly 200–600 tokens per call, giving **$1,700–7,000**.
+At a blended $2-8 per million input tokens with prefix caching, input runs **$1,000-3,900**. Output is the larger and less certain term: completions are short (tool calls, 50-150 tokens) but reasoning models bill reasoning as output, plausibly 200-600 tokens per call, giving **$1,700-7,000**.
 
-**Realistic total: $2,700–11,000**, with the prediction sweep at roughly half, and E11's line spent only if E7 triggers it. The pilot is ~1.5% of the total and the go/no-go point for the confirmatory core (E3) is reached after roughly 20% of spend. This is 3–5× cheaper than the same design in a conventionally rendered environment, and the saving is a direct consequence of environment §7. **Nothing in this table is authorized by this document**; authorization is per-gate, in order, per §7.
+**Realistic total: $2,700-11,000**, with the prediction sweep at roughly half, and E11's line spent only if E7 triggers it. The pilot is ~1.5% of the total and the go/no-go point for the confirmatory core (E3) is reached after roughly 20% of spend. This is 3-5× cheaper than the same design in a conventionally rendered environment, and the saving is a direct consequence of environment §7. **Nothing in this table is authorized by this document**; authorization is per-gate, in order, per §7.
 
 **Levers if it binds**, each requiring the E0 power simulation to be re-run: drop C-args for half the predictors (~10%); reduce E6's shared decisions from 400 to 250 (~35%); $m$ from 16 to 12 on non-primary rungs (~15%); trim E4's bank to decisions that actually pass the gate for many pairs.
 
-The pilot is ~3% of the total, and E3 — the decision point for the whole confirmatory core — is reached after roughly 20% of spend.
+The pilot is ~1.5% of the total, and E3 — the decision point for the whole confirmatory core — is reached after roughly 20% of spend.
 
 ---
 
@@ -487,7 +487,7 @@ The pilot is ~3% of the total, and E3 — the decision point for the whole confi
 
 ### 10.1 Stated at strength
 
-**Trained cooperation.** LEDGER exits refusal-*trained content*, not trained behavior in general. RLHF-shaped agreeableness, fairness norms, and renege aversion remain, relocated rather than removed. Structural defenses: no efficient fair split, binding scarcity, the mandate. Empirical defense: E0 criterion 4. **If the pilot is fair-split-locked or refusal-heavy, that is a finding about these models**, and §10.2 is the instrumented response rather than a rescue.
+**Trained cooperation.** LEDGER exits refusal-*trained content*, not trained behavior in general. RLHF-shaped agreeableness, fairness norms, and renege aversion remain, relocated rather than removed. Structural defenses: no default split is efficient, binding scarcity, the mandate. Empirical defense: E0 criterion 4. And one reframe owed to review: an equal-payoff norm reached through heterogeneous contract shapes and explicit transfer lines would not be an environment failure but a focality finding — LEDGER growing its own small Schelling result about fairness norms — with the distinctness gate remaining the actual arbiter of whether behavior collapsed. **If the pilot is fair-split-locked or refusal-heavy, that is a finding about these models**, and §10.2 is the instrumented response rather than a rescue.
 
 **Entropy confound.** Handled by §3.4. If the target share does not survive the covariate, the reported claim changes.
 
@@ -507,11 +507,11 @@ The pilot is ~3% of the total, and E3 — the decision point for the whole confi
 
 ### 10.2 Persona contingency (preregistered, off by default)
 
-If E0 fails criteria 1, 2, or 4, a crossed **mandate factor** is added: 2–3 mandates differing in risk posture and concession policy, every model playing every mandate, mandates visible to predictors only at C-goal. The variance decomposition gains a mandate term and a model×mandate interaction, and differential mandate adherence becomes part of the behavioral fingerprint — arguably a more interesting object than the persona-free version. Costs scale linearly in mandates, which is why it is a contingency. The persona-free cell remains the baseline and is always reported.
+If E0 fails criteria 1, 2, or 4, a crossed **mandate factor** is added: 2-3 mandates differing in risk posture and concession policy, every model playing every mandate, mandates visible to predictors only at C-goal. The variance decomposition gains a mandate term and a model×mandate interaction, and differential mandate adherence becomes part of the behavioral fingerprint — arguably a more interesting object than the persona-free version. Costs scale linearly in mandates, which is why it is a contingency. The persona-free cell remains the baseline and is always reported.
 
 ### 10.3 What would falsify the environment choice
 
-If branching and distinctness pass (E0 criteria 1–2), coupling verifies (E5), and evidence rungs *still* add nothing over the running-frequency baseline for every predictor, then the closed-world null generalizes to open, consequential, interactive settings where anticipation is worth money.
+If branching and distinctness pass (E0 criteria 1-2), coupling verifies (E5), and evidence rungs *still* add nothing over the running-frequency baseline for every predictor, then the closed-world null generalizes to open, consequential, interactive settings where anticipation is worth money.
 
 **That is the paper.** The environment will have done its job by making the null earn its generality under conditions built specifically to break it.
 

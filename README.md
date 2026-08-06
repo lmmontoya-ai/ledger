@@ -2,7 +2,7 @@
 
 **A contracting economy for measuring prediction between language-model agents.**
 
-Two agents jointly run a venture with a shared budget, tasks worth different amounts to each of them, limited capacity, and a deadline. They negotiate by exchanging structured contract proposals and free-text messages. Accepted contracts pass through escrow into a locked state and then execute automatically. Agents may also spend the shared budget unilaterally, and may break locked commitments at a penalty that is small for the breaker and large for the counterpart.
+Two agents jointly run a venture with a shared budget, tasks worth different amounts to each of them, limited capacity, and a deadline. They negotiate by exchanging structured contract proposals and short messages. An accepted contract binds instantly, with a brief cooling-off window to cancel cheaply; locked obligations execute or settle as breach at the end. Agents may also spend the shared budget unilaterally, and may break locked commitments at a penalty that is small for the breaker and large for the counterpart.
 
 The whole world is a deterministic state machine over an append-only event log, so any moment of any episode reconstructs byte-for-byte and replays exactly.
 
