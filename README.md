@@ -13,14 +13,14 @@ Claims that one AI system can anticipate another — the premise behind monitori
 - **Policy-level ground truth.** Replaying a frozen decision many times gives the agent's *distribution* over next actions, not one sample, plus its own sampling noise.
 - **A distinctness gate.** Before asking whether A can recognize B, establish that A and B actually behave differently there, beyond both their noise floors.
 - **Stakes without trained refusals.** Consequential harm through broken contracts and drained budgets, not through content that providers filter and models are trained to refuse.
-- **A real forecast to inject.** Because replay yields a partner's true policy, an oracle exists — so "does anticipation improve coordination" becomes a causal question with a format-matched control.
+- **A real forecast to inject.** Because replay yields a partner's policy at a probed state, a genuine (one-step-stale) forecast exists — so "does anticipation improve coordination" becomes a causal question with a format-matched decoy control.
 
 ## Documents
 
 The environment and the research conducted on it are specified separately, and the environment does not depend on the research.
 
 - [`docs/ENVIRONMENT_DESIGN.md`](docs/ENVIRONMENT_DESIGN.md) — the world, its actions, its economy, what an agent sees, and how to implement it. Self-contained. Read §2 to learn the game in two minutes and §7 to see exactly what a player reads.
-- [`docs/EXPERIMENT_PLAN.md`](docs/EXPERIMENT_PLAN.md) — the prediction study: research questions, instrument, the register of eleven experiments, sequencing, and what each result would mean.
+- [`docs/EXPERIMENT_PLAN.md`](docs/EXPERIMENT_PLAN.md) — the prediction study: research questions, instrument, the experiment register, sequencing, and what each result would mean.
 
 ## Status
 
