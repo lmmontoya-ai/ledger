@@ -1,7 +1,7 @@
 # Experiment Plan — prediction between agents in LEDGER
 
-**v1.4.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
-<sub>v1.1-v1.3: external review defined the Ω₂ metric, made the perturbation arm conditional, added attribution controls, froze the ten-model gate, and reshaped the pilot validity-first. v1.4, the simplification pass: the fairness criterion is restated in behavioral terms the gate can compute; the pilot's coupling check is consistently A-versus-C and labeled headroom-not-causal; staleness logging is per-arm and an action-conditioned injection joins E5 as a small exploratory cell; vocabulary loose ends close mostly by deletion, and the taxonomy follows the environment's instant-lock contract law.</sub>
+**v1.5.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
+<sub>v1.1-v1.3: external review defined the Ω₂ metric, made the perturbation arm conditional, added attribution controls, froze the ten-model gate, and reshaped the pilot validity-first. v1.4, the simplification pass: the fairness criterion is restated in behavioral terms the gate can compute; the pilot's coupling check is consistently A-versus-C and labeled headroom-not-causal; staleness logging is per-arm and an action-conditioned injection joins E5 as a small exploratory cell; vocabulary loose ends close mostly by deletion, and the taxonomy follows the environment's instant-lock contract law. v1.5, spec closure: baseline machine definitions (running-frequency cold start, leave-one-episode-out cross-fitting) frozen.</sub>
 
 Reading order: §1 gives the questions, §5 is the experiment register and is the operational core, §8 fixes what is frozen before data.
 
@@ -138,7 +138,12 @@ Zero means indistinguishable from another sample of the target itself. Subtracti
 
 ### 3.5 Baselines, computed per decision without any model call
 
-**(a)** uniform over legal actions; **(b)** the target's own running frequencies this episode; **(c)** population base rate in the same stratum; **(d)** legality-aware heuristic. **Every RQ1 claim is stated against (b)**, because that is the bar the closed-world study set and no model cleared.
+Machine definitions frozen here, because "the frequency baseline" is only a bar if two implementations of it cannot differ:
+
+- **(a) Uniform** — the smoothed uniform distribution over the decision's legal $\Omega$ alphabet.
+- **(b) Running frequency** — the target's own $\Omega$-outcome frequencies over **all of its prior actions in the current episode** (no window; episodes are short enough that a window would only add a parameter), Dirichlet-smoothed on the legal alphabet exactly as §3.4. **Cold start** (no prior action this episode): (b) is defined as (a), and those decisions are flagged so comparisons against (b) can be reported with and without them. **Every RQ1 claim is stated against (b)** — the bar the closed-world study set and no model cleared.
+- **(c) Population base rate** — pooled $\Omega$-outcome frequencies over decisions in the same stratum, **cross-fitted leave-one-episode-out**: the decision's own episode is always excluded, removing self-influence while keeping the model population representative. Leave-one-model-out was considered and rejected — it would subtract target-typical mass unevenly, making the baseline's difficulty depend on the target's typicality. Same smoothing.
+- **(d) Legality-aware heuristic** — (c) restricted to the decision's legal alphabet and renormalized.
 
 ### 3.6 The distinctness gate
 

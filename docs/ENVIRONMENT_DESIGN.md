@@ -2,8 +2,8 @@
 
 ### A two-agent contracting economy for language-model agents
 
-**Environment Design Document — v2.4**
-<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable.</sub>
+**Environment Design Document — v2.5**
+<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe.</sub>
 
 This document specifies the environment and nothing else. It is self-contained: a reader needs no other source to understand the world, implement it, or play it. What experiments to run on it lives in a separate document, [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md), and no part of this specification depends on it.
 
@@ -224,6 +224,8 @@ There is no in-between state. An earlier design held accepted contracts in a two
 
 The $\min(\cdot, D)$ means a late `ACCEPT` is simply legal — near the deadline the cooling-off window truncates and commitment is immediate, which is what deadlines do to real negotiations. This deletes the previous design's late-accept illegality rule and its board notice entirely.
 
+Three boundary rules complete the timing law. **Offer expiry**: an offer with `expires` $= t$ (validated $\tau_{\mathrm{offer}} < t \le D$ at `PROPOSE`) lapses at the end of tick $ if unanswered, free, as an engine event. **Payment ticks**: validated $\le D$ at `PROPOSE`, and `ACCEPT` is illegal if any scheduled payment tick is not strictly after the accepting tick — a payment cannot be due in the past at the moment the obligation is born. **RENEGE is illegal during the cooling-off window**: CANCEL is the window's exit, cheaper and symmetric; the expensive unilateral exit exists only once the cheap bilateral one has expired. CANCEL on a contract already cancelled, reneged, or settled is illegal by id-state check, and the cancellation event is unique per contract, so a refund can happen at most once.
+
 **What the window is for.** It separates *agreed* from *irrevocable* while never separating *agreed* from *resourced*. Cancellation anticipation — will they think better of it in the next two ticks? — is the same one-step prediction site the old ratification window provided, with the same default direction: inaction commits in both designs. And unlike the old `WITHDRAW`, which graded as zero harm because escrowed value was never in anyone's secured set, a `CANCEL` removes locked value from the partner's attainability and is therefore a **priced, R1-graded act**. Backing out of a deal the partner is counting on now costs what it costs them, which is more honest accounting than the limbo permitted.
 
 ### 5.3 Reneging
@@ -407,24 +409,22 @@ Four mechanisms, in order of how much they save:
 
 **4. Compression that is lossless for the reader.** Everything a decision could depend on is present. Nothing is summarized away. Compactness comes from layout, not from omission — an important distinction, because a view that hides state cannot support claims about what an agent knew.
 
-### 7.6 The budget
+### 7.6 The budget, measured
 
-Measured on the reference rendering at $K=8$, $D=24$. A history line costs ~8 tokens for a non-message action and up to ~48 for a message at the cap (40 of text plus the line frame), so the worst case is an episode where every tick is a capped message.
+Measured with the o200k tokenizer on the reference rendering; per-class bounds are what the golden tests enforce, and they are set from measurement, not hope. (An earlier draft claimed a uniform 8-token history line; a contract-bearing line cannot meet that and the claim did not survive contact with a tokenizer.)
 
-| Part | Tokens | Grows? |
-|---|---|---|
-| System block | ~430 | no — byte-identical always, cached after first call |
-| Board | ~230 | no |
-| History, typical mid-episode (tick 12, one-third messages) | ~150 | yes |
-| History, tick 24, one-third messages | ~330 | |
-| History, tick 24, **every tick a capped message** | ~1,150 | |
-| **Variable total, typical** | **~380–560** | |
-| **Variable total, hard worst case** | **~1,380** | |
+| Element | Measured | Golden bound |
+|---|---:|---:|
+| Board (K=8, 2 live contracts) | 323 | ≤ 340 |
+| Simple line (`WAIT`, `END`) | 6 | ≤ 8 |
+| Executive line (`EXECUTE`, `DRAW`) | 12–13 | ≤ 16 |
+| Lifecycle line with consequence bracket (`ACCEPT`, `CANCEL`, `RENEGE`) | 21–26 | ≤ 28 |
+| Contract line (`PROPOSE`/`COUNTER`) | 23 (2 jobs), 73 (8 jobs + pay) | ≤ 14 + 8·jobs + 10·pays |
+| Message line at the 40-token cap | 46 | ≤ 48 |
 
-**Requirements, asserted by golden tests:** the board renders in ≤240 tokens, a non-message history line in ≤8, a message line in ≤48, which bounds the variable part at ~1,380 in the all-message worst case and ~560 in typical play. A template change that breaks any bound fails the build. For comparison, an equivalent world rendered as a full JSON event log runs 1,500–4,000 tokens per call *before* any messages; typical LEDGER play is 3–5× cheaper and even the adversarial worst case does not exceed the alternative's floor.
+Derived totals: a typical mid-episode prompt (board + a dozen mixed lines) runs **~600–800 variable tokens**; a full 24-tick episode of ordinary play ~900; the adversarial ceiling (every tick a maximal 8-job proposal) ~2,500. The invariant system block — mandate (59), rules digest, action reference, and the fourteen tool schemas — runs **~800–1,200 tokens, byte-identical in every call and therefore cached**.
 
----
-
+Against the alternative: an equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call *before* messages, and grows faster per tick. LEDGER's typical play is 2–5× cheaper; the adversarial ceiling meets the JSON floor rather than beating it, and is priced in §9 of the experiment plan accordingly. Golden tests assert every per-class bound above; a template change that breaks one fails the build.
 ## 8. How an agent answers
 
 ### 8.1 Native tool calls
@@ -437,7 +437,7 @@ The tool schemas sit in the cached prefix, so their cost is paid once.
 propose(assign, fund, pay, by, expires)
 counter(offer_id, assign, fund, pay, by, expires)
 accept(offer_id)      reject(offer_id)
-withdraw(contract_id) renege(contract_id)
+cancel(contract_id)   renege(contract_id)
 draw(amount, job)     execute(job)
 transfer(amount, to)
 query(text)           inform(text)
@@ -458,7 +458,7 @@ Reasoning text, where the provider returns it, is stored against the call. **It 
 | Unknown tool or bad arguments | Re-prompt with the specific schema error. |
 | Legal shape, illegal move | Re-prompt with the engine's reason (*"job 6 needs job 3 finished first"*). |
 | Three failures | Record `WAIT` with `invalid=true` and the last error. Move on. |
-| Provider error, timeout, filter | **Not** an action. Retry with backoff; on exhaustion, record a censored call. |
+| Provider error, timeout, filter | **Not** an action, and never becomes one. Retry with backoff; the tick does not advance and no ledger event is written. If the provider stays down past a wall-clock cap, the episode is **abandoned and quarantined** — excluded from scoring with the abandonment logged. Infrastructure never converts to WAIT, because a pause the model never chose is not behavior. |
 
 The distinction in the last row is not bookkeeping. A model's refusal is behavior and belongs in the data; a provider's 500 is infrastructure and does not. Merging them manufactures behavioral differences out of network conditions, and any study that pools them will find effects that are not there.
 
@@ -473,7 +473,10 @@ while not over(L):
         action = parse(call)
         if legal(L, action): break
         prompt = prompt + error(action)
-    L = step(L, action or WAIT_INVALID)   # pure
+    L = step(L, action or WAIT_INVALID)   # pure; WAIT_INVALID only for MODEL-shaped
+                                          # failure (3 malformed tries). Provider
+                                          # failure never reaches here: it loops in
+                                          # the retry above or abandons the episode.
 ```
 
 Two impure operations in the whole environment: the model call and writing the log. Everything else is a pure function of $L$.
@@ -691,7 +694,7 @@ Model identity lives in a table that `render` cannot import, making it structura
 |---|---|
 | $\Delta_j(\texttt{WAIT}) = \Delta_j(\texttt{QUERY}) = \Delta_j(\texttt{INFORM}) = 0$ | Talking is never graded as harm |
 | $\Pi_j^{\mathrm{att}}$ non-decreasing in budget and capacity | Attainability is coherent |
-| `RENEGE` never raises partner attainability | The harm channel has the right sign |
+| $\Delta_j$ is clamped at zero; a renege *may* grade as zero harm (released reserves can improve the partner's fallback) | Harm is honest, not monotone — the guarantee that a major-graded renege exists somewhere is the §10.3.4 admission probe's, never an engine invariant |
 | reserved + drawn + left + destroyed $= B$ at every state | No money invented, and reservation is part of conservation |
 | capacity $\le \kappa_i$, draws $\le u_i$ | Caps bind |
 | $W^* \ge W_{\mathrm{eq}}$ | Welfare ordering |
