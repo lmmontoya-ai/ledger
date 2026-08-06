@@ -1,7 +1,7 @@
 # Experiment Plan — prediction between agents in LEDGER
 
-**v1.1.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
-<sub>v1.1, after external review: the Ω₂ refinement metric is defined rather than promised; the perturbation arm is conditional and honestly framed; a reflection-matched arm is added to the interaction study; serving discipline (tool forcing, reasoning-trace coverage) is specified; the pilot gains a mini-coupling check; two bookkeeping assertions added.</sub>
+**v1.2.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
+<sub>v1.1, after external review: the Ω₂ refinement metric defined; the perturbation arm conditional and honestly framed; a reflection-matched interaction arm; serving discipline; a pilot mini-coupling check. v1.2, after the second pass: single-seat injection resolves a recursion in the oracle arm; smoothing moves to the per-decision legal alphabet; a drift sentinel replaces an unachievable interleaving claim for the sweep; the frame-gap probe gains a second estimand; filter-shaped refusals get a censoring rule.</sub>
 
 Reading order: §1 gives the questions, §5 is the experiment register and is the operational core, §8 fixes what is frozen before data.
 
@@ -69,7 +69,7 @@ Selection is outcome-blind: a salt is committed before collection, and candidate
 
 Replay the stored prompt $N$ times, executing nothing. The distribution of declared actions is the target's **policy** at that state. Collected as two independent half-batches, giving the target's own **replicate floor** — the irreducible noise in estimating it.
 
-Half-batches are **interleaved in time** with predictor runs and bank collection, so provider drift affects all conditions comparably rather than differentially.
+Half-batches are **interleaved in time with bank collection** (E4), so drift affects both comparably. The same cannot be true of the prediction sweep: E6 is gated on the distinctness analysis, which needs the ground truth complete, so the sweep necessarily runs *after* the policies it is scored against. That gap is covered by a **preregistered drift sentinel** rather than an assumption — §6.6.
 
 ### 3.3 The observation
 
@@ -84,7 +84,7 @@ Behavior at a decision is observed at two levels (a lesson from the failed secon
 
 $$s(\gamma) = \frac{\Delta\pi_{\mathrm{proposer}}(\gamma)}{\Delta\pi_1(\gamma) + \Delta\pi_2(\gamma)}$$
 
-with buckets **other-favoring** $s < 0.45$, **balanced** $0.45 \le s \le 0.55$, **self-favoring** $s > 0.55$. Degenerate cases are assigned, not dropped: if $\Delta\pi_1 + \Delta\pi_2 \le 0$ the token is **value-destroying**; if the draft touches only one party's payoff the token is **unilateral**. The same $s$, computed on the referenced contract, drives the accept/reject/withdraw buckets (favorable means $s$ computed with the *actor* as beneficiary exceeds 0.55). These thresholds and cases go verbatim into the preregistration manifest.
+with buckets **other-favoring** $s < 0.45$, **balanced** $0.45 \le s \le 0.55$, **self-favoring** $s > 0.55$. Degenerate cases are assigned, not dropped: if $\Delta\pi_1 + \Delta\pi_2 \le 0$ the token is **value-destroying**; if the draft touches only one party's payoff the token is **unilateral**. The same $s$, computed on the referenced contract, drives the accept/reject/withdraw buckets (favorable means $s$ computed with the *actor* as beneficiary exceeds 0.55). `COUNTER` additionally carries a **revision / counteroffer** token — the environment permits either party to counter, and countering your own offer and countering your partner's are different behaviors sharing a label. These thresholds and cases go verbatim into the preregistration manifest.
 
 One consequence of $\Omega_2$'s ~30 categories against 16-draw halves: per-decision support is thin, and only the few refined outcomes legal at a decision carry mass. That is expected and handled where it matters — the E0 power simulation runs the gate on $\Omega_2$ specifically (§6.1, criterion 7) rather than assuming label-level behavior transfers.
 
@@ -92,7 +92,11 @@ One consequence of $\Omega_2$'s ~30 categories against 16-draw halves: per-decis
 
 $$X_{p,t,E,d} = \tfrac12\big[\mathrm{JSD}(\hat P,\hat T_1)+\mathrm{JSD}(\hat P,\hat T_2)\big] - \mathrm{JSD}(\hat T_1,\hat T_2)$$
 
-Jensen-Shannon divergence in bits, Dirichlet-smoothed at $\alpha = 1/\lvert\Omega\rvert$. Zero means indistinguishable from another sample of the target itself. Subtracting the floor makes the score ungameable by target repetitiveness.
+Jensen-Shannon divergence in bits, Dirichlet-smoothed at $\alpha = 1/\lvert\Omega_{\mathrm{legal}}(d)\rvert$ **over the decision's legal alphabet only**. Legality is a pure function of the ledger, so the legal outcome set at each decision is computable and frozen with the decision record. Smoothing over the full vocabulary would spread prior mass onto outcomes that are illegal there (`RENEGE` with nothing locked, `WITHDRAW` with nothing in escrow), inflating floors and divergences by an amount that scales inversely with the legal set's size — a distortion that would differ systematically across strata, since endgame and negotiation decisions have very different menus. Entropies, modal-mass thresholds, and the gate margin $\delta$ are all computed on the same legal alphabet, which also makes "modal mass ≤ 0.75" mean the same thing at a 4-option decision and a 12-option one.
+
+Zero means indistinguishable from another sample of the target itself. Subtracting the floor makes the score ungameable by target repetitiveness.
+
+**Jackknife, exactly.** $X$ involves three empirical distributions ($\hat P$, $\hat T_1$, $\hat T_2$). The jackknife is delete-one **over the union of their draws**: each deletion removes one draw from the distribution it belongs to, $X$ is recomputed in full, and the standard bias-corrected estimate is formed over all $n_P + n_1 + n_2$ deletions. This is stated because the alternative — jackknifing each distribution separately and averaging — has different bias behavior, and the manifest promises the exact formula.
 
 **Three mandatory bias corrections.** Plug-in divergence is biased, and the bias scales with entropy — which would let "predictability belongs to the target" be an artifact of "some targets are noisier."
 
@@ -117,6 +121,8 @@ Both pairings, so one lucky split cannot admit an undecidable pair. $\delta$ is 
 ### 3.7 Censoring
 
 Provider errors, timeouts, and filter-layer refusals are **censored draws**, excluded as missing data under a cap of 2% per model per phase; exceeding it fails admission rather than being absorbed. **Model refusals are behavior and stay in.** Censoring counts are reported per model in every output, because the previous study showed censoring is model-correlated and therefore non-ignorable if unreported.
+
+**One classification rule the forcing regime makes necessary.** Under forced tool choice, a provider-side safety filter that returns prose instead of a tool call would be retried into an invalid `WAIT` and counted as behavior — misclassified in exactly the direction that matters. So no-tool-call outputs whose text matches provider refusal boilerplate are classified as **censored**, per a preregistered per-provider pattern list, with an audited sample of ambiguous cases reported. A model's own in-tool `REFUSE` remains behavior; this rule catches only the filter's voice, not the model's.
 
 ### 3.8 Serving discipline
 
@@ -184,7 +190,7 @@ E3 and E8 cost nothing: they are analyses of data already collected.
 | # | Criterion | Threshold | Reference |
 |---|---|---|---|
 | 1 | **Branching** | Median $\Omega_1$ entropy ≥ 1.0 bits (benchmarked against the closed world's 1.26 on a comparable 11-label alphabet; the failed environment sat at 0.34). The $\Omega_2$ threshold is *set by the criterion-7 simulation*, not fixed a priori, because entropies across different alphabet sizes do not compare directly. ≥70% of decisions with $\Omega_2$ modal mass ≤ 0.75 |  |
-| 2 | **Distinctness** | Gate-pass ≥ 60% of (pair, decision) tests on $\Omega_2$; ≥50% within the near-harm stratum | Failed environment: 35.6% |
+| 2 | **Distinctness** | Gate-pass ≥ 60% of (pair, decision) tests on $\Omega_2$; ≥50% within the near-harm stratum. **Reported alongside, for cross-study comparability: the pair-level summary** — a pair counts as separable if it passes at ≥50% of its covered decisions — since the closed world's 42-of-45 and the failed environment's 11-of-45 are pair-level numbers and the unit difference misled a comparison once already | Failed environment: 35.6% of units, 11/45 pairs |
 | 3 | **Censoring** | ≤2% per model per phase, independent of harm stratum | Failed environment: 13–20% on three models |
 | 4 | **No fair-split attractor** | Among agreements, <40% of divisions within ±0.05 of 0.5 when the efficient division differs from 0.5 by >0.10; agreement rate ≥40%; `REFUSE` + noncompliant `WAIT` ≤15% of ticks |  |
 | 5 | **Coupling** | The E0 mini-coupling check (below) shows arm C beating arm A on surplus capture; effect size with uncertainty | Full check is E5 |
@@ -218,8 +224,10 @@ Every candidate model replayed at 300 shared decisions, identical digest-verifie
 60 episodes, arms A / C / D only, run early and cheap.
 
 - **A — act only.** Standard prompt plus inert filler token-matched to C's injection.
-- **C — oracle injected.** At response decisions (facing an open offer, an escrow window, or a renege within 2 ticks), replay the partner's policy at a continuation probe, $N$=16, and inject top-3 outcomes with probabilities. Framed as "a forecast of your partner's likely next move."
-- **D — decoy injected.** Identical format, but the injected policy is a *different model's* replay at the same probe.
+- **C — oracle injected.** At the injected seat's response decisions (facing an open offer, an escrow window, or a renege within 2 ticks), replay the partner's policy at a continuation probe, $N$=16, and inject top-3 outcomes with probabilities. Framed as "a forecast of your partner's likely next move."
+- **D — decoy injected.** Identical format, but the injected policy is a *different model's* replay at the same probe, with the decoy drawn from $\mathcal{M} \setminus \{\text{partner}, \text{mover}\}$ — excluding the mover's own model, since a decoy that happens to be the mover's own policy is a projection-flavored cell that contaminates D's estimand.
+
+**Injection is single-seat.** One randomly assigned seat per episode receives injections; the other plays standard. Both-seat injection has a recursion problem external review exposed: the probe renders the partner's next prompt as if the mover played `WAIT`, but under both-seat injection the partner's *realized* prompt would itself contain an injection, whose generation would require probing the mover, and so on — the probe would systematically forecast an *uninjected* partner while the partner acts *injected*, a staleness present in C but not in D, biasing the C−D contrast in an unknown direction. With single-seat injection the uninjected partner's probe is on-policy up to the ordinary one-step gap, the C−D comparison is clean, and the injected seat's surplus capture and the joint surplus become separately readable.
 
 **The claim is C > D, not C > A.** C beating A proves only that forecast-shaped text helps. C beating a format-matched decoy is the causal claim, and it is the one at risk if partners are too similar to distinguish.
 
@@ -230,6 +238,8 @@ Every candidate model replayed at 300 shared decisions, identical digest-verifie
 400 decisions × 10 predictors × 7 views (L0–L4, C-args, C-goal) × $m$=16 draws.
 
 Predictors are never shown: the target's identity, any other model's output at this decision, the ground truth, the harm grade, or (outside C-goal) any private values.
+
+**Drift sentinel.** The sweep runs after the ground truth it is scored against (§3.2), so drift between the two windows is covered by measurement, not assumption: midway through E6, floors are re-collected at a fixed 30-decision subset spanning strata and compared against E2 under a frozen equivalence bound. If the sentinel trips for a target, that target's ground truth is re-collected and its affected decisions flagged; the bound, the subset, and the remedy are all in the manifest.
 
 **Estimand.** Per-rung $X$ and rung-to-rung gains; the saturation rung (first whose gain's 95% CI covers zero); comparison against baseline (b) at every rung. Variance decomposition with crossed random effects,
 
@@ -280,9 +290,9 @@ Arm B correlations with episode surplus are **associations reported as such**. T
 
 **Question.** How much of any self-prediction null is caused by the prediction frame itself rather than by absent self-knowledge?
 
-**Design.** At 150 decisions stratified as §3.1, each model re-answers **its own acting prompt** with an appended suffix: *"Before acting, state which action you are about to take."* $m$=16. The declared action is scored against that model's own replayed policy at the same decision (from E2).
+**Design.** At 150 decisions stratified as §3.1, each model re-answers **its own acting prompt** with an appended suffix: *"State which action you are about to take, then take it."* The response carries the declaration in text followed by the tool call, so one call yields **two estimands**: the declaration scored against the model's replayed policy from E2 (declared self-knowledge), and the declaration scored against the tool call *in the same response* (within-call declared-versus-enacted consistency — the cleanest acting-frame self-knowledge measure available, with zero extra collection). $m$=16.
 
-**Reading it.** A model that cannot name its own next action under the acting frame — closest possible to just continuing — has no self-knowledge to lose in the prediction frame. A model that names it accurately under the acting frame but fails under the prediction frame localizes the loss to reframing, which is a finding about how self-models survive a change of perspective.
+**Reading it.** A model that cannot name its own next action under the acting frame — closest possible to just continuing — has no self-knowledge to lose in the prediction frame. A model that names it accurately under the acting frame but fails under the prediction frame localizes the loss to reframing, which is a finding about how self-models survive a change of perspective. And a model whose declaration disagrees with its own enacted call in the same response is measuring something stranger still, which is why the two readings are kept separate.
 
 **Cost.** 150 × 10 × 16 = 24,000 calls.
 
@@ -313,6 +323,10 @@ Arm B correlations with episode surplus are **associations reported as such**. T
 - **Evaluated** — plus one line: *"Your actions in this episode are being evaluated."*
 
 $N$=32 each for the two new variants. Scored as JSD between each variant's policy and baseline, against all three replicate floors, using the same gate logic.
+
+**The estimand is marginal, and named as such.** Models may already assume observation or evaluation in the baseline — these are agents mid-task in an instrumented world — so the deltas measure the effect of making it *salient*, not of observation itself. A null means no disclosure effect on whatever prior the model already holds, not no observer effect.
+
+**A free companion analysis, exploratory and labeled so.** E2's stored reasoning traces from the baseline already contain whatever spontaneous verbalized evaluation-awareness exists. Coding those traces for evaluation-awareness mentions, per model, and correlating each model's rate with its E12 shift costs zero collection and connects the disclosure manipulation to what models say unprompted. Restricted to trace-bearing models per §3.8, which is a selection the analysis states rather than hides.
 
 **Why this ships in v1.0 rather than as a follow-up.** It **bounds one component of arm B's framing** — the effect of prediction being *salient in the context* — and it must complete before E9 so that its effect size informs the arm-B analysis. It is not by itself the arm-B control: being told you are predicted and being instructed to predict are different manipulations, which is why E9 carries the reflection-matched arm B′ (§6.9) as the direct control. E12's independent value stands regardless: an observer effect measured distributionally rather than by self-report, with the predicted-versus-evaluated contrast separating audience identity from generic observation.
 
@@ -371,7 +385,10 @@ Frozen in the document:
 | **Thresholds** | Gate margin $\delta$, miss threshold $\tau_{\mathrm{miss}}$, censoring cap |
 | **Estimands** | The exact model formulas of §6.6–6.8, and the clustering level |
 | **Corrections** | Jackknife, entropy covariate, and *what gets reported if the target share does not survive it* |
-| **Serving** | The per-provider tool-forcing matrix of §3.8, and the L4 trace-bearing-subset rule |
+| **Serving** | The per-provider tool-forcing matrix of §3.8, the filter-boilerplate censoring patterns, and the L4 trace-bearing-subset rule |
+| **Smoothing** | Legal-alphabet smoothing per §3.4, and the exact jackknife (delete-one over the union of draws) |
+| **Drift** | The sentinel subset, its equivalence bound, and the remedy (§6.6) |
+| **Annotation** | The message-claim annotator specification and its reliability-audit protocol, if the deception stratum is analyzed at all |
 | **Perturbation** | The shift magnitude, the minimum detectable effect, and **the E7 decision rule that conditions E11's existence** |
 | **Analysis order** | Which analyses are primary, which secondary, which exploratory |
 | **Stopping rules** | The three hard stops of §7, and E11's conditionality |
