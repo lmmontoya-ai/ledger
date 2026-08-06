@@ -28,7 +28,7 @@ Pre-pilot. Nothing implemented yet; the specifications are the deliverable.
 
 ## Token budget
 
-The environment's own text is overhead, so it is capped. A player reads a fixed system block (~430 tokens, byte-identical in every call and therefore cached) plus a state board and a one-line-per-tick history that together stay **under 600 tokens even at the final tick**. A golden test enforces this. The equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call, so the layout is worth 3–5× on the cost of any study run here.
+The environment's own text is overhead, so it is budgeted and tested. A player reads a fixed system block (~430 tokens, byte-identical in every call and therefore cached) plus a state board (≤240 tokens, does not grow) and a one-line-per-tick history. Messages are capped at 40 tokens, so typical play runs **~400–560 variable tokens per call**, bounded at ~1,380 even in an episode where every tick is a message at cap. Golden tests enforce the board and per-line bounds. The equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call before any messages, so the layout is worth 3–5× on the cost of any study run here.
 
 ## Design at a glance
 
