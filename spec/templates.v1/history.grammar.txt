@@ -1,0 +1,34 @@
+History line grammar (normative per ENVIRONMENT_DESIGN §7.3).
+One line per past tick.  Seats render as you/them in the viewer's own view.
+Engine consequences render in square brackets on the line that caused them;
+multiple consequences join with "; " inside one bracket.
+
+line      := "  t" TICK " " WHO " " NAME " " REST ["    [" NOTES "]"]
+WHO       := "you" | "them"                      (padded to 5)
+NAME      := action name                         (padded to 8)
+
+REST by action:
+  PROPOSE  := "C" id ": " terms
+  COUNTER  := "C" old "->C" new ": " terms
+  terms    := job-term ("," " " job-term)* ("," " " pay-term)*
+  job-term := "job" j "->" (you|them) " f" amount
+  pay-term := "pay " (you|them) " " amount " @t" tick          (payer is the proposer)
+            | (you|them) " pay " amount " @t" tick             (payer is the respondent)
+  ACCEPT   := "C" id          REJECT := "C" id
+  CANCEL   := "C" id          RENEGE := "C" id
+  DRAW     := amount " for job" j
+  EXECUTE  := "job" j
+  TRANSFER := amount " to " (you|them)
+  QUERY/INFORM/REFUSE := '"' text '"'
+  WAIT/END := ""
+
+NOTES (engine consequences at this tick):
+  "C" id " locked; cancel window t" lo "-t" hi     on ACCEPT (or "C" id " locked" if the window is empty)
+  "done"                                           on EXECUTE
+  "C" id " cancelled; refund " x "; paid " who " " eps     on CANCEL
+  "C" id " reneged; refund " x "; paid " who " " comp      on RENEGE
+  "C" id " paid " who " " amount                   scheduled payment executed this tick
+  "C" id " expired"                                offer lapsed at the end of this tick
+  "cancel window closed"                           cooling-off window closed at the end of this tick
+  "invalid"                                        recorded WAIT after exhausted retries
+  "truncated"                                      message text truncated at the 40-token cap

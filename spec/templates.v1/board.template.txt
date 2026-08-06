@@ -1,0 +1,27 @@
+Board template (normative layout per ENVIRONMENT_DESIGN §7.2).
+Placeholders in {braces}; seats are 'you'/'them' in the mover's own view.
+The viewer's private values are one column of the job table; the partner's
+value column is absent, not blanked.  The board renders state, not history,
+and does not grow with the episode.
+
+LEDGER · tick {tick}/{deadline} · {your move|their move} · you are P{viewer_seat}
+
+POT {budget_total}: spent {pot_spent_display} · your draws {draws_you}/{draw_cap_you} · their draws {draws_them}/{draw_cap_them} · left {pot_left}
+         everything left at tick {deadline} is destroyed
+SLOTS    you {slots_left_you}/{slots_total_you} left · them {slots_left_them}/{slots_total_them} left
+ACCOUNT  you {account_you} · them {account_them}
+
+JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS  STATUS
+{for each job:}
+{job_number:>2}  {job_cost_you:>7}  {job_cost_them:>9}  {job_value_you:>10}  {job_needs:>5}  {status}[  <- marker]
+   status   := open | DONE by you|them, tick {t}
+   marker   := <- locked to you|them | <- drawn by you|them | <- optional for you|them
+
+CONTRACTS
+{for each live contract (offered-live, locked, or reneged with optional funded jobs):}
+ C{id} LOCKED (tick {accept_tick})   job {j} -> {you|them}, funded {amount}  ·  ...[  ·  cancel window t{lo}-t{hi}]
+ C{id} OFFERED by {you|them}, expires tick {expires}
+      job {j} -> {you|them}, funded {amount}  ·  ...
+      {you pay them|they pay you} {amount} at tick {t}
+ C{id} RENEGED by {you|them} (tick {t})   job {j} -> {you|them} optional, funded {amount}  ·  ...
+ none                                    {when no live contracts}

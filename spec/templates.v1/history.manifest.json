@@ -1,0 +1,31 @@
+{
+  "template": "history.v1",
+  "description": "Exactly the fields a history line may render. One line per past tick, fixed grammar (history.grammar.txt). Engine consequences appear in square brackets on the line that caused them.",
+  "fields": [
+    "tick",
+    "actor_seat",
+    "viewer_seat",
+    "action_name",
+    "message_text",
+    "offer_id",
+    "contract_id",
+    "contract_assign",
+    "contract_fund",
+    "contract_pay",
+    "draw_amount",
+    "draw_job",
+    "execute_job",
+    "transfer_amount",
+    "transfer_to",
+    "window_bounds",
+    "cancel_refund",
+    "cancel_fee",
+    "renege_refund",
+    "renege_compensation",
+    "pay_executed",
+    "offer_expired",
+    "window_closed",
+    "invalid_flag",
+    "truncated_flag"
+  ]
+}
