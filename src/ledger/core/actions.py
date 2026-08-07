@@ -24,7 +24,7 @@ _SPEC_CACHE: dict | None = None
 def action_spec() -> dict:
     global _SPEC_CACHE
     if _SPEC_CACHE is None:
-        with open(REPO_ROOT / "spec" / "actions.v1.json", "r", encoding="utf-8") as f:
+        with open(REPO_ROOT / "spec" / "actions.v2.json", "r", encoding="utf-8") as f:
             _SPEC_CACHE = json.load(f)
         # every referenced predicate/effect must exist: one definition of everything
         for name, spec in _SPEC_CACHE["actions"].items():

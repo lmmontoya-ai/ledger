@@ -38,8 +38,8 @@ def worked_scenario() -> Scenario:
 
 
 WORKED_PLAYS = [
-    Action("QUERY", {"text": "which jobs carry your value? I care about 3 and 6."}),
-    Action("INFORM", {"text": "6 is my biggest. 3 is worth nothing to me."}),
+    Action("CHAT", {"text": "which jobs carry your value? I care about 3 and 6."}),
+    Action("CHAT", {"text": "6 is my biggest. 3 is worth nothing to me."}),
     Action("PROPOSE", {"contract": {"assign": {"3": 1, "6": 2},
                                     "fund": {"3": 12, "6": 15},
                                     "pay": [], "expires": 5}}),

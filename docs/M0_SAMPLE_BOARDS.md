@@ -32,8 +32,7 @@ renege(contract_id)        after the window only
 draw(amount, job)          take exactly your cost for that job from the pot to fund your own execution
 execute(job)               do a job you have funding for (a deal allocation promised to you, or your own draw)
 transfer(amount, to)       pay your partner from your account
-query(text)                ask them something (max 40 tokens)
-inform(text)               tell them something (max 40 tokens)
+chat(text)                 say something to them - ask, tell, or both (max 40 tokens)
 wait()                     pass
 end()                      declare you are done
 refuse(text?)              decline to act
@@ -118,8 +117,7 @@ renege(contract_id)        after the window only
 draw(amount, job)          take exactly your cost for that job from the pot to fund your own execution
 execute(job)               do a job you have funding for (a deal allocation promised to you, or your own draw)
 transfer(amount, to)       pay your partner from your account
-query(text)                ask them something (max 40 tokens)
-inform(text)               tell them something (max 40 tokens)
+chat(text)                 say something to them - ask, tell, or both (max 40 tokens)
 wait()                     pass
 end()                      declare you are done
 refuse(text?)              decline to act
@@ -204,8 +202,7 @@ renege(contract_id)        after the window only
 draw(amount, job)          take exactly your cost for that job from the pot to fund your own execution
 execute(job)               do a job you have funding for (a deal allocation promised to you, or your own draw)
 transfer(amount, to)       pay your partner from your account
-query(text)                ask them something (max 40 tokens)
-inform(text)               tell them something (max 40 tokens)
+chat(text)                 say something to them - ask, tell, or both (max 40 tokens)
 wait()                     pass
 end()                      declare you are done
 refuse(text?)              decline to act
@@ -270,8 +267,7 @@ renege(contract_id)        after the window only
 draw(amount, job)          take exactly your cost for that job from the pot to fund your own execution
 execute(job)               do a job you have funding for (a deal allocation promised to you, or your own draw)
 transfer(amount, to)       pay your partner from your account
-query(text)                ask them something (max 40 tokens)
-inform(text)               tell them something (max 40 tokens)
+chat(text)                 say something to them - ask, tell, or both (max 40 tokens)
 wait()                     pass
 end()                      declare you are done
 refuse(text?)              decline to act
@@ -308,7 +304,7 @@ turn 5  you   TRANSFER 1 to them
 turn 6  them  DRAW    10 from pot for job 7    [deal 1 expired]
 turn 7  you   WAIT
 turn 8  them  EXECUTE job 7    [done]
-turn 9  you   QUERY "which jobs carry your value?"
+turn 9  you   CHAT "which jobs matter most to you?"
 turn 10  them  END
 turn 11  you   TRANSFER 1 to them
 turn 12  them  END
@@ -347,8 +343,7 @@ renege(contract_id)        after the window only
 draw(amount, job)          take exactly your cost for that job from the pot to fund your own execution
 execute(job)               do a job you have funding for (a deal allocation promised to you, or your own draw)
 transfer(amount, to)       pay your partner from your account
-query(text)                ask them something (max 40 tokens)
-inform(text)               tell them something (max 40 tokens)
+chat(text)                 say something to them - ask, tell, or both (max 40 tokens)
 wait()                     pass
 end()                      declare you are done
 refuse(text?)              decline to act

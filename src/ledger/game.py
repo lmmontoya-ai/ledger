@@ -23,7 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def tools_spec() -> list[dict]:
-    with open(REPO_ROOT / "spec" / "tools.v1.json", "r", encoding="utf-8") as f:
+    with open(REPO_ROOT / "spec" / "tools.v2.json", "r", encoding="utf-8") as f:
         return json.load(f)["tools"]
 
 

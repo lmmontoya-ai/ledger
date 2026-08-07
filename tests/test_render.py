@@ -80,7 +80,8 @@ def test_history_grammar():
     lines = hist.splitlines()
     assert lines[0] == "HISTORY"
     assert len(lines) == 9            # 8 turns played
-    assert 'QUERY' in lines[1] and lines[1].startswith("turn 1  you")
+    assert 'CHAT' in lines[1] and lines[1].startswith("turn 1  you")
+    assert "QUERY" not in hist and "INFORM" not in hist
     assert ("PROPOSE deal 1: you do job 3 (12 from pot)"
             " · them do job 6 (15 from pot)") in lines[3]
     assert "[deal 1 binds; cancel window turns 5-6]" in lines[4]
@@ -126,7 +127,7 @@ def test_manifest_guard_raises_outside_manifest():
 def test_message_truncation_recorded_and_rendered():
     g = Game(simple_scenario())
     long_text = "word " * 200
-    g.play(Action("INFORM", {"text": long_text}))
+    g.play(Action("CHAT", {"text": long_text}))
     ev = g.events[0]
     assert ev.truncated
     assert tok.token_count(ev.action.args["text"]) <= tok.MESSAGE_TOKEN_CAP
@@ -227,7 +228,7 @@ def test_history_line_token_bounds(enc_name, scale):
             base = (CONTRACT_BASE + CONTRACT_PER_JOB * len(ev_c["assign"])
                     + CONTRACT_PER_PAY * len(ev_c["pay"]))
             assert n <= _bound(base, scale), line
-        elif name in ("QUERY", "INFORM", "REFUSE"):
+        elif name in ("CHAT", "REFUSE"):
             assert n <= _bound(MESSAGE_BOUND, scale), line
 
 
@@ -240,7 +241,7 @@ def test_message_line_at_cap_within_bound(enc_name, scale):
     # other encodings measure the same rendered line against scaled bounds
     text, truncated = tok.truncate_message("negotiate " * 100)
     assert truncated and tok.token_count(text) == 40
-    g.play(Action("QUERY", {"text": text}))
+    g.play(Action("CHAT", {"text": text}))
     line = render_history(g.state, tuple(g.events), 1).splitlines()[1]
     assert tok.token_count(line, enc_name) <= _bound(MESSAGE_BOUND, scale)
 

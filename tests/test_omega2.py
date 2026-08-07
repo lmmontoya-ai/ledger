@@ -22,10 +22,10 @@ def _propose(assign, fund, pay=None, expires=8):
     return Action("PROPOSE", {"contract": _offer(assign, fund, pay, expires)})
 
 
-def test_vocabulary_counts_exactly_37():
-    assert len(OMEGA2_VOCABULARY) == 37
-    assert len(set(OMEGA2_VOCABULARY)) == 37
-    # the §3.3 arithmetic: 5 + 10 + 3*3 + 3 + 2 + 2 + 6
+def test_vocabulary_counts_exactly_36():
+    assert len(OMEGA2_VOCABULARY) == 36
+    assert len(set(OMEGA2_VOCABULARY)) == 36
+    # the §3.3 arithmetic: 5 + 10 + 3*3 + 3 + 2 + 2 + 5
     by_label = {}
     for t in OMEGA2_VOCABULARY:
         by_label.setdefault(t.split(":", 1)[0], []).append(t)
@@ -36,8 +36,9 @@ def test_vocabulary_counts_exactly_37():
     assert len(by_label["RENEGE"]) == 3
     assert len(by_label["DRAW"]) == 2
     assert len(by_label["EXECUTE"]) == 2
-    for lbl in ("TRANSFER", "QUERY", "INFORM", "WAIT", "END", "REFUSE"):
+    for lbl in ("TRANSFER", "CHAT", "WAIT", "END", "REFUSE"):
         assert by_label[lbl] == [lbl]
+    assert "QUERY" not in by_label and "INFORM" not in by_label
 
 
 # ---------------------------------------------------------------------------
@@ -196,8 +197,7 @@ def test_label_only_actions():
     st = g.state
     assert refine(st, Action("WAIT")) == "WAIT"
     assert refine(st, Action("END")) == "END"
-    assert refine(st, Action("QUERY", {"text": "hm?"})) == "QUERY"
-    assert refine(st, Action("INFORM", {"text": "ok"})) == "INFORM"
+    assert refine(st, Action("CHAT", {"text": "hm?"})) == "CHAT"
     assert refine(st, Action("REFUSE", {"text": ""})) == "REFUSE"
     assert refine(st, Action("TRANSFER", {"amount": 1, "to": 2})) == "TRANSFER"
 
@@ -209,10 +209,10 @@ def test_label_only_actions():
 def test_legal_alphabet_opening_state():
     g = Game(simple_scenario())
     alpha = legal_omega2_alphabet(g.state, 1)
-    # PROPOSE (5) + DRAW (2) + TRANSFER/QUERY/INFORM/WAIT/END/REFUSE (6)
-    assert len(alpha) == 13
+    # PROPOSE (5) + DRAW (2) + TRANSFER/CHAT/WAIT/END/REFUSE (5)
+    assert len(alpha) == 12
     assert set(a.split(":", 1)[0] for a in alpha) == {
-        "PROPOSE", "DRAW", "TRANSFER", "QUERY", "INFORM", "WAIT", "END", "REFUSE"}
+        "PROPOSE", "DRAW", "TRANSFER", "CHAT", "WAIT", "END", "REFUSE"}
     assert set(alpha) <= set(OMEGA2_VOCABULARY)
     # vocabulary order is preserved
     idx = [OMEGA2_VOCABULARY.index(a) for a in alpha]
@@ -225,7 +225,7 @@ def test_legal_alphabet_with_live_offer():
     alpha = legal_omega2_alphabet(g.state, 2)   # P2 faces the offer
     labels = {a.split(":", 1)[0] for a in alpha}
     assert {"ACCEPT", "REJECT", "COUNTER"} <= labels
-    assert len(alpha) == 13 + 10 + 3 + 3        # + COUNTER + ACCEPT + REJECT
+    assert len(alpha) == 12 + 10 + 3 + 3        # + COUNTER + ACCEPT + REJECT
     # the proposer's own view has COUNTER (revision) but not ACCEPT/REJECT
     alpha1 = legal_omega2_alphabet(g.state, 1)
     labels1 = {a.split(":", 1)[0] for a in alpha1}

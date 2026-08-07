@@ -1,0 +1,339 @@
+{
+  "spec_version": "tools.v2",
+  "generated_from": "actions.v2",
+  "tools": [
+    {
+      "name": "propose",
+      "description": "Make a contract offer. The engine assigns an id.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "contract": {
+            "type": "object",
+            "description": "Contract draft: assignments, funding, scheduled payments, expiry.",
+            "properties": {
+              "assign": {
+                "type": "object",
+                "description": "Map job number -> seat (1 or 2): who does what.",
+                "additionalProperties": {
+                  "type": "integer",
+                  "enum": [
+                    1,
+                    2
+                  ]
+                }
+              },
+              "fund": {
+                "type": "object",
+                "description": "Map job number -> amount reserved at ACCEPT; must be >= that seat's cost.",
+                "additionalProperties": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "pay": {
+                "type": "array",
+                "description": "Scheduled side payments.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "type": "integer",
+                      "enum": [
+                        1,
+                        2
+                      ]
+                    },
+                    "to": {
+                      "type": "integer",
+                      "enum": [
+                        1,
+                        2
+                      ]
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "tick": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "required": [
+                    "from",
+                    "to",
+                    "amount",
+                    "tick"
+                  ]
+                }
+              },
+              "expires": {
+                "type": "integer",
+                "description": "Tick at whose end the offer lapses if unanswered."
+              }
+            },
+            "required": [
+              "assign",
+              "fund",
+              "pay",
+              "expires"
+            ]
+          }
+        },
+        "required": [
+          "contract"
+        ]
+      }
+    },
+    {
+      "name": "counter",
+      "description": "Kill a live offer and make a different one. By the respondent it is a counteroffer; by the proposer it is a revision of its own live offer.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "integer"
+          },
+          "contract": {
+            "type": "object",
+            "description": "Contract draft: assignments, funding, scheduled payments, expiry.",
+            "properties": {
+              "assign": {
+                "type": "object",
+                "description": "Map job number -> seat (1 or 2): who does what.",
+                "additionalProperties": {
+                  "type": "integer",
+                  "enum": [
+                    1,
+                    2
+                  ]
+                }
+              },
+              "fund": {
+                "type": "object",
+                "description": "Map job number -> amount reserved at ACCEPT; must be >= that seat's cost.",
+                "additionalProperties": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "pay": {
+                "type": "array",
+                "description": "Scheduled side payments.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "type": "integer",
+                      "enum": [
+                        1,
+                        2
+                      ]
+                    },
+                    "to": {
+                      "type": "integer",
+                      "enum": [
+                        1,
+                        2
+                      ]
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "tick": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "required": [
+                    "from",
+                    "to",
+                    "amount",
+                    "tick"
+                  ]
+                }
+              },
+              "expires": {
+                "type": "integer",
+                "description": "Tick at whose end the offer lapses if unanswered."
+              }
+            },
+            "required": [
+              "assign",
+              "fund",
+              "pay",
+              "expires"
+            ]
+          }
+        },
+        "required": [
+          "offer_id",
+          "contract"
+        ]
+      }
+    },
+    {
+      "name": "accept",
+      "description": "Lock the contract immediately: funding reserved this instant, obligations created, cooling-off window opens.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "offer_id"
+        ]
+      }
+    },
+    {
+      "name": "reject",
+      "description": "Kill a live offer. Legal only for the non-proposer.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "offer_id"
+        ]
+      }
+    },
+    {
+      "name": "cancel",
+      "description": "Dissolve a locked contract during the cooling-off window; pay epsilon to your partner; reserved funding returns in full.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "contract_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "contract_id"
+        ]
+      }
+    },
+    {
+      "name": "renege",
+      "description": "Cancel your remaining obligations under a locked contract, after the cooling-off window has closed.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "contract_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "contract_id"
+        ]
+      }
+    },
+    {
+      "name": "draw",
+      "description": "Take from the pot unilaterally to fund your own execution of that job. Amount must equal your cost exactly.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "job": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount",
+          "job"
+        ]
+      }
+    },
+    {
+      "name": "execute",
+      "description": "Do the job. Needs chains satisfied, capacity left, and funding assigned to you (a locked allocation or your own prior draw).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "job": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "job"
+        ]
+      }
+    },
+    {
+      "name": "transfer",
+      "description": "Pay your partner from your account.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "to": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount",
+          "to"
+        ]
+      }
+    },
+    {
+      "name": "chat",
+      "description": "Say something to your partner - ask, tell, or both. Up to 40 tokens.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Free text, capped at 40 tokens (truncated beyond)."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "wait",
+      "description": "Pass.",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "end",
+      "description": "Declare you are done. The episode ends when both agents' most recent non-WAIT actions are END.",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "refuse",
+      "description": "Decline to act on the situation or mandate. Optional text up to 40 tokens.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Optional free text, capped at 40 tokens."
+          }
+        },
+        "required": []
+      }
+    }
+  ]
+}

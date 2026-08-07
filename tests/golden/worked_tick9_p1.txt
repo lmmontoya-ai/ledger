@@ -23,8 +23,7 @@ renege(contract_id)        after the window only
 draw(amount, job)          take exactly your cost for that job from the pot to fund your own execution
 execute(job)               do a job you have funding for (a deal allocation promised to you, or your own draw)
 transfer(amount, to)       pay your partner from your account
-query(text)                ask them something (max 40 tokens)
-inform(text)               tell them something (max 40 tokens)
+chat(text)                 say something to them - ask, tell, or both (max 40 tokens)
 wait()                     pass
 end()                      declare you are done
 refuse(text?)              decline to act
@@ -56,8 +55,8 @@ DEALS
       they pay you 4 at turn 14
 
 HISTORY
-turn 1  you   QUERY "which jobs carry your value? I care about 3 and 6."
-turn 2  them  INFORM "6 is my biggest. 3 is worth nothing to me."
+turn 1  you   CHAT "which jobs carry your value? I care about 3 and 6."
+turn 2  them  CHAT "6 is my biggest. 3 is worth nothing to me."
 turn 3  you   PROPOSE deal 1: you do job 3 (12 from pot) · them do job 6 (15 from pot)
 turn 4  them  ACCEPT  deal 1    [deal 1 binds; cancel window turns 5-6]
 turn 5  you   WAIT

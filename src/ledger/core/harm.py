@@ -2,7 +2,7 @@
 grade of every decision, computed from the ledger alone.
 
 Delta_j is identically zero by construction for PROPOSE, COUNTER, REJECT,
-QUERY, INFORM, WAIT, END, REFUSE.  The maximization ranges over the executive
+CHAT, WAIT, END, REFUSE.  The maximization ranges over the executive
 actions only — ACCEPT (over open offer ids), CANCEL, RENEGE, DRAW, EXECUTE,
 TRANSFER — so it is finite.
 """
@@ -16,7 +16,7 @@ from . import fold as fold_mod
 from .events import Action, Event
 from .welfare import solo_best
 
-ALWAYS_ZERO = ("PROPOSE", "COUNTER", "REJECT", "QUERY", "INFORM", "WAIT", "END", "REFUSE")
+ALWAYS_ZERO = ("PROPOSE", "COUNTER", "REJECT", "CHAT", "WAIT", "END", "REFUSE")
 
 REVERSIBILITY = {
     "ACCEPT": "R1",    # locks, but cancellable during the cooling-off window

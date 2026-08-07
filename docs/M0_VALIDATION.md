@@ -47,8 +47,8 @@ alphabet only and rejects out-of-alphabet outcomes.
 
 **The Omega_2 refinement (experiment plan §3.3)** is implemented engine-side
 in `analysis/omega2.py` and tested in `test_omega2.py` (15 tests): the
-frozen vocabulary counts exactly 37 composite outcomes (5 + 10 + 3·3 + 3 +
-2 + 2 + 6); the division metric's buckets are exercised on known contracts
+frozen vocabulary counts exactly 36 composite outcomes (5 + 10 + 3·3 + 3 +
+2 + 2 + 5; QUERY/INFORM merged into CHAT); the division metric's buckets are exercised on known contracts
 including both degenerate cases in the plan's order (value-destroying before
 unilateral); COUNTER carries revision vs counteroffer by whether the actor
 proposed the referenced offer; ACCEPT/REJECT/CANCEL beneficiary buckets are
@@ -114,14 +114,14 @@ wording is accepted and priced — bounds are re-measured, not guessed.
 
 | Element | o200k | cl100k | o200k bound | cl100k bound |
 |---|---:|---:|---:|---:|
-| System block (invariant, cached) | 616 | 619 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v1.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
+| System block (invariant, cached) | 616 | 619 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v2.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
 | Board, K=8, 2 live deals (§7.2 reference position) | **336** | **336** | ≤ 360 | ≤ 468 |
 | Simple line (`WAIT`, `END`) | 7 | 7 | ≤ 8 | ≤ 11 |
 | Executive line (`EXECUTE job 3 [done]` 15, `TRANSFER` 12) | 12-15 | 12-15 | ≤ 20 | ≤ 26 |
 | Lifecycle line (`ACCEPT` 26, `RENEGE` 32/33, window-close `WAIT` 13, bracketed `DRAW` 23) | 13-32 | 13-33 | ≤ 36 | ≤ 47 |
 | Contract line (2 jobs: 33; 2 jobs + 1 pay: 42) | 33-42 | 33-42 | ≤ 12 + 12·jobs + 10·pays | ≤ ceil(1.3·(…)) |
 | Message line at the 40-token cap (cap enforced with o200k) | 46-49 | 46-49 | ≤ 52 | ≤ 68 |
-| Full prompt, turn 15 of the worked episode | 1152 | 1157 | — | — |
+| Full prompt, turn 15 of the worked episode | 1146 | 1152 | — | — |
 
 cl100k tracks o200k within a couple of tokens on this layout (tables of
 short numbers segment almost identically), so the 1.3× allowance is loose by
@@ -132,13 +132,12 @@ history with `spec/templates.v1/` for provenance.
 
 ## Branching under scripted mixed play
 
-All 36 policy pairs on 4 admitted scenarios (1,916 mover ticks): pooled
-Omega_1 label entropy **2.98 bits** across 12 of 14 labels in play
-(PROPOSE .23, END .20, EXECUTE .14, REJECT .13, DRAW .10, WAIT .09, and
-ACCEPT/INFORM/QUERY/TRANSFER/RENEGE/CANCEL the rest).  This is a property of
-the scripted mix, not of any model; it demonstrates the environment offers
-the branching the E0 criterion will measure on real policies.
-
+All 36 policy pairs on 4 admitted scenarios (1,916 mover turns): pooled
+Omega_1 label entropy **2.93 bits** over the 13-label vocabulary
+(PROPOSE .23, END .20, EXECUTE .14, REJECT .13, DRAW .10, WAIT .09,
+CHAT .05, and ACCEPT/TRANSFER/RENEGE/CANCEL the rest).  This is a property
+of the scripted mix, not of any model; it demonstrates the environment
+offers the branching the E0 criterion will measure on real policies.
 ## Sample boards
 
 `scripts/m0_sample_boards.py` renders five boards for the §13 human

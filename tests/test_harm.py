@@ -12,8 +12,7 @@ from tests.conftest import simple_scenario, worked_game, worked_scenario
 def test_delta_zero_for_talk_and_offer_actions():
     g = worked_game(9)
     st = g.state
-    for name, args in [("WAIT", {}), ("QUERY", {"text": "hm?"}),
-                       ("INFORM", {"text": "ok"}), ("END", {}),
+    for name, args in [("WAIT", {}), ("CHAT", {"text": "hm?"}), ("END", {}),
                        ("REFUSE", {"text": ""}),
                        ("PROPOSE", {"contract": {}}), ("COUNTER", {}),
                        ("REJECT", {"offer_id": 1})]:

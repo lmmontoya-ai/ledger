@@ -95,7 +95,7 @@ def render_history(state, events, viewer: int) -> str:
         elif name == "TRANSFER":
             rest = (f"{F('transfer_amount', int(args['amount']))} to "
                     f"{rel(F('transfer_to', int(args['to'])))}")
-        elif name in ("QUERY", "INFORM", "REFUSE"):
+        elif name in ("CHAT", "REFUSE"):
             text = F("message_text", args.get("text", ""))
             rest = f'"{text}"'
 
@@ -117,7 +117,7 @@ def render_history(state, events, viewer: int) -> str:
         if F("truncated_flag", ev.truncated):
             notes.append("truncated")
 
-        if name in ("QUERY", "INFORM", "REFUSE"):
+        if name in ("CHAT", "REFUSE"):
             # single-space separator keeps a maximal message line inside the
             # §7.6 token bound; alignment padding costs real tokens
             base = f"turn {t}  {who:<6}{name} {rest}".rstrip()

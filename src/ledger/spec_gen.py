@@ -1,4 +1,4 @@
-"""Generate spec/tools.v1.json from spec/actions.v1.json.
+"""Generate spec/tools.v2.json from spec/actions.v2.json.
 
 One definition of everything: the tool schemas are derived mechanically from
 the action spec so the two cannot disagree.  Run as a script to regenerate;
@@ -59,7 +59,7 @@ OPTIONAL_TYPES = {"text40_optional"}
 
 
 def load_actions() -> dict:
-    with open(SPEC_DIR / "actions.v1.json", "r", encoding="utf-8") as f:
+    with open(SPEC_DIR / "actions.v2.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -84,7 +84,7 @@ def generate_tools(actions_spec: dict) -> dict:
             }
         )
     return {
-        "spec_version": "tools.v1",
+        "spec_version": "tools.v2",
         "generated_from": actions_spec["spec_version"],
         "tools": tools,
     }
@@ -97,7 +97,7 @@ def render_tools_json(actions_spec: dict | None = None) -> str:
 
 
 def main() -> None:
-    out = SPEC_DIR / "tools.v1.json"
+    out = SPEC_DIR / "tools.v2.json"
     out.write_text(render_tools_json(), encoding="utf-8", newline="\n")
     print(f"wrote {out}")
 

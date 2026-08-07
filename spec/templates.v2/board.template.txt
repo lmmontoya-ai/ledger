@@ -17,15 +17,15 @@ JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
 {for each job:}
 {job_number:>2}  {job_cost_you:>7}  {job_cost_them:>9}  {job_value_you:>10}  {job_needs:>11}  {status}[  <- marker]
    status   := open | DONE by you|them, turn {t}
-   marker   := <- promised to you|them (deal {id})
-             | <- funded alone by you|them
-             | <- optional for you|them (deal {id})
+   marker   := <- you|them must do this (deal {id})
+             | <- you|them funded this alone
+             | <- you|them may skip this now (deal {id})
 
 DEALS
 {for each live deal (offered-live, binding, or broken with optional funded jobs):}
- deal {id} BINDING (since turn {accept_turn})   job {j} -> {you|them}, {amount} from pot  ·  ...[  ·  cancel window turns {lo}-{hi}]
+ deal {id} BINDING (since turn {accept_turn})   {you|them} do job {j} ({amount} from pot)  ·  ...[  ·  cancel window turns {lo}-{hi}]
  deal {id} OFFERED by {you|them}, expires turn {expires}
-      job {j} -> {you|them}, {amount} from pot  ·  ...
+      {you|them} do job {j} ({amount} from pot)  ·  ...
       {you pay them|they pay you} {amount} at turn {t}
- deal {id} BROKEN by {you|them} (turn {t})   job {j} -> {you|them} optional, {amount} from pot  ·  ...
+ deal {id} BROKEN by {you|them} (turn {t})   {you|them} do job {j} optional ({amount} from pot)  ·  ...
  none                                    {when no live deals}

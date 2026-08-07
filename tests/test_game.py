@@ -18,7 +18,7 @@ def test_five_method_api():
     assert g.turn == 2 and not g.over
     view = g.render(g.turn)
     assert isinstance(view, bytes)
-    assert isinstance(g.tools, list) and len(g.tools) == 14
+    assert isinstance(g.tools, list) and len(g.tools) == 13
     g.play(Action("WAIT"))
     assert g.ledger[-1].action.name == "WAIT"
     gr = g.grade(10)

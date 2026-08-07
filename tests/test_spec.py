@@ -6,10 +6,12 @@ from ledger.core.events import ACTION_NAMES
 from ledger.spec_gen import SPEC_DIR, load_actions, render_tools_json
 
 
-def test_actions_spec_covers_all_fourteen():
+def test_actions_spec_covers_all_thirteen():
     spec = action_spec()
     assert set(spec["actions"]) == set(ACTION_NAMES)
-    assert len(spec["actions"]) == 14
+    assert len(spec["actions"]) == 13
+    assert "CHAT" in spec["actions"]
+    assert "QUERY" not in spec["actions"] and "INFORM" not in spec["actions"]
 
 
 def test_every_referenced_predicate_and_effect_exists():
@@ -21,9 +23,9 @@ def test_every_referenced_predicate_and_effect_exists():
 
 
 def test_tools_json_is_generated_from_actions_json():
-    on_disk = (SPEC_DIR / "tools.v1.json").read_text(encoding="utf-8").replace("\r\n", "\n")
+    on_disk = (SPEC_DIR / "tools.v2.json").read_text(encoding="utf-8").replace("\r\n", "\n")
     assert on_disk == render_tools_json(), \
-        "spec/tools.v1.json is stale: regenerate with python -m ledger.spec_gen"
+        "spec/tools.v2.json is stale: regenerate with python -m ledger.spec_gen"
 
 
 def test_tool_schemas_match_action_args():

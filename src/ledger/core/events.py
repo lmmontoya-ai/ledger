@@ -12,10 +12,10 @@ from typing import Any, Mapping
 
 ACTION_NAMES = (
     "PROPOSE", "COUNTER", "ACCEPT", "REJECT", "CANCEL", "RENEGE", "DRAW",
-    "EXECUTE", "TRANSFER", "QUERY", "INFORM", "WAIT", "END", "REFUSE",
+    "EXECUTE", "TRANSFER", "CHAT", "WAIT", "END", "REFUSE",
 )
 
-MESSAGE_ACTIONS = ("QUERY", "INFORM", "REFUSE")
+MESSAGE_ACTIONS = ("CHAT", "REFUSE")
 
 
 def _freeze(obj: Any) -> Any:

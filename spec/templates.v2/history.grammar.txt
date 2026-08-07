@@ -15,7 +15,7 @@ REST by action:
   PROPOSE  := "deal " id ": " terms
   COUNTER  := "deal " old " -> deal " new ": " terms
   terms    := term (" · " term)*
-  term     := "job " j " -> " (you|them) ", " amount " from pot"
+  term     := (you|them) " do job " j " (" amount " from pot)"
             | "pay " (you|them) " " amount " at turn " t     (payer is the proposer)
             | (you|them) " pay " amount " at turn " t        (payer is the respondent)
   ACCEPT   := "deal " id         REJECT := "deal " id
@@ -23,7 +23,7 @@ REST by action:
   DRAW     := amount " from pot for job " j
   EXECUTE  := "job " j
   TRANSFER := amount " to " (you|them)
-  QUERY/INFORM/REFUSE := '"' text '"'
+  CHAT/REFUSE := '"' text '"'
   WAIT/END := ""
 
 NOTES (engine consequences at this turn):

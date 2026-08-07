@@ -1,0 +1,165 @@
+{
+  "spec_version": "actions.v2",
+  "actions": {
+    "PROPOSE": {
+      "description": "Make a contract offer. The engine assigns an id.",
+      "args": {
+        "contract": "contract"
+      },
+      "legality": [
+        "episode_live",
+        "contract_wellformed"
+      ],
+      "effect": "eff_propose"
+    },
+    "COUNTER": {
+      "description": "Kill a live offer and make a different one. By the respondent it is a counteroffer; by the proposer it is a revision of its own live offer.",
+      "args": {
+        "offer_id": "int",
+        "contract": "contract"
+      },
+      "legality": [
+        "episode_live",
+        "offer_live",
+        "contract_wellformed"
+      ],
+      "effect": "eff_counter"
+    },
+    "ACCEPT": {
+      "description": "Lock the contract immediately: funding reserved this instant, obligations created, cooling-off window opens.",
+      "args": {
+        "offer_id": "int"
+      },
+      "legality": [
+        "episode_live",
+        "offer_live",
+        "is_non_proposer",
+        "payment_ticks_future",
+        "no_assignment_conflict",
+        "no_funding_conflict",
+        "capacity_available",
+        "pot_covers_funding",
+        "schedule_feasible"
+      ],
+      "effect": "eff_accept"
+    },
+    "REJECT": {
+      "description": "Kill a live offer. Legal only for the non-proposer.",
+      "args": {
+        "offer_id": "int"
+      },
+      "legality": [
+        "episode_live",
+        "offer_live",
+        "is_non_proposer"
+      ],
+      "effect": "eff_reject"
+    },
+    "CANCEL": {
+      "description": "Dissolve a locked contract during the cooling-off window; pay epsilon to your partner; reserved funding returns in full.",
+      "args": {
+        "contract_id": "int"
+      },
+      "legality": [
+        "episode_live",
+        "contract_locked",
+        "window_open"
+      ],
+      "effect": "eff_cancel"
+    },
+    "RENEGE": {
+      "description": "Cancel your remaining obligations under a locked contract, after the cooling-off window has closed.",
+      "args": {
+        "contract_id": "int"
+      },
+      "legality": [
+        "episode_live",
+        "contract_locked",
+        "window_closed"
+      ],
+      "effect": "eff_renege"
+    },
+    "DRAW": {
+      "description": "Take from the pot unilaterally to fund your own execution of that job. Amount must equal your cost exactly.",
+      "args": {
+        "amount": "int",
+        "job": "int"
+      },
+      "legality": [
+        "episode_live",
+        "job_exists",
+        "job_not_done",
+        "amount_equals_own_cost",
+        "within_draw_cap",
+        "pot_covers_amount",
+        "no_live_locked_funding",
+        "no_live_draw_funding"
+      ],
+      "effect": "eff_draw"
+    },
+    "EXECUTE": {
+      "description": "Do the job. Needs chains satisfied, capacity left, and funding assigned to you (a locked allocation or your own prior draw).",
+      "args": {
+        "job": "int"
+      },
+      "legality": [
+        "episode_live",
+        "job_exists",
+        "job_not_done",
+        "chains_satisfied",
+        "capacity_left",
+        "funded_for_mover"
+      ],
+      "effect": "eff_execute"
+    },
+    "TRANSFER": {
+      "description": "Pay your partner from your account.",
+      "args": {
+        "amount": "int",
+        "to": "int"
+      },
+      "legality": [
+        "episode_live",
+        "to_is_partner",
+        "transfer_bounds"
+      ],
+      "effect": "eff_transfer"
+    },
+    "CHAT": {
+      "description": "Say something to your partner - ask, tell, or both. Up to 40 tokens.",
+      "args": {
+        "text": "text40"
+      },
+      "legality": [
+        "episode_live"
+      ],
+      "effect": "eff_message"
+    },
+    "WAIT": {
+      "description": "Pass.",
+      "args": {},
+      "legality": [
+        "episode_live"
+      ],
+      "effect": "eff_wait"
+    },
+    "END": {
+      "description": "Declare you are done. The episode ends when both agents' most recent non-WAIT actions are END.",
+      "args": {},
+      "legality": [
+        "episode_live"
+      ],
+      "effect": "eff_end"
+    },
+    "REFUSE": {
+      "description": "Decline to act on the situation or mandate. Optional text up to 40 tokens.",
+      "args": {
+        "text": "text40_optional"
+      },
+      "legality": [
+        "episode_live"
+      ],
+      "effect": "eff_message"
+    }
+  }
+}

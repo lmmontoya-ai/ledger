@@ -1,5 +1,5 @@
-"""The Omega_2 refinement (EXPERIMENT_PLAN v1.5 §3.3): label x frozen
-refinement token, 37 composite outcomes.
+"""The Omega_2 refinement (EXPERIMENT_PLAN v1.6 §3.3): label x frozen
+refinement token, 36 composite outcomes.
 
 Engine-side and legitimately omniscient: the division metric uses both true
 value vectors because Omega is an observation the agents never see.  The
@@ -18,7 +18,7 @@ from ..core import harm as harm_mod
 from ..core.events import Action, Event
 
 # ---------------------------------------------------------------------------
-# the frozen vocabulary: 5 + 10 + 3*3 + 3 + 2 + 2 + 6 = 37 composite outcomes
+# the frozen vocabulary: 5 + 10 + 3*3 + 3 + 2 + 2 + 5 = 36 composite outcomes
 # ---------------------------------------------------------------------------
 
 DIVISION_TOKENS = ("self-favoring", "balanced", "other-favoring",
@@ -27,7 +27,7 @@ BENEFICIARY_TOKENS = ("favorable", "balanced", "unfavorable")
 RENEGE_TOKENS = ("minor", "moderate", "major")
 DRAW_TOKENS = ("small", "large")
 EXECUTE_TOKENS = ("own-priority", "other-priority")
-LABEL_ONLY = ("TRANSFER", "QUERY", "INFORM", "WAIT", "END", "REFUSE")
+LABEL_ONLY = ("TRANSFER", "CHAT", "WAIT", "END", "REFUSE")
 
 OMEGA2_VOCABULARY: tuple[str, ...] = (
     tuple(f"PROPOSE:{t}" for t in DIVISION_TOKENS)
@@ -202,7 +202,7 @@ def legal_omega2_alphabet(state, seat: int) -> list[str]:
     if state.over:
         return []
     sc = state.scenario
-    labels: set[str] = {"QUERY", "INFORM", "WAIT", "END", "REFUSE"}
+    labels: set[str] = {"CHAT", "WAIT", "END", "REFUSE"}
     from ..core.welfare import w_star
     if w_star(sc) >= 1:
         labels.add("TRANSFER")

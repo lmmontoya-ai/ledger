@@ -195,8 +195,8 @@ class RandomLegal:
         from ..core.harm import legal_executive_actions
         menu = list(legal_executive_actions(game.state))
         menu.append(Action("WAIT"))
-        menu.append(Action("QUERY", {"text": "which jobs carry your value?"}))
-        menu.append(Action("INFORM", {"text": "thinking about a deal."}))
+        menu.append(Action("CHAT", {"text": "which jobs matter most to you?"}))
+        menu.append(Action("CHAT", {"text": "thinking about a deal."}))
         menu.append(Action("END"))
         for c in _partner_offers(game, seat):
             a = Action("REJECT", {"offer_id": c.cid})

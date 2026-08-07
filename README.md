@@ -24,13 +24,13 @@ The environment and the research conducted on it are specified separately, and t
 
 ## Status
 
-Pure core implemented and validated (M0); pre-pilot on any model spend. The engine, spec files, scenario generator, renderer, `Game` API, and scripted policies exist under `src/ledger/` and `spec/`, with **150 tests passing** (every §13 invariant, the §9.4 harm regression to the integer, the 37-outcome Ω₂ instrument, projection-null sizing, golden renders under two encodings, and statistical-estimator validation). See [`docs/M0_VALIDATION.md`](docs/M0_VALIDATION.md). Not yet built: the impure provider runtime and anything requiring an LLM call. No confirmatory spend is authorized.
+Pure core implemented and validated (M0); pre-pilot on any model spend. The engine, spec files, scenario generator, renderer, `Game` API, and scripted policies exist under `src/ledger/` and `spec/`, with **150 tests passing** (every §13 invariant, the §9.4 harm regression to the integer, the 36-outcome Ω₂ instrument, projection-null sizing, golden renders under two encodings, and statistical-estimator validation). See [`docs/M0_VALIDATION.md`](docs/M0_VALIDATION.md). Not yet built: the impure provider runtime and anything requiring an LLM call. No confirmatory spend is authorized.
 
 Run the suite: `python -m pytest tests`. Rebuild the validation numbers: `python scripts/m0_report.py`.
 
 ## Token budget
 
-The environment's own text is overhead, so it is budgeted and measured (o200k and cl100k; vendor-private tokenizers approximated with stated headroom). A player reads a fixed system block (measured 616/619, byte-identical in every call and therefore cached) plus a state board (measured 336 under template v2's plain wording, bound ≤360, does not grow) and a one-line-per-turn history with per-class bounds (simple ≤8, executive ≤20, lifecycle ≤36, contract 12+12·jobs+10·pays, message ≤52). Typical play runs **~650–950 variable tokens per call**; the full worked-episode prompt at turn 15 measures 1,152. Golden tests enforce every bound under both encodings. The equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call before any messages, so typical play is 2–5× cheaper.
+The environment's own text is overhead, so it is budgeted and measured (o200k and cl100k; vendor-private tokenizers approximated with stated headroom). A player reads a fixed system block (measured 616/619, byte-identical in every call and therefore cached) plus a state board (measured 336 under template v2's plain wording, bound ≤360, does not grow) and a one-line-per-turn history with per-class bounds (simple ≤8, executive ≤20, lifecycle ≤36, contract 12+12·jobs+10·pays, message ≤52). Typical play runs **~650–950 variable tokens per call**; the full worked-episode prompt at turn 15 measures 1,146. Golden tests enforce every bound under both encodings. The equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call before any messages, so typical play is 2–5× cheaper.
 
 ## Design at a glance
 
@@ -38,7 +38,7 @@ The environment's own text is overhead, so it is budgeted and measured (o200k an
 |---|---|
 | Agents | 2, alternating moves, 24 ticks |
 | Tasks | 8, with prerequisites, private per-agent values, public per-agent costs |
-| Actions | 14 labels with typed arguments |
+| Actions | 13 labels with typed arguments |
 | Resources | Shared budget 100, capacity 3 each, unilateral draw cap 25 each |
 | Harm channel | Reneging, unilateral draws, deadline loss — all legal, all visible |
 | Determinism | Pure fold over an append-only log; no floats anywhere |

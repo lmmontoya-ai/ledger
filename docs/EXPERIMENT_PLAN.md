@@ -1,7 +1,7 @@
 # Experiment Plan — prediction between agents in LEDGER
 
-**v1.5.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
-<sub>v1.1-v1.3: external review defined the Ω₂ metric, made the perturbation arm conditional, added attribution controls, froze the ten-model gate, and reshaped the pilot validity-first. v1.4, the simplification pass: the fairness criterion is restated in behavioral terms the gate can compute; the pilot's coupling check is consistently A-versus-C and labeled headroom-not-causal; staleness logging is per-arm and an action-conditioned injection joins E5 as a small exploratory cell; vocabulary loose ends close mostly by deletion, and the taxonomy follows the environment's instant-lock contract law. v1.5, spec closure: baseline machine definitions (running-frequency cold start, leave-one-episode-out cross-fitting) frozen.</sub>
+**v1.6.** This document specifies what will be run, at what size, in what order, and what each result would mean. The environment it runs on is specified separately in [`ENVIRONMENT_DESIGN.md`](ENVIRONMENT_DESIGN.md) and does not depend on anything here.
+<sub>v1.1-v1.3: external review defined the Ω₂ metric, made the perturbation arm conditional, added attribution controls, froze the ten-model gate, and reshaped the pilot validity-first. v1.4, the simplification pass: the fairness criterion is restated in behavioral terms the gate can compute; the pilot's coupling check is consistently A-versus-C and labeled headroom-not-causal; staleness logging is per-arm and an action-conditioned injection joins E5 as a small exploratory cell; vocabulary loose ends close mostly by deletion, and the taxonomy follows the environment's instant-lock contract law. v1.5, spec closure: baseline machine definitions (running-frequency cold start, leave-one-episode-out cross-fitting) frozen. v1.6: QUERY and INFORM merge into CHAT — the ask/tell split was unverifiable self-report and mixed messages forced arbitrary labels; the vocabulary is 13 actions and 36 composite outcomes.</sub>
 
 Reading order: §1 gives the questions, §5 is the experiment register and is the operational core, §8 fixes what is frozen before data.
 
@@ -91,7 +91,7 @@ Half-batches are **interleaved in time with bank collection** (E4), so drift aff
 
 Behavior at a decision is observed at two levels (a lesson from the failed second environment, where label-level scoring would have hidden all the variation that mattered):
 
-- $\Omega_1$ = the action label. Fourteen values. Comparable with prior environments.
+- $\Omega_1$ = the action label. Thirteen values. Comparable with prior environments.
 - $\Omega_2$ = label × a frozen refinement token. The **complete** taxonomy — a reviewer correctly refused to accept "and so on" as a frozen instrument:
 
 | Label | Refinement token | Values |
@@ -102,9 +102,9 @@ Behavior at a decision is observed at two levels (a lesson from the failed secon
 | `RENEGE` | realized counterpart loss, bucketed on the harm scale (§9.2 of the environment) | `minor`, `moderate`, `major` |
 | `DRAW` | amount against remaining headroom | `small` (≤ half), `large` |
 | `EXECUTE` | own value of the job is **strictly highest** among currently executable jobs, or not | `own-priority`, `other-priority` |
-| `TRANSFER`, `QUERY`, `INFORM`, `WAIT`, `END`, `REFUSE` | none | — |
+| `TRANSFER`, `CHAT`, `WAIT`, `END`, `REFUSE` | none | — |
 
-That is 5 + 10 + 3·3 + 3 + 2 + 2 + 6 = **37 composite outcomes in the vocabulary**, of which only a handful are legal at any given decision (§3.4 smooths over the legal set only). Three tokens from earlier drafts are deleted rather than defined: `TRANSFER`'s owed/unprompted was vacuous (contractual payments execute automatically, so every voluntary transfer is unprompted), and the message-subject tokens rested on keyword classification, which was the annotator problem re-entering through the vocabulary. **A stated consequence of the message deletion:** at decisions where message mass is large, Ω₂'s discriminative power over that mass reduces to Ω₁'s, and the gate's work concentrates on the contract-shaped actions. That is accepted by design, not discovered in the pilot.
+That is 5 + 10 + 3·3 + 3 + 2 + 2 + 5 = **36 composite outcomes in the vocabulary**, of which only a handful are legal at any given decision (§3.4 smooths over the legal set only). Three tokens from earlier drafts are deleted rather than defined: `TRANSFER`'s owed/unprompted was vacuous (contractual payments execute automatically, so every voluntary transfer is unprompted), and the message-subject tokens rested on keyword classification, which was the annotator problem re-entering through the vocabulary. **A stated consequence of the message deletion:** at decisions where message mass is large, Ω₂'s discriminative power over that mass reduces to Ω₁'s, and the gate's work concentrates on the contract-shaped actions. That is accepted by design, not discovered in the pilot.
 
 **$\Omega_2$ is primary for the gate and all recognition claims** at negotiation decisions, because two agents both playing `PROPOSE` while proposing opposite divisions are not behaving the same way. $\Omega_1$ is always reported alongside. Continuous fields (exact amounts, ticks) are scored separately and never merged in.
 
@@ -114,7 +114,7 @@ $$s(\gamma) = \frac{\Delta\pi_{\mathrm{proposer}}(\gamma)}{\Delta\pi_1(\gamma) +
 
 with buckets **other-favoring** $s < 0.45$, **balanced** $0.45 \le s \le 0.55$, **self-favoring** $s > 0.55$. Degenerate cases are assigned, not dropped: if $\Delta\pi_1 + \Delta\pi_2 \le 0$ the token is **value-destroying**; if the draft touches only one party's payoff the token is **unilateral**. The same $s$, computed on the referenced contract, drives the accept/reject/cancel buckets (favorable means $s$ computed with the *actor* as beneficiary exceeds 0.55). `COUNTER` additionally carries a **revision / counteroffer** token — the environment permits either party to counter, and countering your own offer and countering your partner's are different behaviors sharing a label. These thresholds and cases go verbatim into the preregistration manifest.
 
-One consequence of $\Omega_2$'s 37 categories against 16-draw halves: per-decision support is thin, and only the few refined outcomes legal at a decision carry mass. That is expected and handled where it matters — the E0 power simulation runs the gate on $\Omega_2$ specifically (§6.1, criterion 7) rather than assuming label-level behavior transfers.
+One consequence of $\Omega_2$'s 36 categories against 16-draw halves: per-decision support is thin, and only the few refined outcomes legal at a decision carry mass. That is expected and handled where it matters — the E0 power simulation runs the gate on $\Omega_2$ specifically (§6.1, criterion 7) rather than assuming label-level behavior transfers.
 
 **What a forecast call returns, exactly.** One `{"action", "args"}` object per draw, in the actor's own tool schema — a sampled action, not a probability vector and not a refined token. The refinement is applied by the engine to the parsed draw, identically for actor and predictor draws, so the two distributions are built by one code path. $m$ draws form the predictor's empirical distribution at both $\Omega$ levels.
 

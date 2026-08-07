@@ -88,10 +88,10 @@ def _run_demo_on(scen):
         line = _history_tail(g, 1) if not g.over else ""
         steps.append(("You" if seat == 1 else "Partner", line, note))
 
-    play(Action("QUERY", {"text": "which jobs matter most to you?"}),
-         "Turn 1 — you spend your whole turn just asking a question. "
-         "Talk is not free here: every turn is one action, and asking is the action.")
-    play(Action("INFORM", {"text": f"job {b} is my priority."}),
+    play(Action("CHAT", {"text": "which jobs matter most to you?"}),
+         "Turn 1 — you spend your whole turn just talking (the CHAT action). "
+         "Talk is not free here: every turn is one action, and talking is the action.")
+    play(Action("CHAT", {"text": f"job {b} is my priority."}),
          "Turn 2 — your partner answers. You still do not know their exact "
          "numbers (values are private); you know only what they choose to tell you.")
     play(Action("PROPOSE", {"contract": contract}),
