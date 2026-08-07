@@ -145,3 +145,30 @@ were three tensions worth the name) live in `M0_SPEC_FINDINGS.md`.
     first efficient plan that were never done.
 36. **Division** is None when both agents exactly hit their disagreement
     payoffs (0/0).
+
+## Omega_2 instrument (experiment plan §3.3, engine-side)
+
+37. **Degenerate referenced drafts under ACCEPT/REJECT/CANCEL** (total
+    Delta-pi <= 0, or exactly one party's Delta-pi nonzero): the
+    favorable/balanced/unfavorable token is classified by the sign of the
+    actor's own Delta-pi — positive favorable, negative unfavorable, zero
+    balanced.  The plan freezes the s-thresholds only for well-posed totals;
+    this extends them to the degenerate cases the plan assigns-not-drops for
+    proposals.
+38. **Degenerate order for drafts** follows the plan's sentence order:
+    value-destroying (total <= 0) is checked before unilateral (exactly one
+    side nonzero), so a draft that only destroys one party's value is
+    value-destroying, not unilateral.
+39. **DRAW small/large**: small iff 2 x amount <= headroom-before-the-draw
+    (u_i minus prior draws), so "<= half" is exact in integers with odd
+    headroom rounding toward small.
+40. **EXECUTE own-priority** requires the job's own value to be strictly
+    highest among the actor's currently executable jobs; ties and
+    not-executable read other-priority; a sole executable job is trivially
+    strictly highest.
+41. **The legal Omega_2 alphabet is label-level**: the union, over action
+    labels with at least one legal instance at the decision, of each label's
+    complete token set (a legal PROPOSE admits all five division tokens —
+    which refinement occurs depends on the draft, and drafts are not
+    enumerable).  PROPOSE/COUNTER are excluded at the final tick, where no
+    valid expiry exists.
