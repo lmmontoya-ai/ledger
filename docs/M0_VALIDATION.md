@@ -108,23 +108,27 @@ Measured under both public encodings that ship with tiktoken: **o200k_base**
 carries the exact §7.6 bounds; **cl100k_base** is asserted against
 ceil(1.3 × o200k bound), the headroom standing in for vendor-private
 tokenizers (Anthropic, xAI) that these two public encodings approximate.
+Numbers are for **template v2** (turn/deal/"N from pot" wording, adopted
+after the second G2 read-through failure on notation); the longer plain
+wording is accepted and priced — bounds are re-measured, not guessed.
 
 | Element | o200k | cl100k | o200k bound | cl100k bound |
 |---|---:|---:|---:|---:|
-| System block (invariant, cached) | 596 | 599 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v1.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
-| Board, K=8, 2 live contracts (§7.2 reference position) | **323** | **324** | ≤ 340 | ≤ 442 |
-| Simple line (`WAIT`, `END`) | 5-6 | 5-6 | ≤ 8 | ≤ 11 |
-| Executive line (`EXECUTE job3 [done]`, `TRANSFER`) | 10-13 | 10-13 | ≤ 16 | ≤ 21 |
-| Lifecycle line (`ACCEPT` 21, `RENEGE` 26/28, window-close `WAIT` 11) | 11-26 | 11-28 | ≤ 28 | ≤ 37 |
-| Contract line (2 jobs: 23; 2 jobs + 1 pay: 30) | 23-30 | 23-30 | ≤ 14 + 8·jobs + 10·pays | ≤ ceil(1.3·(…)) |
-| Message line at the 40-token cap (cap enforced with o200k) | 46-48 | 46-48 | ≤ 48 | ≤ 63 |
-| Full prompt, tick 15 of the worked episode | 1077 | 1083 | — | — |
+| System block (invariant, cached) | 616 | 619 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v1.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
+| Board, K=8, 2 live deals (§7.2 reference position) | **337** | **337** | ≤ 360 | ≤ 468 |
+| Simple line (`WAIT`, `END`) | 7 | 7 | ≤ 8 | ≤ 11 |
+| Executive line (`EXECUTE job 3 [done]` 15, `TRANSFER` 12) | 12-15 | 12-15 | ≤ 20 | ≤ 26 |
+| Lifecycle line (`ACCEPT` 26, `RENEGE` 32/33, window-close `WAIT` 13, bracketed `DRAW` 23) | 13-32 | 13-33 | ≤ 36 | ≤ 47 |
+| Contract line (2 jobs: 33; 2 jobs + 1 pay: 42) | 33-42 | 33-42 | ≤ 12 + 12·jobs + 10·pays | ≤ ceil(1.3·(…)) |
+| Message line at the 40-token cap (cap enforced with o200k) | 46-49 | 46-49 | ≤ 52 | ≤ 68 |
+| Full prompt, turn 15 of the worked episode | 1152 | 1157 | — | — |
 
 cl100k tracks o200k within a couple of tokens on this layout (tables of
 short numbers segment almost identically), so the 1.3× allowance is loose by
 a wide margin.  All bounds are asserted as golden tests (`test_render.py`,
 marker `token_bounds`, parametrized over both encodings, each skipped if its
-encoding is unavailable).
+encoding is unavailable).  Template v1's measured table is preserved in git
+history with `spec/templates.v1/` for provenance.
 
 ## Branching under scripted mixed play
 

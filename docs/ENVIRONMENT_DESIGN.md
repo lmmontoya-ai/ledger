@@ -2,8 +2,8 @@
 
 ### A two-agent contracting economy for language-model agents
 
-**Environment Design Document — v2.6**
-<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`).</sub>
+**Environment Design Document — v2.7**
+<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`). v2.7, template v2 after a second G2 read-through failure on notation — tick→turn, C1→deal 1, f18→"18 from pot", LOCKED→BINDING in all rendered text (engine identifiers unchanged; action labels frozen since they match the tool names); token bounds re-measured under both encodings; a §7 change under G1's conditional pass, flagged for advisor re-review.</sub>
 
 This document specifies the environment and nothing else. It is self-contained: a reader needs no other source to understand the world, implement it, or play it. What experiments to run on it lives in a separate document, [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md), and no part of this specification depends on it.
 
@@ -336,31 +336,31 @@ This section is the environment's user interface. It is specified precisely beca
 
 ### 7.2 The board
 
-This is what P1 sees at tick 9 of a real episode:
+This is what P1 sees at turn 9 of a real episode, rendered fresh from the engine at the reference position:
 
 ```
-LEDGER · tick 9/24 · your move · you are P1
+LEDGER · turn 9 of 24 · your move · you are P1
 
-POT 100: spent 27 · your draws 0/25 · their draws 0/25 · left 73
-         everything left at tick 24 is destroyed
+POT shared budget: 73 of 100 left · destroyed after turn 24
+DRAWS taken alone: you 0 of 25 · them 0 of 25
 SLOTS    you 2/3 left · them 3/3 left
 ACCOUNT  you 0 · them 0
 
-JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS  STATUS
- 1       14         21           0        -    open
- 2       27         13          30        -    open
- 3       12         22          30        -    DONE by you, tick 7
- 4       19         19           8        -    open
- 5       27         14           0        3    open
- 6       28         15          35        3    open       <- locked to them
- 7       25         16          12        -    open
- 8       16         28           5        7    open
+JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
+ 1       14         21           0            -  open
+ 2       27         13          30            -  open
+ 3       12         22          30            -  DONE by you, turn 7
+ 4       19         19           8            -  open
+ 5       27         14           0            3  open
+ 6       28         15          35            3  open            <- promised to them (deal 1)
+ 7       25         16          12            -  open
+ 8       16         28           5            7  open
 
-CONTRACTS
- C1 LOCKED (tick 4)   job 3 -> you, funded 12  ·  job 6 -> them, funded 15
- C2 OFFERED by them, expires tick 11
-      job 2 -> them, funded 13  ·  job 7 -> you, funded 25
-      they pay you 4 at tick 14
+DEALS
+ deal 1 BINDING (since turn 4)   job 3 -> you, 12 from pot  ·  job 6 -> them, 15 from pot
+ deal 2 OFFERED by them, expires turn 11
+      job 2 -> them, 13 from pot  ·  job 7 -> you, 25 from pot
+      they pay you 4 at turn 14
 ```
 
 A person reads that and knows the situation: P1 has done the setup job 3, job 6 is the valuable one and P2 is contracted to do it, and there is a fresh offer on the table. **P1 is exposed** — job 6 is worth 35 to it, but its own cost for the job is 28 against 25 of unilateral headroom, so if P2 walks away, P1 cannot do the job alone. That the exposure is visible at a glance is the whole point of the layout.
@@ -375,21 +375,21 @@ Rules for the board:
 
 ### 7.3 The history
 
-One line per tick, fixed grammar:
+One line per turn, fixed grammar. The action labels are frozen — they match the tool names and are never paraphrased — and everything around them is plain language:
 
 ```
 HISTORY
-  t1 you   QUERY   "which jobs carry your value? I care about 3 and 6."
-  t2 them  INFORM  "6 is my biggest. 3 is worth nothing to me."
-  t3 you   PROPOSE C1: job3->you f12, job6->them f15
-  t4 them  ACCEPT  C1     [C1 locked; cancel window t5-t6]
-  t5 you   WAIT
-  t6 them  WAIT            [cancel window closed]
-  t7 you   EXECUTE job3    [done]
-  t8 them  PROPOSE C2: job2->them f13, job7->you f25, pay you 4 @t14
+turn 1  you   QUERY "which jobs carry your value? I care about 3 and 6."
+turn 2  them  INFORM "6 is my biggest. 3 is worth nothing to me."
+turn 3  you   PROPOSE deal 1: job 3 -> you, 12 from pot · job 6 -> them, 15 from pot
+turn 4  them  ACCEPT  deal 1    [deal 1 binds; cancel window turns 5-6]
+turn 5  you   WAIT
+turn 6  them  WAIT    [cancel window closed]
+turn 7  you   EXECUTE job 3    [done]
+turn 8  them  PROPOSE deal 2: job 2 -> them, 13 from pot · job 7 -> you, 25 from pot · pay you 4 at turn 14
 ```
 
-Non-message actions render in under 16 tokens. Engine consequences appear in square brackets on the line that caused them, so no separate event stream is needed. **Message lines join the action name and the quoted text with a single space, not column padding**: under o200k the padding spaces around a quoted string tokenize separately, and a maximal 40-token message rendered with alignment measures 49 tokens, one over the §7.6 bound. Single-space joining keeps the worst case at 46–48. Non-message lines keep column alignment, which is what makes the board-like history scannable.
+Simple and executive lines render in at most 20 tokens; lifecycle lines with consequence brackets in at most 36 (template v2's plain wording is longer than v1's `C1`/`f18` notation — the cost is accepted and priced in §7.6). Engine consequences appear in square brackets on the line that caused them, so no separate event stream is needed. **Message lines join the action name and the quoted text with a single space, not column padding**: under o200k the padding spaces around a quoted string tokenize separately and would push a maximal 40-token message line past the bound. Single-space joining keeps the worst case at 49 against the 52-token bound. Non-message lines keep column alignment, which is what makes the board-like history scannable.
 
 ### 7.4 Message discipline
 
@@ -411,18 +411,18 @@ Four mechanisms, in order of how much they save:
 
 ### 7.6 The budget, measured
 
-Measured with the o200k tokenizer on the reference rendering; per-class bounds are what the golden tests enforce, and they are set from measurement, not hope. (An earlier draft claimed a uniform 8-token history line; a contract-bearing line cannot meet that and the claim did not survive contact with a tokenizer.)
+Measured on the reference rendering under both public encodings — **o200k_base** carries the golden bounds, **cl100k_base** is asserted at ceil(1.3 × o200k bound), the headroom standing in for vendor-private tokenizers the two public encodings approximate. Per-class bounds are what the golden tests enforce, and they are set from measurement, not hope. Template v2 (turn/deal/"N from pot" wording, after the second G2 read-through failure on notation) is longer per line than v1's compact notation; the bounds below are the re-measured v2 numbers. (An earlier draft claimed a uniform 8-token history line; a contract-bearing line cannot meet that and the claim did not survive contact with a tokenizer.)
 
-| Element | Measured | Golden bound |
-|---|---:|---:|
-| Board (K=8, 2 live contracts) | 323 | ≤ 340 |
-| Simple line (`WAIT`, `END`) | 6 | ≤ 8 |
-| Executive line (`EXECUTE`, `DRAW`) | 12–13 | ≤ 16 |
-| Lifecycle line with consequence bracket (`ACCEPT`, `CANCEL`, `RENEGE`) | 21–26 | ≤ 28 |
-| Contract line (`PROPOSE`/`COUNTER`) | 23 (2 jobs), 73 (8 jobs + pay) | ≤ 14 + 8·jobs + 10·pays |
-| Message line at the 40-token cap | 46 | ≤ 48 |
+| Element | o200k | cl100k | Golden bound (o200k) |
+|---|---:|---:|---:|
+| Board (K=8, 2 live deals) | 337 | 337 | ≤ 360 |
+| Simple line (`WAIT`, `END`) | 7 | 7 | ≤ 8 |
+| Executive line (`EXECUTE`, `DRAW`, `TRANSFER`) | 12–15 | 12–15 | ≤ 20 |
+| Lifecycle line with consequence bracket (`ACCEPT`, `CANCEL`, `RENEGE`) | 13–32 | 13–33 | ≤ 36 |
+| Contract line (`PROPOSE`/`COUNTER`) | 33 (2 jobs), 42 (2 jobs + pay) | 33, 42 | ≤ 12 + 12·jobs + 10·pays |
+| Message line at the 40-token cap | 49 | 49 | ≤ 52 |
 
-Derived totals: a typical mid-episode prompt (board + a dozen mixed lines) runs **~600–800 variable tokens**; a full 24-tick episode of ordinary play ~900; the adversarial ceiling (every tick a maximal 8-job proposal) ~2,500. The invariant system block — mandate (59), rules digest, action reference, and the fourteen tool schemas — runs **~800–1,200 tokens, byte-identical in every call and therefore cached**.
+Derived totals: a typical mid-episode prompt (board + a dozen mixed lines) runs **~650–950 variable tokens**; the full worked-episode prompt at turn 15 measures 1,152 (o200k) / 1,157 (cl100k); the adversarial ceiling (every turn a maximal 8-job proposal) ~3,000. The invariant system block — mandate (59), rules digest, action reference, and the fourteen tool schemas — runs **~800–1,200 tokens (the rendered block itself measures 616/619), byte-identical in every call and therefore cached**.
 
 Against the alternative: an equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call *before* messages, and grows faster per tick. LEDGER's typical play is 2–5× cheaper; the adversarial ceiling meets the JSON floor rather than beating it, and is priced in §9 of the experiment plan accordingly. Golden tests assert every per-class bound above; a template change that breaks one fails the build.
 ## 8. How an agent answers
