@@ -24,7 +24,7 @@ from ledger.policies.scripted import (  # noqa: E402
 )
 
 BANK = "v1-m0"
-MARKER = "LEDGER · tick"
+MARKER = "LEDGER · "  # banner prefix; survives the tick->turn template rename
 
 PAIRS = [
     ("cooperate vs hold-up", AlwaysCooperate, HoldUp),
@@ -97,21 +97,21 @@ def _run_demo_on(scen):
     play(Action("PROPOSE", {"contract": contract}),
          f"Turn 3 — you put a deal on the table: you will do job {a} "
          f"(funded {ca} from the shared pot), they will do job {b} (funded {cb}). "
-         "Nothing is binding yet; it is just an offer with an id, C1.")
+         "Nothing is binding yet; it is just an offer the board will list as deal 1.")
     play(Action("ACCEPT", {"offer_id": 1}),
          "Turn 4 — they accept, and the deal BINDS IMMEDIATELY: the pot money is "
          "set aside and the jobs become obligations. For the next two turns "
          "either side can still cancel for a fee of 1 — a cooling-off window.")
     checkpoints.append(("After the deal locks (turn 4)",
                         g.render(1).decode("utf-8"),
-                        ["The POT line shows the contract money as 'spent' — it is reserved, no longer free.",
-                         "The CONTRACTS section shows C1 LOCKED with each job, who does it, and its funding.",
+                        ["The POT line shows less money left — the deal's funding is reserved, no longer free.",
+                         "The DEALS section shows deal 1 BINDING, with each job, who does it, and its funding from the pot.",
                          "The HISTORY shows every turn so far, one line each, newest at the bottom."]))
     play(Action("WAIT", {}),
          "Turn 5 — you pass. Passing is also an action; the cooling-off clock runs.")
     play(Action("WAIT", {}),
          "Turn 6 — they pass too. The window closes: from now on the only way "
-         "out of C1 is to break it, which costs real money.")
+         "out of deal 1 is to break it, which costs real money.")
     play(Action("EXECUTE", {"job": a}),
          f"Turn 7 — you do your half: job {a} is completed. It pays BOTH of you, "
          "each your own private amount. Your money is spent, your work is sunk — "
@@ -125,7 +125,7 @@ def _run_demo_on(scen):
     checkpoints.append(("After the betrayal (turn 8)",
                         g.render(1).decode("utf-8"),
                         ["ACCOUNT now shows the penalty: theirs went down 6, yours up 3.",
-                         "C1's leftover funding went back to the pot, minus a quarter destroyed as waste.",
+                         "Deal 1's leftover funding went back to the pot, minus a quarter destroyed as waste.",
                          "Your completed job stays completed — sunk work is never refunded."]))
     while not g.over:
         try:
@@ -183,12 +183,12 @@ def _facts(g, seat):
         for c in locked:
             who = ", ".join(f"job {j} to {'you' if sea == seat else 'them'}"
                             for j, sea in sorted(c.assign.items()))
-            out.append(f"Contract C{c.cid} is <b>binding</b>: {who}.")
+            out.append(f"Deal {c.cid} is <b>binding</b>: {who}.")
     else:
         out.append("No contract is currently binding either of you.")
     for c in (c for c in s.contracts.values() if c.status == "reneged"):
         by = "you" if c.reneged_by == seat else "your partner"
-        out.append(f"C{c.cid} was <b>broken by {by}</b> earlier.")
+        out.append(f"Deal {c.cid} was <b>broken by {by}</b> earlier.")
     dy = [j for j, w in s.done.items() if w == seat]
     dt = [j for j, w in s.done.items() if w == other]
     out.append(f"Jobs finished: you {sorted(dy) or 'none'}, them {sorted(dt) or 'none'}.")
@@ -231,13 +231,13 @@ def collect_boards():
 # ---------------------------------------------------------------------------
 
 LEGEND = [
-    ("<code>tick 9/24</code>", "Turn 9 of 24. 'Tick' just means turn. You and your "
-     "partner alternate; each of you gets 12 turns in a game."),
-    ("<code>POT</code>", "The shared money. Jobs are paid from it. Whatever is left "
-     "at turn 24 is destroyed — money hoarded is money lost."),
-    ("<code>your draws 24/25</code>", "How much pot money you have taken "
-     "unilaterally, against your lifetime cap of 25. Draws need no permission "
-     "and cannot be blocked."),
+    ("<code>turn 9 of 24</code>", "You and your partner alternate single moves; "
+     "each of you gets 12 turns in a game."),
+    ("<code>POT</code>", "The shared budget for DOING jobs — costs come out of "
+     "it. Your winnings do not: finished jobs pay your secret values on top. "
+     "Pot left at turn 24 is destroyed."),
+    ("<code>DRAWS</code>", "Pot money taken without asking, to fund your own "
+     "jobs — visible instantly, unblockable, capped at 25 per player per game."),
     ("<code>SLOTS</code>", "How many jobs each of you can still personally do "
      "(3 per game). Doing a job costs a slot forever."),
     ("<code>ACCOUNT</code>", "Personal money from side-payments and penalties. "
@@ -246,12 +246,12 @@ LEGEND = [
      "prices to do it. YOUR-VALUE is what it pays <i>you</i> when finished — "
      "<b>you never see their values</b>; that is the whole game. NEEDS n means "
      "job n must be finished first."),
-    ("<code>f12</code>", "In contract lines: 'funded with 12 from the pot'."),
-    ("<code>CONTRACTS</code>", "OFFERED = a proposal on the table, not binding. "
-     "LOCKED = binding: money reserved, jobs owed. Breaking a locked contract "
-     "costs the breaker 6; never finishing an owed job costs 8 at the end."),
+    
+    ("<code>DEALS</code>", "OFFERED = a proposal on the table, not binding. "
+     "BINDING = money reserved, jobs owed. Breaking a binding deal costs the "
+     "breaker 6; never finishing an owed job costs 8 at the end."),
     ("<code>HISTORY</code>", "Every turn so far, one line each, oldest first. "
-     "Square brackets are the referee speaking: [C1 locked], [done], [refund 22]."),
+     "Square brackets are the referee speaking: [deal 1 binds], [done]."),
 ]
 
 
@@ -361,13 +361,21 @@ legend. Then five real boards to read. Budget fifteen minutes.</p>
 <ul class="minute">
 <li><b>It is a turn game.</b> You and one partner alternate single moves — 24
 turns total, 12 each. Everything costs your turn: doing a job, making an offer,
-even asking a question. <i>(The board calls a turn a "tick".)</i></li>
+even asking a question. </li>
 <li><b>The goal:</b> 8 jobs exist. A finished job pays <i>both</i> players, but
 different secret amounts — job 3 might be worth 30 to you and nothing to them.
 You know your numbers, never theirs.</li>
-<li><b>The money:</b> jobs are paid from a shared pot of 100. Together via
-contracts, or alone via capped "draws" nobody can veto. Pot money left at the
-end is destroyed.</li>
+<li><b>Two kinds of money — do not mix them up.</b> The <b>pot</b> (100) is the
+shared <i>budget for doing jobs</i>: doing a job costs pot money. Your
+<b>winnings</b> are separate and come from nowhere: every finished job pays each
+player their own secret value on top. The pot limits what you can <i>do</i>,
+not what you can <i>win</i> — in the game below, perfect teamwork was worth 204
+between the players, double the pot.</li>
+<li><b>Spending the pot, two ways.</b> Together, through a deal you both sign.
+Or alone, through a <b>draw</b>: you take pot money without asking, to fund a
+job you will do yourself — your partner sees it instantly and cannot stop it,
+but each player may take at most 25 per game this way. Pot money left at the
+end is destroyed, so hoarding it helps nobody.</li>
 <li><b>The catch:</b> deals bind the instant they are accepted, and breaking
 one is legal — cheap for the breaker, often devastating for the other side.</li>
 <li><b>Your score:</b> your secret values of all finished jobs, plus money
