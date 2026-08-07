@@ -1,0 +1,39 @@
+History line grammar v2 (normative per ENVIRONMENT_DESIGN §7.3, template
+revision after the second G2 read-through failure on notation).
+One line per past turn.  Seats render as you/them in the viewer's own view.
+Action LABELS are frozen (they match the tool names and are never
+paraphrased); everything around them is plain language.  Engine consequences
+render in square brackets on the line that caused them; multiple
+consequences join with "; " inside one bracket.
+
+line      := "turn " TURN "  " WHO " " NAME " " REST ["    [" NOTES "]"]
+WHO       := "you" | "them"                      (padded to 6)
+NAME      := action label                        (padded to 8; single space
+                                                  before quoted message text)
+
+REST by action:
+  PROPOSE  := "deal " id ": " terms
+  COUNTER  := "deal " old " -> deal " new ": " terms
+  terms    := term (" · " term)*
+  term     := "job " j " -> " (you|them) ", " amount " from pot"
+            | "pay " (you|them) " " amount " at turn " t     (payer is the proposer)
+            | (you|them) " pay " amount " at turn " t        (payer is the respondent)
+  ACCEPT   := "deal " id         REJECT := "deal " id
+  CANCEL   := "deal " id         RENEGE := "deal " id
+  DRAW     := amount " from pot for job " j
+  EXECUTE  := "job " j
+  TRANSFER := amount " to " (you|them)
+  QUERY/INFORM/REFUSE := '"' text '"'
+  WAIT/END := ""
+
+NOTES (engine consequences at this turn):
+  "deal " id " binds; cancel window turns " lo "-" hi     on ACCEPT
+      (or "deal " id " binds" if the window is empty)
+  "done"                                                  on EXECUTE
+  "deal " id " cancelled; " x " back to pot; " (you pay them|they pay you) " " eps   on CANCEL
+  "deal " id " broken; " x " back to pot; " (you pay them|they pay you) " " comp     on RENEGE
+  "deal " id " paid " (you|them) " " amount               scheduled payment executed this turn
+  "deal " id " expired"                                   offer lapsed at the end of this turn
+  "cancel window closed"                                  cooling-off window closed at the end of this turn
+  "invalid"                                               recorded WAIT after exhausted retries
+  "truncated"                                             message text truncated at the 40-token cap

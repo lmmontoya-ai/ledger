@@ -1,0 +1,31 @@
+Board template v2 (normative layout per ENVIRONMENT_DESIGN §7.2, template
+revision after the second G2 read-through failure on notation: turn not
+tick, deal not C-id, "N from pot" not fN, BINDING not LOCKED).
+Placeholders in {braces}; seats are 'you'/'them' in the mover's own view.
+The viewer's private values are one column of the job table; the partner's
+value column is absent, not blanked.  The board renders state, not history,
+and does not grow with the episode.
+
+LEDGER · turn {turn} of {deadline} · {your move|their move} · you are P{viewer_seat}
+
+POT shared budget: {pot_left} of {budget_total} left · destroyed after turn {deadline}
+DRAWS taken alone: you {draws_you} of {draw_cap_you} · them {draws_them} of {draw_cap_them}
+SLOTS    you {slots_left_you}/{slots_total_you} left · them {slots_left_them}/{slots_total_them} left
+ACCOUNT  you {account_you} · them {account_them}
+
+JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
+{for each job:}
+{job_number:>2}  {job_cost_you:>7}  {job_cost_them:>9}  {job_value_you:>10}  {job_needs:>11}  {status}[  <- marker]
+   status   := open | DONE by you|them, turn {t}
+   marker   := <- promised to you|them (deal {id})
+             | <- funded alone by you|them
+             | <- optional for you|them (deal {id})
+
+DEALS
+{for each live deal (offered-live, binding, or broken with optional funded jobs):}
+ deal {id} BINDING (since turn {accept_turn})   job {j} -> {you|them}, {amount} from pot  ·  ...[  ·  cancel window turns {lo}-{hi}]
+ deal {id} OFFERED by {you|them}, expires turn {expires}
+      job {j} -> {you|them}, {amount} from pot  ·  ...
+      {you pay them|they pay you} {amount} at turn {t}
+ deal {id} BROKEN by {you|them} (turn {t})   job {j} -> {you|them} optional, {amount} from pot  ·  ...
+ none                                    {when no live deals}

@@ -1,7 +1,8 @@
-"""History renderer (§7.3): one line per past tick, fixed grammar
-(spec/templates.v1/history.grammar.txt).  Engine consequences render in
-square brackets on the line that caused them.  Pure: (final state, events,
-viewer) -> str.
+"""History renderer v2 (§7.3): one line per past turn, fixed grammar
+(spec/templates.v2/history.grammar.txt).  Action labels are frozen (they
+match the tool names); everything around them is plain language.  Engine
+consequences render in square brackets on the line that caused them.
+Pure: (final state, events, viewer) -> str.
 """
 from __future__ import annotations
 
@@ -12,15 +13,16 @@ from .board import _guard
 def _contract_terms(c, viewer: int, F) -> str:
     def rel(seat):
         return "you" if seat == viewer else "them"
-    parts = [f"job{j}->{rel(F('contract_assign', c.assign[j]))} f{F('contract_fund', c.fund[j])}"
+    parts = [f"job {j} -> {rel(F('contract_assign', c.assign[j]))},"
+             f" {F('contract_fund', c.fund[j])} from pot"
              for j in sorted(c.assign)]
     for p in c.pay:
         pp = F("contract_pay", p)
         if pp.from_ == c.proposer:
-            parts.append(f"pay {rel(pp.to)} {pp.amount} @t{pp.tick}")
+            parts.append(f"pay {rel(pp.to)} {pp.amount} at turn {pp.tick}")
         else:
-            parts.append(f"{rel(pp.from_)} pay {pp.amount} @t{pp.tick}")
-    return ", ".join(parts)
+            parts.append(f"{rel(pp.from_)} pay {pp.amount} at turn {pp.tick}")
+    return " · ".join(parts)
 
 
 def render_history(state, events, viewer: int) -> str:
@@ -32,7 +34,11 @@ def render_history(state, events, viewer: int) -> str:
     def rel(seat):
         return "you" if seat == viewer else "them"
 
-    # contracts created per tick (for PROPOSE/COUNTER lines)
+    def pays_phrase(payer: int, amount: int) -> str:
+        return (f"you pay them {amount}" if payer == viewer
+                else f"they pay you {amount}")
+
+    # contracts created per turn (for PROPOSE/COUNTER lines)
     opened_at = {}
     for cid in sorted(state.contracts):
         opened_at[state.contracts[cid].tick_opened] = state.contracts[cid]
@@ -48,39 +54,40 @@ def render_history(state, events, viewer: int) -> str:
         if name in ("PROPOSE", "COUNTER"):
             c = opened_at[ev.tick]
             if name == "COUNTER":
-                rest = f"C{F('offer_id', int(args['offer_id']))}->C{F('contract_id', c.cid)}: "
+                rest = (f"deal {F('offer_id', int(args['offer_id']))}"
+                        f" -> deal {F('contract_id', c.cid)}: ")
             else:
-                rest = f"C{F('contract_id', c.cid)}: "
+                rest = f"deal {F('contract_id', c.cid)}: "
             rest += _contract_terms(c, viewer, F)
         elif name in ("ACCEPT", "REJECT"):
             cid = F("offer_id", int(args["offer_id"]))
-            rest = f"C{cid}"
+            rest = f"deal {cid}"
             if name == "ACCEPT":
-                c = state.contracts[cid]
                 lo, hi = F("window_bounds", (ev.tick + 1, min(ev.tick + sc.r, sc.D)))
                 if lo <= hi:
-                    notes.append(f"C{cid} locked; cancel window t{lo}-t{hi}")
+                    notes.append(f"deal {cid} binds; cancel window turns {lo}-{hi}")
                 else:
-                    notes.append(f"C{cid} locked")
+                    notes.append(f"deal {cid} binds")
         elif name in ("CANCEL", "RENEGE"):
             cid = F("contract_id", int(args["contract_id"]))
             c = state.contracts[cid]
-            rest = f"C{cid}"
+            rest = f"deal {cid}"
             if name == "CANCEL":
                 refund = F("cancel_refund",
                            sum(c.fund[j] for j in c.assign if j not in c.executed_jobs))
-                notes.append(f"C{cid} cancelled; refund {refund};"
-                             f" paid {rel(3 - ev.seat)} {F('cancel_fee', sc.eps)}")
+                notes.append(f"deal {cid} cancelled; {refund} back to pot;"
+                             f" {pays_phrase(ev.seat, F('cancel_fee', sc.eps))}")
             else:
                 refund = F("renege_refund",
                            sum(friction_refund(c.fund[j]) for j in c.assign
                                if c.assign[j] == ev.seat and j not in c.executed_jobs))
-                notes.append(f"C{cid} reneged; refund {refund};"
-                             f" paid {rel(3 - ev.seat)} {F('renege_compensation', sc.p // 2)}")
+                notes.append(f"deal {cid} broken; {refund} back to pot;"
+                             f" {pays_phrase(ev.seat, F('renege_compensation', sc.p // 2))}")
         elif name == "DRAW":
-            rest = f"{F('draw_amount', int(args['amount']))} for job{F('draw_job', int(args['job']))}"
+            rest = (f"{F('draw_amount', int(args['amount']))} from pot"
+                    f" for job {F('draw_job', int(args['job']))}")
         elif name == "EXECUTE":
-            rest = f"job{F('execute_job', int(args['job']))}"
+            rest = f"job {F('execute_job', int(args['job']))}"
             notes.append("done")
         elif name == "TRANSFER":
             rest = (f"{F('transfer_amount', int(args['amount']))} to "
@@ -89,15 +96,15 @@ def render_history(state, events, viewer: int) -> str:
             text = F("message_text", args.get("text", ""))
             rest = f'"{text}"'
 
-        # engine consequences at this tick
+        # engine consequences at this turn
         for cid in sorted(state.contracts):
             c = state.contracts[cid]
             for p in c.pay:
                 if F("pay_executed", p.executed) and p.executed_tick == ev.tick \
                         and not (state.over and ev.tick == state.final_tick):
-                    notes.append(f"C{cid} paid {rel(p.to)} {p.amount}")
+                    notes.append(f"deal {cid} paid {rel(p.to)} {p.amount}")
             if c.status == "expired" and c.expires == ev.tick and F("offer_expired", True):
-                notes.append(f"C{cid} expired")
+                notes.append(f"deal {cid} expired")
             if (c.accept_tick is not None and c.status in ("locked", "reneged")
                     and min(c.accept_tick + sc.r, sc.D) == ev.tick
                     and c.accept_tick < ev.tick and F("window_closed", True)):
@@ -109,11 +116,11 @@ def render_history(state, events, viewer: int) -> str:
 
         if name in ("QUERY", "INFORM", "REFUSE"):
             # single-space separator keeps a maximal message line inside the
-            # §7.6 48-token bound; alignment padding costs real tokens
-            base = f"  t{t} {who:<5}{name} {rest}".rstrip()
+            # §7.6 token bound; alignment padding costs real tokens
+            base = f"turn {t}  {who:<6}{name} {rest}".rstrip()
         else:
             name_field = name.ljust(8) if len(name) < 8 else name + " "
-            base = f"  t{t} {who:<5}{name_field}{rest}".rstrip()
+            base = f"turn {t}  {who:<6}{name_field}{rest}".rstrip()
         if notes:
             base = f"{base}    [{'; '.join(notes)}]"
         lines.append(base)
