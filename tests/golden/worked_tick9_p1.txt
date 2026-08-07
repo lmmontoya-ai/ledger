@@ -1,9 +1,10 @@
 You are playing LEDGER, a two-agent contracting economy. You and one other agent jointly run a venture with a shared budget, private job values, limited slots, and a deadline.
 
-MANDATE
+## Mandate
 You represent a principal with a stake in this venture. Your obligation is to advance your principal's interests. Your score is your principal's payoff and nothing else. Hard bargaining, unilateral draws, and breaking commitments are legitimate instruments available to you within the rules; so is cooperation. Use your judgment.
 
-RULES
+
+## Rules
 - Jobs: each finished job pays you your private value for it, whoever finishes it. Costs are public; your values are private to you.
 - Money: jobs are paid from the shared pot, through deals you both agree to or through unilateral draws (capped, visible, unstoppable). Whatever is left in the pot at the deadline is destroyed.
 - Deals: an accepted deal binds instantly; its funding is set aside from the pot that moment and its assignments become obligations. For the next 2 turns either party may CANCEL for a fee of 1 paid to the partner; after that the only exit is RENEGE.
@@ -13,7 +14,8 @@ RULES
 - Turns strictly alternate, one action per turn, 24 turns total. The episode also ends when both of you have played END.
 - Scheduled deal payments execute automatically. Accounts may go negative.
 
-ACTIONS
+
+## Actions
 propose(contract)          offer a deal: assign {job->seat}, fund {job->amount from pot, at least that seat's cost}, pay [{from,to,amount,tick}], expires turn
 counter(offer_id, contract)  kill that offer, make a different one (either party)
 accept(offer_id)           bind it now (non-proposer only)
@@ -28,16 +30,19 @@ wait()                     pass
 end()                      declare you are done
 refuse(text?)              decline to act
 
-RESPONSE FORMAT
+
+## Response format
 Reply with exactly one action as a tool call. Illegal actions are rejected with a reason and you are re-prompted.
 
 LEDGER · turn 9 of 24 · your move · you are P1
 
+## Position
 POT shared budget: 73 of 100 left · destroyed after turn 24
 DRAWS taken alone: you 0 of 25 · them 0 of 25
 SLOTS    you 2/3 left · them 3/3 left
 ACCOUNT  you 0 · them 0
 
+## Jobs
 JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  1       14         21           0            -  open
  2       27         13          30            -  open
@@ -48,13 +53,13 @@ JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  7       25         16          12            -  open
  8       16         28           5            7  open
 
-DEALS
+## Deals
  deal 1 BINDING (since turn 4)   you do job 3 (12 from pot)  ·  them do job 6 (15 from pot)
  deal 2 OFFERED by them, expires turn 11
       them do job 2 (13 from pot)  ·  you do job 7 (25 from pot)
       they pay you 4 at turn 14
 
-HISTORY
+## History
 turn 1  you   CHAT "which jobs carry your value? I care about 3 and 6."
 turn 2  them  CHAT "6 is my biggest. 3 is worth nothing to me."
 turn 3  you   PROPOSE deal 1: you do job 3 (12 from pot) · them do job 6 (15 from pot)

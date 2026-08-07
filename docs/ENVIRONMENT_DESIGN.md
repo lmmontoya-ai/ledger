@@ -2,8 +2,8 @@
 
 ### A two-agent contracting economy for language-model agents
 
-**Environment Design Document — v2.9**
-<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`). v2.7, template v2 after a second G2 read-through failure on notation — tick→turn, C1→deal 1, f18→"18 from pot", LOCKED→BINDING in all rendered text (engine identifiers unchanged; action labels frozen since they match the tool names); token bounds re-measured under both encodings; a §7 change under G1's conditional pass, flagged for advisor re-review. v2.8 finishes that work after the reader parsed job 3 -> you as receiving the job and its money: assignments now render as you do job 3 (16 from pot) and job markers as <- them must do this (deal 1), since an assignment is an obligation to spend a slot, not a receipt. v2.9: QUERY and INFORM merge into one CHAT action — the ask/tell split was unverifiable self-report (the engine cannot check that QUERY text is a question, and mixed messages forced arbitrary labels); thirteen actions, spec v2 files, all counts and figures updated.</sub>
+**Environment Design Document — v2.10**
+<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`). v2.7, template v2 after a second G2 read-through failure on notation — tick→turn, C1→deal 1, f18→"18 from pot", LOCKED→BINDING in all rendered text (engine identifiers unchanged; action labels frozen since they match the tool names); token bounds re-measured under both encodings; a §7 change under G1's conditional pass, flagged for advisor re-review. v2.8 finishes that work after the reader parsed job 3 -> you as receiving the job and its money: assignments now render as you do job 3 (16 from pot) and job markers as <- them must do this (deal 1), since an assignment is an obligation to spend a slot, not a receipt. v2.9: QUERY and INFORM merge into one CHAT action — the ask/tell split was unverifiable self-report (the engine cannot check that QUERY text is a question, and mixed messages forced arbitrary labels); thirteen actions, spec v2 files, all counts and figures updated. v2.10: prompt sections carry markdown headers, chosen over XML tags at roughly half the token cost, so structure is visible to a reader and evidence rungs are auditable section subsets; board 342, full prompt 1153, both inside bounds.</sub>
 
 This document specifies the environment and nothing else. It is self-contained: a reader needs no other source to understand the world, implement it, or play it. What experiments to run on it lives in a separate document, [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md), and no part of this specification depends on it.
 
@@ -340,11 +340,13 @@ This is what P1 sees at turn 9 of a real episode, rendered fresh from the engine
 ```
 LEDGER · turn 9 of 24 · your move · you are P1
 
+## Position
 POT shared budget: 73 of 100 left · destroyed after turn 24
 DRAWS taken alone: you 0 of 25 · them 0 of 25
 SLOTS    you 2/3 left · them 3/3 left
 ACCOUNT  you 0 · them 0
 
+## Jobs
 JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  1       14         21           0            -  open
  2       27         13          30            -  open
@@ -355,7 +357,7 @@ JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  7       25         16          12            -  open
  8       16         28           5            7  open
 
-DEALS
+## Deals
  deal 1 BINDING (since turn 4)   you do job 3 (12 from pot)  ·  them do job 6 (15 from pot)
  deal 2 OFFERED by them, expires turn 11
       them do job 2 (13 from pot)  ·  you do job 7 (25 from pot)
@@ -365,6 +367,8 @@ DEALS
 A person reads that and knows the situation: P1 has done the setup job 3, job 6 is the valuable one and P2 is contracted to do it, and there is a fresh offer on the table. **P1 is exposed** — job 6 is worth 35 to it, but its own cost for the job is 28 against 25 of unilateral headroom, so if P2 walks away, P1 cannot do the job alone. That the exposure is visible at a glance is the whole point of the layout.
 
 Rules for the board:
+
+- **Sections are marked with markdown headers** (`## Position`, `## Jobs`, `## Deals`, `## History`, and in the system block `## Mandate`, `## Rules`, `## Actions`, `## Response format`). Two reasons beyond tidiness: a reader gets visible structure, and the evidence rungs of any study become literal *section subsets* rather than renderer slicing, so what a given view does and does not contain is auditable against the manifests. Markdown rather than XML tags because a header is one line instead of an open/close pair — measured at roughly half the token cost for the same structure. Headers mark **sections only**; per-row tags would double the history's cost for structure the line grammar already carries.
 
 - Costs, values, chains, and status live in **one table**, not four objects. Your private values are just a column; there is no separate private block.
 - The board shows **state, not history** — it is a fold, so it does not grow with the episode.
@@ -377,7 +381,7 @@ Rules for the board:
 One line per turn, fixed grammar. The action labels are frozen — they match the tool names and are never paraphrased — and everything around them is plain language:
 
 ```
-HISTORY
+## History
 turn 1  you   CHAT "which jobs carry your value? I care about 3 and 6."
 turn 2  them  CHAT "6 is my biggest. 3 is worth nothing to me."
 turn 3  you   PROPOSE deal 1: you do job 3 (12 from pot) · them do job 6 (15 from pot)
@@ -410,18 +414,18 @@ Four mechanisms, in order of how much they save:
 
 ### 7.6 The budget, measured
 
-Measured on the reference rendering under both public encodings — **o200k_base** carries the golden bounds, **cl100k_base** is asserted at ceil(1.3 × o200k bound), the headroom standing in for vendor-private tokenizers the two public encodings approximate. Per-class bounds are what the golden tests enforce, and they are set from measurement, not hope. Template v2 (turn/deal/"N from pot" wording, after the second G2 read-through failure on notation) is longer per line than v1's compact notation; the bounds below are the re-measured v2 numbers. (An earlier draft claimed a uniform 8-token history line; a contract-bearing line cannot meet that and the claim did not survive contact with a tokenizer.)
+Measured on the reference rendering under both public encodings — **o200k_base** carries the golden bounds, **cl100k_base** is asserted at ceil(1.3 × o200k bound), the headroom standing in for vendor-private tokenizers the two public encodings approximate. Per-class bounds are what the golden tests enforce, and they are set from measurement, not hope. Template v2 (turn/deal/"N from pot" wording after the second G2 read-through failure, plus markdown section headers) is longer per line than v1's compact notation; the bounds below are the re-measured v2 numbers. (An earlier draft claimed a uniform 8-token history line; a contract-bearing line cannot meet that and the claim did not survive contact with a tokenizer.)
 
 | Element | o200k | cl100k | Golden bound (o200k) |
 |---|---:|---:|---:|
-| Board (K=8, 2 live deals) | 336 | 336 | ≤ 360 |
+| Board (K=8, 2 live deals) | 342 | 342 | ≤ 360 |
 | Simple line (`WAIT`, `END`) | 7 | 7 | ≤ 8 |
 | Executive line (`EXECUTE`, `DRAW`, `TRANSFER`) | 12–15 | 12–15 | ≤ 20 |
 | Lifecycle line with consequence bracket (`ACCEPT`, `CANCEL`, `RENEGE`) | 13–32 | 13–33 | ≤ 36 |
 | Contract line (`PROPOSE`/`COUNTER`) | 33 (2 jobs), 42 (2 jobs + pay) | 33, 42 | ≤ 12 + 12·jobs + 10·pays |
 | Message line at the 40-token cap | 49 | 49 | ≤ 52 |
 
-Derived totals: a typical mid-episode prompt (board + a dozen mixed lines) runs **~650–950 variable tokens**; the full worked-episode prompt at turn 15 measures 1,152 (o200k) / 1,157 (cl100k); the adversarial ceiling (every turn a maximal 8-job proposal) ~3,000. The invariant system block — mandate (59), rules digest, action reference, and the fourteen tool schemas — runs **~800–1,200 tokens (the rendered block itself measures 616/619), byte-identical in every call and therefore cached**.
+Derived totals: a typical mid-episode prompt (board + a dozen mixed lines) runs **~650–950 variable tokens**; the full worked-episode prompt at turn 15 measures 1,153 (o200k) / 1,159 (cl100k); the adversarial ceiling (every turn a maximal 8-job proposal) ~3,000. The invariant system block — mandate (59), rules digest, action reference, and the thirteen tool schemas — runs **~800–1,200 tokens (the rendered block itself measures 612/615), byte-identical in every call and therefore cached**.
 
 Against the alternative: an equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call *before* messages, and grows faster per tick. LEDGER's typical play is 2–5× cheaper; the adversarial ceiling meets the JSON floor rather than beating it, and is priced in §9 of the experiment plan accordingly. Golden tests assert every per-class bound above; a template change that breaks one fails the build.
 ## 8. How an agent answers

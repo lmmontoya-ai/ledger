@@ -58,7 +58,7 @@ def token_report():
     print(f"  system block: {counts(system_block().decode('utf-8'))}")
     g = worked_game(8)
     board = render_board(g.state, 1)
-    print(f"  board (K=8, 2 live contracts): {counts(board)}  (o200k bound 340)")
+    print(f"  board (K=8, 2 live deals): {counts(board)}  (o200k bound 360)")
     g = worked_game(9)
     g.play(Action("RENEGE", {"contract_id": 1}))
     g.play(Action("DRAW", {"amount": 25, "job": 7}))

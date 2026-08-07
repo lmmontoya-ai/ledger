@@ -108,20 +108,20 @@ Measured under both public encodings that ship with tiktoken: **o200k_base**
 carries the exact §7.6 bounds; **cl100k_base** is asserted against
 ceil(1.3 × o200k bound), the headroom standing in for vendor-private
 tokenizers (Anthropic, xAI) that these two public encodings approximate.
-Numbers are for **template v2** (turn/deal/"N from pot" wording, adopted
-after the second G2 read-through failure on notation); the longer plain
+Numbers are for **template v2** (turn/deal/"N from pot" wording adopted
+after the second G2 read-through failure, plus markdown section headers); the longer plain
 wording is accepted and priced — bounds are re-measured, not guessed.
 
 | Element | o200k | cl100k | o200k bound | cl100k bound |
 |---|---:|---:|---:|---:|
-| System block (invariant, cached) | 616 | 619 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v2.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
-| Board, K=8, 2 live deals (§7.2 reference position) | **336** | **336** | ≤ 360 | ≤ 468 |
+| System block (invariant, cached) | 612 | 615 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v2.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
+| Board, K=8, 2 live deals (§7.2 reference position) | **342** | **342** | ≤ 360 | ≤ 468 |
 | Simple line (`WAIT`, `END`) | 7 | 7 | ≤ 8 | ≤ 11 |
 | Executive line (`EXECUTE job 3 [done]` 15, `TRANSFER` 12) | 12-15 | 12-15 | ≤ 20 | ≤ 26 |
 | Lifecycle line (`ACCEPT` 26, `RENEGE` 32/33, window-close `WAIT` 13, bracketed `DRAW` 23) | 13-32 | 13-33 | ≤ 36 | ≤ 47 |
 | Contract line (2 jobs: 33; 2 jobs + 1 pay: 42) | 33-42 | 33-42 | ≤ 12 + 12·jobs + 10·pays | ≤ ceil(1.3·(…)) |
 | Message line at the 40-token cap (cap enforced with o200k) | 46-49 | 46-49 | ≤ 52 | ≤ 68 |
-| Full prompt, turn 15 of the worked episode | 1146 | 1152 | — | — |
+| Full prompt, turn 15 of the worked episode | 1153 | 1159 | — | — |
 
 cl100k tracks o200k within a couple of tokens on this layout (tables of
 short numbers segment almost identically), so the 1.3× allowance is loose by

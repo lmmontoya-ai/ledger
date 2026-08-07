@@ -46,7 +46,7 @@ def render_history(state, events, viewer: int) -> str:
     for cid in sorted(state.contracts):
         opened_at[state.contracts[cid].tick_opened] = state.contracts[cid]
 
-    lines = ["HISTORY"]
+    lines = ["## History"]
     for ev in events:
         t = F("tick", ev.tick)
         who = rel(F("actor_seat", ev.seat))

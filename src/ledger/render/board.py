@@ -53,7 +53,14 @@ def render_board(state, viewer: int) -> str:
         move = "episode over"
     else:
         move = "your move" if F("mover_seat", state.mover) == you else "their move"
-    lines = [f"LEDGER · turn {turn} of {D} · {move} · you are P{you}", ""]
+    # Markdown section headers (§7.2): sections are delimited so the evidence rungs
+    # (plan §4) are literal tag subsets rather than renderer slicing, which
+    # makes leakage auditable against the manifests. Tags mark SECTIONS only;
+    # per-row tags would double the history cost for structure the line
+    # grammar already carries. Markdown over XML: one header line instead of an
+    # open/close pair, so the structure costs about half the tokens.
+    lines = [f"LEDGER · turn {turn} of {D} · {move} · you are P{you}", "",
+             "## Position"]
 
     lines.append(
         f"POT shared budget: {F('pot_left', state.pot_left)}"
@@ -72,6 +79,7 @@ def render_board(state, viewer: int) -> str:
         f"ACCOUNT  you {F('account_you', state.accounts[you-1])}"
         f" · them {F('account_them', state.accounts[them-1])}")
     lines.append("")
+    lines.append("## Jobs")
     lines.append("JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS")
 
     locked_to: dict[int, tuple[int, int]] = {}       # job -> (seat, deal id)
@@ -109,7 +117,7 @@ def render_board(state, viewer: int) -> str:
         lines.append(row)
 
     lines.append("")
-    lines.append("DEALS")
+    lines.append("## Deals")
     shown = 0
     for cid in sorted(state.contracts):
         c = state.contracts[cid]

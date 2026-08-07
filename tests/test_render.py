@@ -1,6 +1,7 @@
 """Renderer: golden bytes + digest, §7.6 token bounds, message discipline,
 manifest enforcement, replay."""
 import hashlib
+import re
 import math
 from pathlib import Path
 
@@ -31,6 +32,20 @@ def test_golden_bytes_and_digest():
     want_digest = (GOLDEN / "worked_tick9_p1.sha256").read_text().strip()
     assert data == want
     assert digest == want_digest == hashlib.sha256(want).hexdigest()
+
+
+def test_section_headers_are_present_and_ordered():
+    """The eight markdown sections must appear exactly once each, in order.
+    The evidence rungs (plan §4) are defined as section subsets, so a missing
+    or reordered header would silently break rung slicing and make leakage
+    unauditable."""
+    data, _ = _worked_prompt()
+    text = data.decode("utf-8")
+    expected = ["## Mandate", "## Rules", "## Actions", "## Response format",
+                "## Position", "## Jobs", "## Deals", "## History"]
+    found = re.findall(r"^## .+$", text, re.M)
+    assert found == expected, found
+    assert not re.findall(r"^</?[a-z_]+>", text, re.M), "stray XML tags"
 
 
 def test_render_is_pure():
@@ -78,7 +93,7 @@ def test_history_grammar():
     g = worked_game(8)
     hist = render_history(g.state, tuple(g.events), 1)
     lines = hist.splitlines()
-    assert lines[0] == "HISTORY"
+    assert lines[0] == "## History"
     assert len(lines) == 9            # 8 turns played
     assert 'CHAT' in lines[1] and lines[1].startswith("turn 1  you")
     assert "QUERY" not in hist and "INFORM" not in hist
@@ -186,6 +201,8 @@ def _require(enc_name: str):
 
 
 def _line_tokens(enc_name, state, events, viewer=1):
+    # drop the "## History" header: this helper yields exactly the per-turn
+    # lines, one per event
     hist = render_history(state, events, viewer).splitlines()[1:]
     return list(zip(events, hist,
                     [tok.token_count(l, enc_name) for l in hist]))
