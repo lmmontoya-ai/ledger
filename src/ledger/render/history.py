@@ -13,8 +13,11 @@ from .board import _guard
 def _contract_terms(c, viewer: int, F) -> str:
     def rel(seat):
         return "you" if seat == viewer else "them"
-    parts = [f"job {j} -> {rel(F('contract_assign', c.assign[j]))},"
-             f" {F('contract_fund', c.fund[j])} from pot"
+    # "you do job 3 (16 from pot)", never "job 3 -> you": the arrow read as
+    # RECEIVING the job and the money, when an assignment is an obligation to
+    # spend a slot doing the work, funded from the shared budget.
+    parts = [f"{rel(F('contract_assign', c.assign[j]))} do job {j}"
+             f" ({F('contract_fund', c.fund[j])} from pot)"
              for j in sorted(c.assign)]
     for p in c.pay:
         pp = F("contract_pay", p)

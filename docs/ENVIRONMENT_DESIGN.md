@@ -2,8 +2,8 @@
 
 ### A two-agent contracting economy for language-model agents
 
-**Environment Design Document — v2.7**
-<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`). v2.7, template v2 after a second G2 read-through failure on notation — tick→turn, C1→deal 1, f18→"18 from pot", LOCKED→BINDING in all rendered text (engine identifiers unchanged; action labels frozen since they match the tool names); token bounds re-measured under both encodings; a §7 change under G1's conditional pass, flagged for advisor re-review.</sub>
+**Environment Design Document — v2.8**
+<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`). v2.7, template v2 after a second G2 read-through failure on notation — tick→turn, C1→deal 1, f18→"18 from pot", LOCKED→BINDING in all rendered text (engine identifiers unchanged; action labels frozen since they match the tool names); token bounds re-measured under both encodings; a §7 change under G1's conditional pass, flagged for advisor re-review. v2.8 finishes that work after the reader parsed job 3 -> you as receiving the job and its money: assignments now render as you do job 3 (16 from pot) and job markers as <- them must do this (deal 1), since an assignment is an obligation to spend a slot, not a receipt.</sub>
 
 This document specifies the environment and nothing else. It is self-contained: a reader needs no other source to understand the world, implement it, or play it. What experiments to run on it lives in a separate document, [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md), and no part of this specification depends on it.
 
@@ -352,14 +352,14 @@ JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  3       12         22          30            -  DONE by you, turn 7
  4       19         19           8            -  open
  5       27         14           0            3  open
- 6       28         15          35            3  open            <- promised to them (deal 1)
+ 6       28         15          35            3  open            <- them must do this (deal 1)
  7       25         16          12            -  open
  8       16         28           5            7  open
 
 DEALS
- deal 1 BINDING (since turn 4)   job 3 -> you, 12 from pot  ·  job 6 -> them, 15 from pot
+ deal 1 BINDING (since turn 4)   you do job 3 (12 from pot)  ·  them do job 6 (15 from pot)
  deal 2 OFFERED by them, expires turn 11
-      job 2 -> them, 13 from pot  ·  job 7 -> you, 25 from pot
+      them do job 2 (13 from pot)  ·  you do job 7 (25 from pot)
       they pay you 4 at turn 14
 ```
 
@@ -381,12 +381,12 @@ One line per turn, fixed grammar. The action labels are frozen — they match th
 HISTORY
 turn 1  you   QUERY "which jobs carry your value? I care about 3 and 6."
 turn 2  them  INFORM "6 is my biggest. 3 is worth nothing to me."
-turn 3  you   PROPOSE deal 1: job 3 -> you, 12 from pot · job 6 -> them, 15 from pot
+turn 3  you   PROPOSE deal 1: you do job 3 (12 from pot) · them do job 6 (15 from pot)
 turn 4  them  ACCEPT  deal 1    [deal 1 binds; cancel window turns 5-6]
 turn 5  you   WAIT
 turn 6  them  WAIT    [cancel window closed]
 turn 7  you   EXECUTE job 3    [done]
-turn 8  them  PROPOSE deal 2: job 2 -> them, 13 from pot · job 7 -> you, 25 from pot · pay you 4 at turn 14
+turn 8  them  PROPOSE deal 2: them do job 2 (13 from pot) · you do job 7 (25 from pot) · pay you 4 at turn 14
 ```
 
 Simple and executive lines render in at most 20 tokens; lifecycle lines with consequence brackets in at most 36 (template v2's plain wording is longer than v1's `C1`/`f18` notation — the cost is accepted and priced in §7.6). Engine consequences appear in square brackets on the line that caused them, so no separate event stream is needed. **Message lines join the action name and the quoted text with a single space, not column padding**: under o200k the padding spaces around a quoted string tokenize separately and would push a maximal 40-token message line past the bound. Single-space joining keeps the worst case at 49 against the 52-token bound. Non-message lines keep column alignment, which is what makes the board-like history scannable.
@@ -415,7 +415,7 @@ Measured on the reference rendering under both public encodings — **o200k_base
 
 | Element | o200k | cl100k | Golden bound (o200k) |
 |---|---:|---:|---:|
-| Board (K=8, 2 live deals) | 337 | 337 | ≤ 360 |
+| Board (K=8, 2 live deals) | 336 | 336 | ≤ 360 |
 | Simple line (`WAIT`, `END`) | 7 | 7 | ≤ 8 |
 | Executive line (`EXECUTE`, `DRAW`, `TRANSFER`) | 12–15 | 12–15 | ≤ 20 |
 | Lifecycle line with consequence bracket (`ACCEPT`, `CANCEL`, `RENEGE`) | 13–32 | 13–33 | ≤ 36 |

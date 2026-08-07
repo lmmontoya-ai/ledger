@@ -49,9 +49,9 @@ def test_board_matches_7_2_layout():
     assert "ACCOUNT  you 0 · them 0" in board
     assert "JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS" in board
     assert "DONE by you, turn 7" in board
-    assert "<- promised to them (deal 1)" in board
-    assert ("deal 1 BINDING (since turn 4)   job 3 -> you, 12 from pot"
-            "  ·  job 6 -> them, 15 from pot") in board
+    assert "<- them must do this (deal 1)" in board
+    assert ("deal 1 BINDING (since turn 4)   you do job 3 (12 from pot)"
+            "  ·  them do job 6 (15 from pot)") in board
     assert "deal 2 OFFERED by them, expires turn 11" in board
     assert "they pay you 4 at turn 14" in board
     # the v1 notation the G2 read-through failed on is gone
@@ -70,7 +70,7 @@ def test_seat_language_flips_with_viewer():
     g = worked_game(8)
     b2 = render_board(g.state, 2)
     assert "you are P2" in b2 and "their move" in b2
-    assert "job 6 -> you" in b2       # promised to P2 = "you" in P2's view
+    assert "you do job 6" in b2       # assigned to P2 = "you" in P2's view
     assert "you pay them 4 at turn 14" in b2
 
 
@@ -81,8 +81,8 @@ def test_history_grammar():
     assert lines[0] == "HISTORY"
     assert len(lines) == 9            # 8 turns played
     assert 'QUERY' in lines[1] and lines[1].startswith("turn 1  you")
-    assert ("PROPOSE deal 1: job 3 -> you, 12 from pot"
-            " · job 6 -> them, 15 from pot") in lines[3]
+    assert ("PROPOSE deal 1: you do job 3 (12 from pot)"
+            " · them do job 6 (15 from pot)") in lines[3]
     assert "[deal 1 binds; cancel window turns 5-6]" in lines[4]
     assert "[cancel window closed]" in lines[6]
     assert "EXECUTE job 3" in lines[7] and "[done]" in lines[7]
@@ -110,8 +110,8 @@ def test_history_break_and_draw_grammar():
     g2.play(Action("RENEGE", {"contract_id": 1}))          # t6, by P2
     board = render_board(g2.state, 1)
     assert "deal 1 BROKEN by them (turn 6)" in board
-    assert "job 1 -> you optional, 10 from pot" in board
-    assert "<- optional for you (deal 1)" in board
+    assert "you do job 1 optional (10 from pot)" in board
+    assert "<- you may skip this now (deal 1)" in board
 
 
 def test_manifest_guard_raises_outside_manifest():

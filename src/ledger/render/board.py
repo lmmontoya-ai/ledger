@@ -94,12 +94,12 @@ def render_board(state, viewer: int) -> str:
         marker = ""
         if j in locked_to:
             seat, cid = locked_to[j]
-            marker = f"<- promised to {rel(F('job_locked_to', seat))} (deal {cid})"
+            marker = f"<- {rel(F('job_locked_to', seat))} must do this (deal {cid})"
         elif j in optional_for:
             seat, cid = optional_for[j]
-            marker = f"<- optional for {rel(F('job_optional_for', seat))} (deal {cid})"
+            marker = f"<- {rel(F('job_optional_for', seat))} may skip this now (deal {cid})"
         elif j in state.draw_funding and not state.draw_funding[j][2] and j not in state.done:
-            marker = f"<- funded alone by {rel(F('job_drawn_by', state.draw_funding[j][0]))}"
+            marker = f"<- {rel(F('job_drawn_by', state.draw_funding[j][0]))} funded this alone"
         row = (f"{j:>2}  {F('job_cost_you', sc.cost(you, j)):>7}"
                f"  {F('job_cost_them', sc.cost(them, j)):>9}"
                f"  {F('job_value_you', sc.value(you, j)):>10}"
@@ -119,8 +119,8 @@ def render_board(state, viewer: int) -> str:
         def terms(jobs, optional=False):
             opt = " optional" if optional else ""
             return "  ·  ".join(
-                f"job {j} -> {rel(F('contract_assign', c.assign[j]))}{opt},"
-                f" {F('contract_fund', c.fund[j])} from pot" for j in jobs)
+                f"{rel(F('contract_assign', c.assign[j]))} do job {j}{opt}"
+                f" ({F('contract_fund', c.fund[j])} from pot)" for j in jobs)
 
         def pay_lines():
             out = []

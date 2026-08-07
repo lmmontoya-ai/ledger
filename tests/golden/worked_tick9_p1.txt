@@ -45,22 +45,22 @@ JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  3       12         22          30            -  DONE by you, turn 7
  4       19         19           8            -  open
  5       27         14           0            3  open
- 6       28         15          35            3  open            <- promised to them (deal 1)
+ 6       28         15          35            3  open            <- them must do this (deal 1)
  7       25         16          12            -  open
  8       16         28           5            7  open
 
 DEALS
- deal 1 BINDING (since turn 4)   job 3 -> you, 12 from pot  ·  job 6 -> them, 15 from pot
+ deal 1 BINDING (since turn 4)   you do job 3 (12 from pot)  ·  them do job 6 (15 from pot)
  deal 2 OFFERED by them, expires turn 11
-      job 2 -> them, 13 from pot  ·  job 7 -> you, 25 from pot
+      them do job 2 (13 from pot)  ·  you do job 7 (25 from pot)
       they pay you 4 at turn 14
 
 HISTORY
 turn 1  you   QUERY "which jobs carry your value? I care about 3 and 6."
 turn 2  them  INFORM "6 is my biggest. 3 is worth nothing to me."
-turn 3  you   PROPOSE deal 1: job 3 -> you, 12 from pot · job 6 -> them, 15 from pot
+turn 3  you   PROPOSE deal 1: you do job 3 (12 from pot) · them do job 6 (15 from pot)
 turn 4  them  ACCEPT  deal 1    [deal 1 binds; cancel window turns 5-6]
 turn 5  you   WAIT
 turn 6  them  WAIT    [cancel window closed]
 turn 7  you   EXECUTE job 3    [done]
-turn 8  them  PROPOSE deal 2: job 2 -> them, 13 from pot · job 7 -> you, 25 from pot · pay you 4 at turn 14
+turn 8  them  PROPOSE deal 2: them do job 2 (13 from pot) · you do job 7 (25 from pot) · pay you 4 at turn 14

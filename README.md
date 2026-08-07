@@ -30,7 +30,7 @@ Run the suite: `python -m pytest tests`. Rebuild the validation numbers: `python
 
 ## Token budget
 
-The environment's own text is overhead, so it is budgeted and measured (o200k and cl100k; vendor-private tokenizers approximated with stated headroom). A player reads a fixed system block (measured 616/619, byte-identical in every call and therefore cached) plus a state board (measured 337 under template v2's plain wording, bound ≤360, does not grow) and a one-line-per-turn history with per-class bounds (simple ≤8, executive ≤20, lifecycle ≤36, contract 12+12·jobs+10·pays, message ≤52). Typical play runs **~650–950 variable tokens per call**; the full worked-episode prompt at turn 15 measures 1,152. Golden tests enforce every bound under both encodings. The equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call before any messages, so typical play is 2–5× cheaper.
+The environment's own text is overhead, so it is budgeted and measured (o200k and cl100k; vendor-private tokenizers approximated with stated headroom). A player reads a fixed system block (measured 616/619, byte-identical in every call and therefore cached) plus a state board (measured 336 under template v2's plain wording, bound ≤360, does not grow) and a one-line-per-turn history with per-class bounds (simple ≤8, executive ≤20, lifecycle ≤36, contract 12+12·jobs+10·pays, message ≤52). Typical play runs **~650–950 variable tokens per call**; the full worked-episode prompt at turn 15 measures 1,152. Golden tests enforce every bound under both encodings. The equivalent world rendered as a JSON event log runs 1,500–4,000 tokens per call before any messages, so typical play is 2–5× cheaper.
 
 ## Design at a glance
 

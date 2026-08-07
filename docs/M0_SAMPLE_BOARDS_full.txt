@@ -42,7 +42,7 @@ ACCOUNT  you -6 · them 3
 JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  1       12         16          14            -  DONE by them, turn 3
  2       18         27           0            -  open
- 3       16         27           0            1  open            <- promised to you (deal 2)
+ 3       16         27           0            1  open            <- you must do this (deal 2)
  4       12         16          34            7  DONE by them, turn 7
  5       10         12          12            -  open
  6       13         20          29            3  open
@@ -50,31 +50,31 @@ JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  8       23         29           0            -  open
 
 DEALS
- deal 2 BINDING (since turn 9)   job 3 -> you, 16 from pot
+ deal 2 BINDING (since turn 9)   you do job 3 (16 from pot)
  deal 6 OFFERED by them, expires turn 24
-      job 2 -> you, 18 from pot  ·  job 6 -> you, 13 from pot
+      you do job 2 (18 from pot)  ·  you do job 6 (13 from pot)
 
 HISTORY
-turn 1  them  PROPOSE deal 1: job 1 -> them, 16 from pot · job 2 -> you, 18 from pot · job 3 -> you, 16 from pot · job 4 -> them, 16 from pot · job 6 -> you, 13 from pot · job 7 -> them, 21 from pot
+turn 1  them  PROPOSE deal 1: them do job 1 (16 from pot) · you do job 2 (18 from pot) · you do job 3 (16 from pot) · them do job 4 (16 from pot) · you do job 6 (13 from pot) · them do job 7 (21 from pot)
 turn 2  you   ACCEPT  deal 1    [deal 1 binds; cancel window turns 3-4]
 turn 3  them  EXECUTE job 1    [done]
 turn 4  you   WAIT    [cancel window closed]
 turn 5  them  EXECUTE job 7    [done]
 turn 6  you   RENEGE  deal 1    [deal 1 broken; 34 back to pot; you pay them 3]
 turn 7  them  EXECUTE job 4    [done]
-turn 8  you   PROPOSE deal 2: job 3 -> you, 16 from pot
+turn 8  you   PROPOSE deal 2: you do job 3 (16 from pot)
 turn 9  them  ACCEPT  deal 2    [deal 2 binds; cancel window turns 10-11]
 turn 10  you   WAIT
-turn 11  them  PROPOSE deal 3: job 2 -> you, 18 from pot · job 6 -> you, 13 from pot    [cancel window closed]
+turn 11  them  PROPOSE deal 3: you do job 2 (18 from pot) · you do job 6 (13 from pot)    [cancel window closed]
 turn 12  you   WAIT
 turn 13  them  END
 turn 14  you   WAIT    [deal 3 expired]
-turn 15  them  PROPOSE deal 4: job 2 -> you, 18 from pot · job 6 -> you, 13 from pot
+turn 15  them  PROPOSE deal 4: you do job 2 (18 from pot) · you do job 6 (13 from pot)
 turn 16  you   WAIT
 turn 17  them  END
 turn 18  you   WAIT    [deal 4 expired]
-turn 19  them  PROPOSE deal 5: job 2 -> you, 18 from pot · job 6 -> you, 13 from pot
+turn 19  them  PROPOSE deal 5: you do job 2 (18 from pot) · you do job 6 (13 from pot)
 turn 20  you   WAIT
 turn 21  them  END
 turn 22  you   WAIT    [deal 5 expired]
-turn 23  them  PROPOSE deal 6: job 2 -> you, 18 from pot · job 6 -> you, 13 from pot
+turn 23  them  PROPOSE deal 6: you do job 2 (18 from pot) · you do job 6 (13 from pot)

@@ -115,7 +115,7 @@ wording is accepted and priced — bounds are re-measured, not guessed.
 | Element | o200k | cl100k | o200k bound | cl100k bound |
 |---|---:|---:|---:|---:|
 | System block (invariant, cached) | 616 | 619 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v1.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
-| Board, K=8, 2 live deals (§7.2 reference position) | **337** | **337** | ≤ 360 | ≤ 468 |
+| Board, K=8, 2 live deals (§7.2 reference position) | **336** | **336** | ≤ 360 | ≤ 468 |
 | Simple line (`WAIT`, `END`) | 7 | 7 | ≤ 8 | ≤ 11 |
 | Executive line (`EXECUTE job 3 [done]` 15, `TRANSFER` 12) | 12-15 | 12-15 | ≤ 20 | ≤ 26 |
 | Lifecycle line (`ACCEPT` 26, `RENEGE` 32/33, window-close `WAIT` 13, bracketed `DRAW` 23) | 13-32 | 13-33 | ≤ 36 | ≤ 47 |
