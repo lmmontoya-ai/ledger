@@ -146,7 +146,27 @@ byte-identical; the script now iterates five distinct scenario_ids, pairs
 seeded random-legal against hold-up, and asserts all five rendered state
 blocks are pairwise distinct before writing.
 
-## Interpretation choices
+## G2 read-through: first attempt failed, one iteration taken
+
+The first human reader — the project owner — was shown the five test boards
+cold and could not reconstruct the basics ("I don't follow what tick is, how
+the environment progresses, nothing").  Recorded as a genuine G2 finding, not
+reader error: rules-then-position does not teach a game.  Two responses:
+
+1. `docs/M0_READTHROUGH.html` was rebuilt walkthrough-first: a one-minute
+   summary in turn language, then one full scripted episode played by the real
+   engine and annotated move by move (talk -> deal -> instant lock -> cooling
+   off -> execution -> betrayal -> settlement), then a board legend, and only
+   then the five test boards.  All history lines render from the reader's seat.
+2. Two candidate follow-ups were identified but not taken unilaterally: a
+   tick->turn rename in the templates (a §7 change requiring a version bump
+   and advisor note), and a ~$1 LLM comprehension canary (3 models x 10 boards
+   x engine-scored factual questions) to test whether models parse the dense
+   format better than humans do — the owner's own hypothesis.
+
+Per the gate's rule this is the one permitted iteration; the re-test verdict
+belongs to the human reader, and a second failure means the board design
+itself (not the onboarding) goes back to §7.
 
 Every deliberate interpretation choice is recorded in
 [`M0_DECISIONS.md`](M0_DECISIONS.md) (41 entries, including the Omega_2
