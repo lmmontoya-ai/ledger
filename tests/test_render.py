@@ -1,6 +1,7 @@
 """Renderer: golden bytes + digest, §7.6 token bounds, message discipline,
 manifest enforcement, replay."""
 import hashlib
+import math
 from pathlib import Path
 
 import pytest
@@ -115,65 +116,90 @@ def test_system_block_is_byte_identical():
 
 
 # ---------------------------------------------------------------------------
-# §7.6 token budget, measured with the real tokenizer
+# §7.6 token budget, measured with real tokenizers
+#
+# The §7.6 bounds are set on the reference o200k_base tokenizer.  Vendor-
+# private tokenizers (Anthropic, xAI) are approximated by the two public
+# encodings that ship with tiktoken — o200k_base and cl100k_base — and the
+# cl100k bounds carry a ceil(1.3 x o200k-bound) headroom as the approximation
+# allowance for tokenizers that segment tables and numbers less efficiently.
 # ---------------------------------------------------------------------------
 
-def _line_tokens(state, events, viewer=1):
+ENCODINGS = [("o200k_base", 1.0), ("cl100k_base", 1.3)]
+
+
+def _bound(base: int, scale: float) -> int:
+    return math.ceil(base * scale)
+
+
+def _require(enc_name: str):
+    if not tok.encoding_available(enc_name):
+        pytest.skip(f"tiktoken {enc_name} not available")
+
+
+def _line_tokens(enc_name, state, events, viewer=1):
     hist = render_history(state, events, viewer).splitlines()[1:]
-    return list(zip(events, hist, [tok.token_count(l) for l in hist]))
+    return list(zip(events, hist,
+                    [tok.token_count(l, enc_name) for l in hist]))
 
 
-@needs_tokenizer
 @pytest.mark.token_bounds
-def test_board_token_bound():
+@pytest.mark.parametrize("enc_name,scale", ENCODINGS)
+def test_board_token_bound(enc_name, scale):
+    _require(enc_name)
     g = worked_game(8)
     board = render_board(g.state, 1)
-    assert tok.token_count(board) <= 340
+    assert tok.token_count(board, enc_name) <= _bound(340, scale)
 
 
-@needs_tokenizer
 @pytest.mark.token_bounds
-def test_history_line_token_bounds():
+@pytest.mark.parametrize("enc_name,scale", ENCODINGS)
+def test_history_line_token_bounds(enc_name, scale):
+    _require(enc_name)
     g = worked_game(9)
     g.play(Action("RENEGE", {"contract_id": 1}))              # t10
     g.play(Action("DRAW", {"amount": 25, "job": 7}))          # t11 P1
     g.play(Action("TRANSFER", {"amount": 3, "to": 1}))        # t12 P2
     g.play(Action("EXECUTE", {"job": 7}))                     # t13 P1
     g.play(Action("END", {}))                                 # t14 P2
-    for ev, line, n in _line_tokens(g.state, tuple(g.events)):
+    for ev, line, n in _line_tokens(enc_name, g.state, tuple(g.events)):
         name = ev.action.name
         has_note = "[" in line
         if name in ("WAIT", "END") and not has_note:
-            assert n <= 8, line
+            assert n <= _bound(8, scale), line
         elif name in ("DRAW", "TRANSFER") and not has_note:
-            assert n <= 16, line
+            assert n <= _bound(16, scale), line
         elif name == "EXECUTE" and "; " not in line:
-            assert n <= 16, line   # [done] is part of the executive class
+            assert n <= _bound(16, scale), line   # [done] is executive-class
         elif name in ("ACCEPT", "CANCEL", "RENEGE", "EXECUTE", "DRAW",
                       "TRANSFER", "WAIT", "END"):
             # any line carrying an extra consequence bracket is lifecycle-class
-            assert n <= 28, line
+            assert n <= _bound(28, scale), line
         elif name in ("PROPOSE", "COUNTER"):
             ev_c = ev.action.args["contract"]
-            bound = 14 + 8 * len(ev_c["assign"]) + 10 * len(ev_c["pay"])
-            assert n <= bound, line
+            base = 14 + 8 * len(ev_c["assign"]) + 10 * len(ev_c["pay"])
+            assert n <= _bound(base, scale), line
         elif name in ("QUERY", "INFORM", "REFUSE"):
-            assert n <= 48, line
+            assert n <= _bound(48, scale), line
 
 
-@needs_tokenizer
 @pytest.mark.token_bounds
-def test_message_line_at_cap_within_bound():
+@pytest.mark.parametrize("enc_name,scale", ENCODINGS)
+def test_message_line_at_cap_within_bound(enc_name, scale):
+    _require(enc_name)
     g = Game(simple_scenario())
+    # the engine cap is enforced with the reference o200k tokenizer;
+    # other encodings measure the same rendered line against scaled bounds
     text, truncated = tok.truncate_message("negotiate " * 100)
     assert truncated and tok.token_count(text) == 40
     g.play(Action("QUERY", {"text": text}))
     line = render_history(g.state, tuple(g.events), 1).splitlines()[1]
-    assert tok.token_count(line) <= 48
+    assert tok.token_count(line, enc_name) <= _bound(48, scale)
 
 
-@needs_tokenizer
 @pytest.mark.token_bounds
-def test_system_block_token_budget():
-    n = tok.token_count(system_block().decode("utf-8"))
-    assert n <= 1200
+@pytest.mark.parametrize("enc_name,scale", ENCODINGS)
+def test_system_block_token_budget(enc_name, scale):
+    _require(enc_name)
+    n = tok.token_count(system_block().decode("utf-8"), enc_name)
+    assert n <= _bound(1200, scale)

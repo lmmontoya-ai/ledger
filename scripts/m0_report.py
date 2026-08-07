@@ -45,11 +45,20 @@ def admission(n_seeds: int = 250):
 
 
 def token_report():
-    print(f"\nTOKENS (tokenizer: {tok.tokenizer_name()})")
-    print(f"  system block: {tok.token_count(system_block().decode('utf-8'))}")
+    """Measured under both public encodings: o200k_base carries the §7.6
+    bounds; cl100k_base is asserted against ceil(1.3 x o200k bound) as the
+    approximation allowance for vendor-private tokenizers."""
+    encodings = [e for e in ("o200k_base", "cl100k_base")
+                 if tok.encoding_available(e)]
+    print(f"\nTOKENS (encodings: {', '.join(encodings) or 'whitespace-approx'})")
+
+    def counts(text):
+        return " / ".join(f"{tok.token_count(text, e)}" for e in encodings)
+
+    print(f"  system block: {counts(system_block().decode('utf-8'))}")
     g = worked_game(8)
     board = render_board(g.state, 1)
-    print(f"  board (K=8, 2 live contracts): {tok.token_count(board)}  (bound 340)")
+    print(f"  board (K=8, 2 live contracts): {counts(board)}  (o200k bound 340)")
     g = worked_game(9)
     g.play(Action("RENEGE", {"contract_id": 1}))
     g.play(Action("DRAW", {"amount": 25, "job": 7}))
@@ -58,9 +67,9 @@ def token_report():
     g.play(Action("END", {}))
     hist = render_history(g.state, tuple(g.events), 1).splitlines()[1:]
     for ev, line in zip(g.events, hist):
-        print(f"  {tok.token_count(line):3d}  {line}")
+        print(f"  {counts(line):>9}  {line}")
     full = g.render(1)
-    print(f"  full prompt at tick 15: {tok.token_count(full.decode('utf-8'))}")
+    print(f"  full prompt at tick 15: {counts(full.decode('utf-8'))}")
 
 
 def branching_entropy(n_scenarios: int = 4):
