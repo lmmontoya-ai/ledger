@@ -32,29 +32,49 @@ refuse(text?)              decline to act
 RESPONSE FORMAT
 Reply with exactly one action as a tool call. Illegal actions are rejected with a reason and you are re-prompted.
 
-LEDGER · tick 5/24 · your move · you are P2
+LEDGER · tick 24/24 · your move · you are P2
 
-POT 100: spent 24 · your draws 24/25 · their draws 0/25 · left 76
+POT 100: spent 82 · your draws 0/25 · their draws 0/25 · left 18
          everything left at tick 24 is destroyed
-SLOTS    you 2/3 left · them 3/3 left
-ACCOUNT  you 0 · them 0
+SLOTS    you 3/3 left · them 0/3 left
+ACCOUNT  you -6 · them 3
 
 JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS  STATUS
- 1       27         29           5      -  open
- 2       24         15          37      -  DONE by you, tick 3
- 3       14         28           0      7  open
- 4       34         26          39      -  open
- 5       33         21          34      2  open
- 6       28         24          26      -  open
- 7       36         18          37      8  open
- 8       12         22          15      -  open
+ 1       12         16          14      -  DONE by them, tick 3
+ 2       18         27           0      -  open
+ 3       16         27           0      1  open            <- locked to you
+ 4       12         16          34      7  DONE by them, tick 7
+ 5       10         12          12      -  open
+ 6       13         20          29      3  open
+ 7       38         21          10      -  DONE by them, tick 5
+ 8       23         29           0      -  open
 
 CONTRACTS
- C1 OFFERED by them, expires tick 5
-      job 4 -> them, funded 26  ·  job 6 -> you, funded 28  ·  job 7 -> them, funded 18  ·  job 8 -> you, funded 12
+ C2 LOCKED (tick 9)   job 3 -> you, funded 16
+ C6 OFFERED by them, expires tick 24
+      job 2 -> you, funded 18  ·  job 6 -> you, funded 13
 
 HISTORY
-  t1 you  DRAW    24 for job2
-  t2 them PROPOSE C1: job4->them f26, job6->you f28, job7->them f18, job8->you f12
-  t3 you  EXECUTE job2    [done]
-  t4 them END
+  t1 them PROPOSE C1: job1->them f16, job2->you f18, job3->you f16, job4->them f16, job6->you f13, job7->them f21
+  t2 you  ACCEPT  C1    [C1 locked; cancel window t3-t4]
+  t3 them EXECUTE job1    [done]
+  t4 you  WAIT    [cancel window closed]
+  t5 them EXECUTE job7    [done]
+  t6 you  RENEGE  C1    [C1 reneged; refund 34; paid them 3]
+  t7 them EXECUTE job4    [done]
+  t8 you  PROPOSE C2: job3->you f16
+  t9 them ACCEPT  C2    [C2 locked; cancel window t10-t11]
+  t10 you  WAIT
+  t11 them PROPOSE C3: job2->you f18, job6->you f13    [cancel window closed]
+  t12 you  WAIT
+  t13 them END
+  t14 you  WAIT    [C3 expired]
+  t15 them PROPOSE C4: job2->you f18, job6->you f13
+  t16 you  WAIT
+  t17 them END
+  t18 you  WAIT    [C4 expired]
+  t19 them PROPOSE C5: job2->you f18, job6->you f13
+  t20 you  WAIT
+  t21 them END
+  t22 you  WAIT    [C5 expired]
+  t23 them PROPOSE C6: job2->you f18, job6->you f13

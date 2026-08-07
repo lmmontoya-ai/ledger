@@ -45,6 +45,32 @@ identical policies at the calibrated (90th-percentile floor) margin and
 >80% power on clearly distinct policies; smoothing is over the legal
 alphabet only and rejects out-of-alphabet outcomes.
 
+**The Omega_2 refinement (experiment plan §3.3)** is implemented engine-side
+in `analysis/omega2.py` and tested in `test_omega2.py` (15 tests): the
+frozen vocabulary counts exactly 37 composite outcomes (5 + 10 + 3·3 + 3 +
+2 + 2 + 6); the division metric's buckets are exercised on known contracts
+including both degenerate cases in the plan's order (value-destroying before
+unilateral); COUNTER carries revision vs counteroffer by whether the actor
+proposed the referenced offer; ACCEPT/REJECT/CANCEL beneficiary buckets are
+checked including the degenerate-referenced-draft rule (decision 37); RENEGE
+buckets reproduce the harm-grade numbers (the §9.4 state refines to
+`RENEGE:major` at m = 35/77, a payment-cancelling renege at 9/49 to
+`RENEGE:moderate`, a harmless one to `RENEGE:minor`); DRAW small/large
+splits at half the pre-draw headroom; EXECUTE own-priority requires the
+strictly highest own value among currently executable jobs, with a tie
+reading other-priority; and the decision's legal Omega_2 alphabet (label-
+level union) feeds the §3.4 smoothing helper directly, with refined
+outcomes of legal executive actions always inside it.
+
+**Projection machinery (experiment plan §6.8)** is implemented in
+`analysis/projection.py` (landing zones over a per-decision candidate bank
+plus the uniform centroid; the permutation null shuffles predictor labels
+within decision) and sized on synthetic multinomials in `test_stats.py`:
+SIZE — with misses drawn from uninvolved third candidates, the observed
+self-landing rate exceeds the 95th-percentile null in <= 10% of 60
+replicate experiments; POWER — with misses drawn from the predictor's own
+policy, it exceeds the null in >= 90% of 30 replicates.
+
 ## Measured admission rate
 
 Over 250 seeds of `ledger-gen-v1`: **15/250 admitted = 6.0%**.  The frozen
@@ -76,21 +102,29 @@ not of the welfare landscape). If a future need ever calls for higher
 admission yield, condition 5's 5% tolerance is the lever; nothing else need
 change. No action taken now.
 
-## Measured token counts (o200k_base) vs §7.6 bounds
+## Measured token counts vs §7.6 bounds
 
-| Element | Measured | Bound |
-|---|---:|---:|
-| System block (invariant, cached) | 596 | — (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v1.json` and are counted by the runtime, not the renderer) |
-| Board, K=8, 2 live contracts (§7.2 reference position) | **323** | ≤ 340 |
-| Simple line (`WAIT`, `END`) | 5-6 | ≤ 8 |
-| Executive line (`EXECUTE job3 [done]`, `TRANSFER`) | 10-13 | ≤ 16 |
-| Lifecycle line (`ACCEPT` 21, `RENEGE` 26, window-close `WAIT` 11) | 11-26 | ≤ 28 |
-| Contract line (2 jobs: 23; 2 jobs + 1 pay: 30) | 23-30 | ≤ 14 + 8·jobs + 10·pays |
-| Message line at the 40-token cap | 46-48 | ≤ 48 |
-| Full prompt, tick 15 of the worked episode | 1077 | — |
+Measured under both public encodings that ship with tiktoken: **o200k_base**
+carries the exact §7.6 bounds; **cl100k_base** is asserted against
+ceil(1.3 × o200k bound), the headroom standing in for vendor-private
+tokenizers (Anthropic, xAI) that these two public encodings approximate.
 
-All bounds are asserted as golden tests (`test_render.py`, marker
-`token_bounds`, skipped if tiktoken is unavailable).
+| Element | o200k | cl100k | o200k bound | cl100k bound |
+|---|---:|---:|---:|---:|
+| System block (invariant, cached) | 596 | 599 | ≤ 1200 (spec estimate ~800-1200 incl. tool schemas; schemas live in `spec/tools.v1.json` and are counted by the runtime, not the renderer) | ≤ 1560 |
+| Board, K=8, 2 live contracts (§7.2 reference position) | **323** | **324** | ≤ 340 | ≤ 442 |
+| Simple line (`WAIT`, `END`) | 5-6 | 5-6 | ≤ 8 | ≤ 11 |
+| Executive line (`EXECUTE job3 [done]`, `TRANSFER`) | 10-13 | 10-13 | ≤ 16 | ≤ 21 |
+| Lifecycle line (`ACCEPT` 21, `RENEGE` 26/28, window-close `WAIT` 11) | 11-26 | 11-28 | ≤ 28 | ≤ 37 |
+| Contract line (2 jobs: 23; 2 jobs + 1 pay: 30) | 23-30 | 23-30 | ≤ 14 + 8·jobs + 10·pays | ≤ ceil(1.3·(…)) |
+| Message line at the 40-token cap (cap enforced with o200k) | 46-48 | 46-48 | ≤ 48 | ≤ 63 |
+| Full prompt, tick 15 of the worked episode | 1077 | 1083 | — | — |
+
+cl100k tracks o200k within a couple of tokens on this layout (tables of
+short numbers segment almost identically), so the 1.3× allowance is loose by
+a wide margin.  All bounds are asserted as golden tests (`test_render.py`,
+marker `token_bounds`, parametrized over both encodings, each skipped if its
+encoding is unavailable).
 
 ## Branching under scripted mixed play
 
@@ -101,16 +135,28 @@ ACCEPT/INFORM/QUERY/TRANSFER/RENEGE/CANCEL the rest).  This is a property of
 the scripted mix, not of any model; it demonstrates the environment offers
 the branching the E0 criterion will measure on real policies.
 
+## Sample boards
+
+`scripts/m0_sample_boards.py` renders five boards for the §13 human
+read-through into `docs/M0_SAMPLE_BOARDS.md` (+ one full prompt with the
+invariant header in `M0_SAMPLE_BOARDS_full.txt`).  An earlier revision drew
+bank scenarios with replacement and paired tit-for-tat against hold-up
+(which plays cooperate's prefix until betrayed), leaving Boards 1 and 4
+byte-identical; the script now iterates five distinct scenario_ids, pairs
+seeded random-legal against hold-up, and asserts all five rendered state
+blocks are pairwise distinct before writing.
+
 ## Interpretation choices
 
 Every deliberate interpretation choice is recorded in
-[`M0_DECISIONS.md`](M0_DECISIONS.md) (36 entries); the three genuine spec
-tensions and their resolutions are in
-[`M0_SPEC_FINDINGS.md`](M0_SPEC_FINDINGS.md).
+[`M0_DECISIONS.md`](M0_DECISIONS.md) (41 entries, including the Omega_2
+instrument's degenerate-case rules); the three genuine spec tensions and
+their resolutions are in [`M0_SPEC_FINDINGS.md`](M0_SPEC_FINDINGS.md).
 
 ## Not in scope for M0
 
 The impure runtime (providers, retries, abandon-and-quarantine), the message
-claim annotator (explicitly analysis tooling per §9.5), the Omega_2
-refinement tokens (experiment plan §3.3, an instrument over the engine), and
-the human read-through of §13 (requires a human).
+claim annotator (explicitly analysis tooling per §9.5), and the human
+read-through of §13 itself (requires a human; the boards for it are
+generated, above).  The Omega_2 refinement, originally scoped out here, is
+now implemented and tested (see above).
