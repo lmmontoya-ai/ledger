@@ -1,11 +1,14 @@
 """Statistical validation on synthetic agents: the §3.4 floor/excess
 estimator recovers known divergences, the §3.6 distinctness gate has a low
-false-positive rate under identical policies, and smoothing is over the
-legal alphabet only."""
+false-positive rate under identical policies, smoothing is over the legal
+alphabet only, and the §6.8 projection landing/permutation-null machinery is
+sized (SIZE and POWER) on known multinomials."""
 import random
 
 import pytest
 
+from ledger.analysis.projection import (CENTROID, exceeds_null, landing_zone,
+                                        permutation_null)
 from ledger.analysis.stats import (calibrate_delta, distinctness_pass,
                                    entropy_bits, excess_score, jsd_bits,
                                    sample_counts, smoothed)
@@ -100,3 +103,70 @@ def test_gate_passes_matched_scripted_agents_and_rejects_on_margin():
                           LEGAL, delta)
         for _ in range(200))
     assert fp / 200 < 0.5   # mostly held out despite tiny floors
+
+
+# ---------------------------------------------------------------------------
+# §6.8 projection: landing zones + permutation null, sized on synthetics
+# ---------------------------------------------------------------------------
+
+PROJ_LEGAL = ["A", "B", "C", "D", "E", "F"]
+PROJ_POLICIES = {
+    "p1": {"A": 0.55, "B": 0.15, "C": 0.10, "D": 0.10, "E": 0.05, "F": 0.05},
+    "p2": {"A": 0.05, "B": 0.55, "C": 0.20, "D": 0.05, "E": 0.10, "F": 0.05},
+    "p3": {"A": 0.10, "B": 0.05, "C": 0.50, "D": 0.15, "E": 0.05, "F": 0.15},
+    "p4": {"A": 0.05, "B": 0.10, "C": 0.05, "D": 0.55, "E": 0.15, "F": 0.10},
+}
+
+
+def test_landing_zone_basics():
+    rng = random.Random(3)
+    bank = {p: sample_counts(rng, dist, 32) for p, dist in PROJ_POLICIES.items()}
+    # a miss sampled from p3's policy lands on p3's bank entry
+    miss = sample_counts(rng, PROJ_POLICIES["p3"], 32)
+    assert landing_zone(miss, bank, PROJ_LEGAL) == "p3"
+    # the uniform mixture lands on the centroid, not on any named entry
+    mix = {o: 0 for o in PROJ_LEGAL}
+    for dist in PROJ_POLICIES.values():
+        for o, w in dist.items():
+            mix[o] += round(w * 32)
+    assert landing_zone(mix, bank, PROJ_LEGAL) == CENTROID
+
+
+def _projection_experiment(rng, mode, n_decisions=25, n=16, n_perm=200):
+    """One synthetic E8: per decision, a bank of every candidate's sampled
+    policy; per predictor, one miss distribution.  SIZE mode draws each miss
+    from an uninvolved other candidate; POWER mode draws it from the
+    predictor's own policy."""
+    preds = sorted(PROJ_POLICIES)
+    landings = {}
+    for d in range(n_decisions):
+        bank = {p: sample_counts(rng, dist, n) for p, dist in PROJ_POLICIES.items()}
+        per = {}
+        for p in preds:
+            if mode == "power":
+                src = PROJ_POLICIES[p]
+            else:
+                src = PROJ_POLICIES[rng.choice([q for q in preds if q != p])]
+            per[p] = landing_zone(sample_counts(rng, src, n), bank, PROJ_LEGAL)
+        landings[d] = per
+    observed, null = permutation_null(landings, preds, rng, n_perm=n_perm)
+    return exceeds_null(observed, null)
+
+
+def test_projection_null_size():
+    """SIZE: when misses come from uninvolved third candidates, the observed
+    self-landing rate exceeds the 95th-percentile permutation null in roughly
+    <= 10% of replicate experiments."""
+    rng = random.Random(101)
+    reps = 60
+    sig = sum(_projection_experiment(rng, "size") for _ in range(reps))
+    assert sig / reps <= 0.10
+
+
+def test_projection_null_power():
+    """POWER: when misses come from the predictor's own policy, the null is
+    exceeded in >= 90% of replicates."""
+    rng = random.Random(202)
+    reps = 30
+    sig = sum(_projection_experiment(rng, "power") for _ in range(reps))
+    assert sig / reps >= 0.90
