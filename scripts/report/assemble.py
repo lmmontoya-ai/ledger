@@ -32,6 +32,11 @@ def check(data: dict, body: str, html: str) -> None:
         errors.append("worked game missing from data")
     if not data.get("board"):
         errors.append("sample board missing from data")
+    acts = data.get("actions", {}).get("rows", [])
+    if len(acts) != 13:
+        errors.append(f"action table lists {len(acts)} actions, engine has 13")
+    if "Thirteen actions" not in body:
+        errors.append("prose action count does not say thirteen")
     harm = data["play"]["harm_share"]
     live = round(sum(v for k, v in harm.items() if k != "null"), 3)
     if live < 0.15:

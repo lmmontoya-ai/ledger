@@ -156,9 +156,20 @@ def demo_and_board():
     pick = max(boards, key=lambda b: (b[3].count("BINDING"), len(b[3])))
     return demo, pick[3]
 
+def action_table():
+    """The action vocabulary, straight from the frozen spec, so the report
+    cannot list an action the engine does not have (or miss one it does)."""
+    spec = json.loads((ROOT / "spec" / "actions.v2.json").read_text(encoding="utf-8"))
+    rows = []
+    for name, a in spec["actions"].items():
+        args = ", ".join(a.get("args", {}).keys()) or "none"
+        rows.append({"name": name, "args": args, "what": a["description"]})
+    return {"version": spec["spec_version"], "rows": rows}
+
 def main():
     bank = load_bank(BANK)
     data = {
+        "actions": action_table(),
         "scenario": scenario_facts(bank),
         "welfare": welfare_spread(bank),
         "play": play_all(bank),

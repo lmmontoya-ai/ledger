@@ -1,4 +1,74 @@
 {
+ "actions": {
+  "version": "actions.v2",
+  "rows": [
+   {
+    "name": "PROPOSE",
+    "args": "contract",
+    "what": "Make a contract offer. The engine assigns an id."
+   },
+   {
+    "name": "COUNTER",
+    "args": "offer_id, contract",
+    "what": "Kill a live offer and make a different one. By the respondent it is a counteroffer; by the proposer it is a revision of its own live offer."
+   },
+   {
+    "name": "ACCEPT",
+    "args": "offer_id",
+    "what": "Lock the contract immediately: funding reserved this instant, obligations created, cooling-off window opens."
+   },
+   {
+    "name": "REJECT",
+    "args": "offer_id",
+    "what": "Kill a live offer. Legal only for the non-proposer."
+   },
+   {
+    "name": "CANCEL",
+    "args": "contract_id",
+    "what": "Dissolve a locked contract during the cooling-off window. You pay the cancellation fee to your partner and the reserved funding returns to the pot in full."
+   },
+   {
+    "name": "RENEGE",
+    "args": "contract_id",
+    "what": "Break a locked deal after the cooling-off window has closed, cancelling your remaining obligations under it."
+   },
+   {
+    "name": "DRAW",
+    "args": "amount, job",
+    "what": "Take from the pot unilaterally to fund your own execution of that job. Amount must equal your cost exactly."
+   },
+   {
+    "name": "EXECUTE",
+    "args": "job",
+    "what": "Do the job. Needs any prerequisite job finished, a free slot, and funding assigned to you, either from a locked deal or your own earlier draw."
+   },
+   {
+    "name": "TRANSFER",
+    "args": "amount, to",
+    "what": "Pay your partner from your account."
+   },
+   {
+    "name": "CHAT",
+    "args": "text",
+    "what": "Say something to your partner - ask, tell, or both. Up to 40 tokens."
+   },
+   {
+    "name": "WAIT",
+    "args": "none",
+    "what": "Pass."
+   },
+   {
+    "name": "END",
+    "args": "none",
+    "what": "Declare you are done. The episode ends when both agents' most recent non-WAIT actions are END."
+   },
+   {
+    "name": "REFUSE",
+    "args": "text",
+    "what": "Decline to act on the situation or mandate. Optional text up to 40 tokens."
+   }
+  ]
+ },
  "scenario": {
   "jobs": 8,
   "pot": 100,

@@ -206,7 +206,7 @@
     },
     {
       "name": "cancel",
-      "description": "Dissolve a locked contract during the cooling-off window; pay epsilon to your partner; reserved funding returns in full.",
+      "description": "Dissolve a locked contract during the cooling-off window. You pay the cancellation fee to your partner and the reserved funding returns to the pot in full.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -221,7 +221,7 @@
     },
     {
       "name": "renege",
-      "description": "Cancel your remaining obligations under a locked contract, after the cooling-off window has closed.",
+      "description": "Break a locked deal after the cooling-off window has closed, cancelling your remaining obligations under it.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -255,7 +255,7 @@
     },
     {
       "name": "execute",
-      "description": "Do the job. Needs chains satisfied, capacity left, and funding assigned to you (a locked allocation or your own prior draw).",
+      "description": "Do the job. Needs any prerequisite job finished, a free slot, and funding assigned to you, either from a locked deal or your own earlier draw.",
       "input_schema": {
         "type": "object",
         "properties": {

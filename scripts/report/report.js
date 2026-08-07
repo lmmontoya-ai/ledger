@@ -108,5 +108,25 @@
     el.appendChild(cap);
   })();
 
+  /* ---- the action vocabulary, from the frozen spec ---- */
+  (function () {
+    const el = document.getElementById("action-table");
+    if (!el || !D.actions) return;
+    const t = document.createElement("table");
+    t.innerHTML = "<tr><th>Action</th><th>Takes</th><th>What it does</th></tr>";
+    D.actions.rows.forEach(r => {
+      const tr = document.createElement("tr");
+      const a = document.createElement("td");
+      const code = document.createElement("code"); code.textContent = r.name;
+      a.appendChild(code);
+      const b = document.createElement("td");
+      b.textContent = r.args === "none" ? "\u2014" : r.args;
+      b.style.whiteSpace = "nowrap";
+      const c = document.createElement("td"); c.textContent = r.what;
+      tr.appendChild(a); tr.appendChild(b); tr.appendChild(c);
+      t.appendChild(tr);
+    });
+    el.appendChild(t);
+  })();
   setText("ntests", D.tests || 151);
 })();
