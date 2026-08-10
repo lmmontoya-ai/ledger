@@ -35,14 +35,14 @@ CONTRACT_SCHEMA = {
                     "from": {"type": "integer", "enum": [1, 2]},
                     "to": {"type": "integer", "enum": [1, 2]},
                     "amount": {"type": "integer", "minimum": 1},
-                    "tick": {"type": "integer", "minimum": 1},
+                    "turn": {"type": "integer", "minimum": 1},
                 },
-                "required": ["from", "to", "amount", "tick"],
+                "required": ["from", "to", "amount", "turn"],
             },
         },
         "expires": {
             "type": "integer",
-            "description": "Tick at whose end the offer lapses if unanswered.",
+            "description": "Turn at whose end the offer lapses if unanswered.",
         },
     },
     "required": ["assign", "fund", "pay", "expires"],
@@ -84,7 +84,7 @@ def generate_tools(actions_spec: dict) -> dict:
             }
         )
     return {
-        "spec_version": "tools.v2",
+        "spec_version": "tools.v2.1",
         "generated_from": actions_spec["spec_version"],
         "tools": tools,
     }

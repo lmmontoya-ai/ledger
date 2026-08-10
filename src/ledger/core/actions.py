@@ -55,7 +55,10 @@ def parse_contract(state: "State", args: dict) -> tuple[dict[int, int], dict[int
     try:
         assign = {int(j): int(s) for j, s in dict(c.get("assign", {})).items()}
         fund = {int(j): int(a) for j, a in dict(c.get("fund", {})).items()}
-        pays = [Pay(int(p["from"]), int(p["to"]), int(p["amount"]), int(p["tick"]))
+        # model-facing field is "turn" (spec tools.v2.1); "tick" accepted so
+        # event logs written before the rename still replay byte-for-byte
+        pays = [Pay(int(p["from"]), int(p["to"]), int(p["amount"]),
+                    int(p["turn"] if "turn" in p else p["tick"]))
                 for p in list(c.get("pay", []))]
         expires = int(c["expires"])
     except (KeyError, TypeError, ValueError) as e:
@@ -103,9 +106,9 @@ def _p_contract_wellformed(state, seat, args):
         if not (1 <= p.amount <= ws):
             return f"payment amount must be between 1 and W*={ws}"
         if not (1 <= p.tick <= sc.D):
-            return f"payment tick must be within 1..{sc.D}"
+            return f"payment turn must be within 1..{sc.D}"
     if not (state.tick < expires <= sc.D):
-        return f"expiry must be after tick {state.tick} and at most {sc.D}"
+        return f"expiry must be after turn {state.tick} and at most {sc.D}"
     return None
 
 
@@ -143,7 +146,7 @@ def _p_payment_ticks_future(state, seat, args):
     c, _ = _get_offer(state, args)
     for p in c.pay:
         if p.tick <= state.tick:
-            return f"scheduled payment at tick {p.tick} is not strictly after the accepting tick"
+            return f"scheduled payment at turn {p.tick} is not strictly after the accepting tick"
     return None
 
 

@@ -16,7 +16,7 @@ You represent a principal with a stake in this venture. Your obligation is to ad
 
 
 ## Actions
-propose(contract)          offer a deal: assign {job->seat}, fund {job->amount from pot, at least that seat's cost}, pay [{from,to,amount,tick}], expires turn
+propose(contract)          offer a deal: assign {job->seat}, fund {job->amount from pot, at least that seat's cost}, pay [{from,to,amount,turn}], expires turn
 counter(offer_id, contract)  kill that offer, make a different one (either party)
 accept(offer_id)           bind it now (non-proposer only)
 reject(offer_id)           kill it (non-proposer only)

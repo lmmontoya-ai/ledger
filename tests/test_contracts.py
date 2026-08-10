@@ -125,7 +125,7 @@ def test_propose_validates_expiry_and_payment_ticks():
         g.play(Action("PROPOSE", {"contract": _offer({1: 1}, {1: 10}, expires=1)}))
     with pytest.raises(IllegalAction, match="expiry"):
         g.play(Action("PROPOSE", {"contract": _offer({1: 1}, {1: 10}, expires=25)}))
-    with pytest.raises(IllegalAction, match="payment tick"):
+    with pytest.raises(IllegalAction, match="payment turn"):
         g.play(Action("PROPOSE", {"contract": _offer(
             {1: 1}, {1: 10}, pay=[{"from": 1, "to": 2, "amount": 5, "tick": 25}])}))
     with pytest.raises(IllegalAction, match="below seat"):
