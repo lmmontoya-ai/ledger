@@ -39,6 +39,14 @@ def prose_response(text="I think I will wait.", provider="prov-a"):
             "usage": {"prompt_tokens": 100, "completion_tokens": 10, "cost": 0.001}}
 
 
+def truncated_response(provider="prov-a"):
+    return {"provider": provider, "model": "fake/model",
+            "choices": [{"finish_reason": "length",
+                         "message": {"role": "assistant",
+                                     "content": "let me think step by st"}}],
+            "usage": {"prompt_tokens": 100, "completion_tokens": 8192, "cost": 0.005}}
+
+
 class FakeClient:
     """Stands in for OpenRouterClient: same .chat contract, no network."""
 
@@ -101,6 +109,43 @@ def test_illegal_move_reprompted_with_reason(tmp_path):
     assert "illegal action" in calls[0]["error"]
     # the rejection went back as a tool-role message, in distribution
     assert any(m.get("role") == "tool" for m in client.seen_messages[1])
+
+
+def test_truncation_retried_clean_not_counted_as_behavior():
+    g = Game(scenario())
+    client = FakeClient([truncated_response(), tool_response("chat", {"text": "hi"})])
+    a = ModelAgent(SPEC, client).act(g, g.turn)
+    assert a.name == "CHAT"
+    # the retry re-sent the same clean messages: no corrective was appended
+    assert client.seen_messages[1] == client.seen_messages[0]
+
+
+def test_persistent_truncation_abandons_not_waits():
+    g = Game(scenario())
+    client = FakeClient([truncated_response()] * 4)
+    with pytest.raises(EpisodeAbandoned, match="max_tokens"):
+        ModelAgent(SPEC, client).act(g, g.turn)
+
+
+def test_max_bad_outputs_is_a_knob():
+    g = Game(scenario())
+    strict = ModelAgent(SPEC, FakeClient([prose_response()]), max_bad_outputs=1)
+    assert strict.act(g, g.turn).name == "WAIT"
+    assert strict.describe()["max_bad_outputs"] == 1
+
+
+def test_pay_turn_field_accepted_end_to_end():
+    sc = scenario()
+    g = Game(sc)
+    job = next(j for j in sc.jobs() if not sc.prereqs[j - 1])
+    contract = {"assign": {job: 2}, "fund": {job: sc.cost(2, job)},
+                "pay": [{"from": 1, "to": 2, "amount": 5, "turn": 8}],
+                "expires": 4}
+    a = ModelAgent(SPEC, FakeClient([tool_response("propose",
+                                                   {"contract": contract})])).act(g, g.turn)
+    assert a.name == "PROPOSE"
+    g.play(a)
+    assert g.state.contracts[1].pay[0].tick == 8
 
 
 def test_mandate_variant_reaches_the_system_message():

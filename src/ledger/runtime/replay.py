@@ -14,8 +14,9 @@ from ..core import fold as fold_mod
 from ..core import actions as actions_mod
 from ..core.events import Action, Event
 from ..render.render import DEFAULT_MANDATE, render_prompt, render_user, system_block
-from .agents import MAX_BAD_OUTPUTS, parse_reply, _corrective
+from .agents import MAX_BAD_OUTPUTS, MAX_TRUNCATIONS, parse_reply, _corrective
 from .config import ModelSpec
+from .openrouter import EpisodeAbandoned
 from .tools import load_tools
 
 
@@ -49,9 +50,16 @@ class PolicyBatch:
 
 
 def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
-                  n: int, mandate: str = DEFAULT_MANDATE,
-                  meter=None) -> PolicyBatch:
-    """N independent draws of the mover's policy at a frozen decision."""
+                  n: int, mandate: str = DEFAULT_MANDATE, meter=None,
+                  max_bad_outputs: int = MAX_BAD_OUTPUTS,
+                  max_truncations: int = MAX_TRUNCATIONS) -> PolicyBatch:
+    """N independent draws of the mover's policy at a frozen decision.
+
+    The elicitation procedure — up to `max_bad_outputs` corrective
+    re-prompts, then an invalid-flagged WAIT — is byte-identical to live
+    play's (agents.py), which is what makes the replayed distribution the
+    same measured object as the live one (plan §3.8a).  Truncation is
+    configuration failure and aborts rather than polluting the batch."""
     st = state_at(scenario, events, tick)
     seat = st.mover
     prefix = tuple(ev for ev in events if ev.tick < tick)
@@ -65,12 +73,20 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
     for _ in range(n):
         messages = list(base)
         action = None
-        for _attempt in range(MAX_BAD_OUTPUTS):
+        bad, truncs = 0, 0
+        while bad < max_bad_outputs:
             result = client.chat(spec, messages, tools)
             if meter is not None:
                 meter.add(result, spec)
             batch.records.append(result)
             batch.providers.append(result.provider)
+            if result.finish_reason() == "length":
+                truncs += 1
+                if truncs > max_truncations:
+                    raise EpisodeAbandoned(
+                        f"{spec.slug}: replay draw truncated {truncs}x; "
+                        f"raise max_tokens ({spec.max_tokens}) and re-collect")
+                continue
             candidate, error, msg = parse_reply(result)
             if candidate is not None:
                 reason = actions_mod.validate(st, seat, candidate)
@@ -78,6 +94,7 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
                     action = candidate
                     break
                 error = f"illegal action: {reason}"
+            bad += 1
             messages = messages + _corrective(msg, error)
         if action is None:
             action = Action("WAIT", {})

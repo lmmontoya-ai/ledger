@@ -47,6 +47,9 @@ class CallResult:
     def message(self) -> dict:
         return (self.raw.get("choices") or [{}])[0].get("message") or {}
 
+    def finish_reason(self) -> str | None:
+        return (self.raw.get("choices") or [{}])[0].get("finish_reason")
+
 
 class CostMeter:
     """Cumulative spend with a hard cap. Uses OpenRouter's reported cost when

@@ -13,10 +13,16 @@ from ..core import actions as actions_mod
 from ..core.events import Action
 from ..render.render import DEFAULT_MANDATE, render_prompt, render_user, system_block
 from .config import ModelSpec
-from .openrouter import CallResult
+from .openrouter import CallResult, EpisodeAbandoned
 from .tools import action_from_tool_call, load_tools
 
-MAX_BAD_OUTPUTS = 3  # §8.3: three failures, then flagged WAIT
+MAX_BAD_OUTPUTS = 3   # §8.3 default: three failures, then flagged WAIT.
+                      # A knob for standalone users; the experiments pin it
+                      # at 3 everywhere (plan §3.8a) and E0 runs a strict-
+                      # mode (1) sensitivity check.
+MAX_TRUNCATIONS = 2   # truncation is configuration failure, not behavior:
+                      # retried without counting toward the §8.3 budget,
+                      # and past this cap the episode abandons.
 
 
 def parse_reply(result: CallResult) -> tuple[Action | None, str | None, dict]:
@@ -56,13 +62,18 @@ class ScriptedAgent:
 
 class ModelAgent:
     def __init__(self, spec: ModelSpec, client, *,
-                 mandate: str = DEFAULT_MANDATE) -> None:
+                 mandate: str = DEFAULT_MANDATE,
+                 max_bad_outputs: int = MAX_BAD_OUTPUTS,
+                 max_truncations: int = MAX_TRUNCATIONS) -> None:
         self.spec = spec
         self.client = client
         self.mandate = mandate
+        self.max_bad_outputs = max_bad_outputs
+        self.max_truncations = max_truncations
 
     def describe(self) -> dict:
-        return {"kind": "model", "mandate": self.mandate, **self.spec.describe()}
+        return {"kind": "model", "mandate": self.mandate,
+                "max_bad_outputs": self.max_bad_outputs, **self.spec.describe()}
 
     def act(self, game, seat: int, logger=None, meter=None) -> Action:
         state, events = game.state, tuple(game.events)
@@ -73,10 +84,27 @@ class ModelAgent:
         ]
         tools = load_tools()
         last_error = "no attempt"
-        for attempt in range(1, MAX_BAD_OUTPUTS + 1):
+        bad, truncs, attempt = 0, 0, 0
+        while bad < self.max_bad_outputs:
+            attempt += 1
             result = self.client.chat(self.spec, messages, tools)
             if meter is not None:
                 meter.add(result, self.spec)
+            if result.finish_reason() == "length":
+                # ran out of max_tokens mid-generation: a configuration
+                # failure, never behavior — retried clean, never a WAIT
+                truncs += 1
+                if logger:
+                    logger.call(tick=state.tick, seat=seat, digest=digest,
+                                model=self.describe(), attempt=attempt,
+                                purpose="act", result=result,
+                                error="truncated at max_tokens "
+                                      "(configuration, not behavior)")
+                if truncs > self.max_truncations:
+                    raise EpisodeAbandoned(
+                        f"{self.spec.slug}: {truncs} truncated replies; "
+                        f"raise max_tokens ({self.spec.max_tokens}) and re-run")
+                continue
             action, error, msg = parse_reply(result)
             if action is not None:
                 reason = actions_mod.validate(state, seat, action)
@@ -87,6 +115,7 @@ class ModelAgent:
                                     purpose="act", result=result)
                     return action
                 error = f"illegal action: {reason}"
+            bad += 1
             last_error = error
             if logger:
                 logger.call(tick=state.tick, seat=seat, digest=digest,
@@ -95,7 +124,7 @@ class ModelAgent:
             messages = messages + _corrective(msg, error)
         if logger:
             logger.call(tick=state.tick, seat=seat, digest=digest,
-                        model=self.describe(), attempt=MAX_BAD_OUTPUTS,
+                        model=self.describe(), attempt=attempt,
                         purpose="act", error=last_error, invalid_wait=True)
         return Action("WAIT", {})
 
