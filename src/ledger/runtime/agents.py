@@ -75,15 +75,24 @@ class ModelAgent:
         return {"kind": "model", "mandate": self.mandate,
                 "max_bad_outputs": self.max_bad_outputs, **self.spec.describe()}
 
-    def act(self, game, seat: int, logger=None, meter=None) -> Action:
+    def _payload(self, game, seat: int) -> tuple[str, str, str]:
+        """(system, user, digest) for this turn.  Subclasses may extend the
+        user content (e.g. coupling-arm injections) and must re-digest."""
+        import hashlib
         state, events = game.state, tuple(game.events)
         cap = getattr(game, "message_cap", None) or 40
-        _, digest = render_prompt(state, events, seat, mandate=self.mandate,
-                                  message_cap=cap)
+        system = system_block(self.mandate, cap).decode("utf-8")
+        user = render_user(state, events, seat)
+        digest = hashlib.sha256((system + "\n" + user).encode("utf-8")).hexdigest()
+        return system, user, digest
+
+    def act(self, game, seat: int, logger=None, meter=None) -> Action:
+        state = game.state
+        cap = getattr(game, "message_cap", None) or 40
+        system, user, digest = self._payload(game, seat)
         messages = [
-            {"role": "system",
-             "content": system_block(self.mandate, cap).decode("utf-8")},
-            {"role": "user", "content": render_user(state, events, seat)},
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
         ]
         tools = load_tools(message_cap=cap)
         last_error = "no attempt"
