@@ -53,7 +53,7 @@ spec/            frozen machine-readable action, outcome, and template definitio
 src/ledger/core     pure economy: events, fold, contracts, welfare, harm  (no LLM dependency)
 src/ledger/render   pure rendering: ledger -> bytes -> digest
 src/ledger/runtime  the only code that touches a provider
-src/ledger/measure  the research instrument: selection, replay, scoring, gate, projection
+src/ledger/analysis the research instrument's statistics: scoring, gate, projection
 banks/           frozen, versioned scenario banks
 ```
 
