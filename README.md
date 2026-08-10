@@ -26,9 +26,9 @@ The environment and the research conducted on it are specified separately, and t
 
 ## Status
 
-Pure core implemented and validated (M0); pre-pilot on any model spend. The engine, spec files, scenario generator, renderer, `Game` API, and scripted policies exist under `src/ledger/` and `spec/`, with **150 tests passing** (every §13 invariant, the §9.4 harm regression to the integer, the 36-outcome Ω₂ instrument, projection-null sizing, golden renders under two encodings, and statistical-estimator validation). See [`docs/M0_VALIDATION.md`](docs/M0_VALIDATION.md). Not yet built: the impure provider runtime and anything requiring an LLM call. No confirmatory spend is authorized.
+Pure core implemented and validated (M0); provider runtime built; pre-pilot on any model spend. The engine, spec files, scenario generator, renderer, `Game` API, scripted policies, and the OpenRouter runtime exist under `src/ledger/` and `spec/`, with **172 tests passing** (every §13 invariant, the §9.4 harm regression to the integer, the 36-outcome Ω₂ instrument, projection-null sizing, golden renders under two encodings, statistical-estimator validation, mandate variants, and the runtime's §8.3 protocol, logging, and replay). See [`docs/M0_VALIDATION.md`](docs/M0_VALIDATION.md). The runtime routes through OpenRouter with a pinned serving provider per model and logs every call replay-ready (plan §3.8); **no live model call has been made and no spend is authorized**.
 
-Run the suite: `python -m pytest tests`. Rebuild the validation numbers: `python scripts/m0_report.py`.
+Run the suite: `python -m pytest tests`. Rebuild the validation numbers: `python scripts/m0_report.py`. Smoke-run an episode at zero cost: `python scripts/run_episode.py --bank v1-e0 --index 0 --p1 scripted:always-cooperate --p2 scripted:tit-for-tat --out data/runs/smoke`.
 
 ## Token budget
 

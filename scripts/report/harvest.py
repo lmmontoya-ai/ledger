@@ -23,7 +23,7 @@ from ledger.render.board import render_board  # noqa: E402
 from ledger.render.render import render_prompt, system_block  # noqa: E402
 from ledger.scenarios.bank import load_bank  # noqa: E402
 
-BANK = "v1-m0"
+BANK = "v1-e0"
 
 
 def scenario_facts(bank):
@@ -156,6 +156,19 @@ def demo_and_board():
     pick = max(boards, key=lambda b: (b[3].count("BINDING"), len(b[3])))
     return demo, pick[3]
 
+def test_count():
+    """Count collected tests from pytest itself, so the status table's number
+    cannot go stale the way a typed one would."""
+    import subprocess
+    r = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q",
+                        str(ROOT / "tests")], capture_output=True, text=True,
+                       cwd=str(ROOT))
+    n = sum(1 for line in r.stdout.splitlines() if "::" in line)
+    if not n:
+        raise RuntimeError("pytest collected nothing")
+    return n
+
+
 def action_table():
     """The action vocabulary, straight from the frozen spec, so the report
     cannot list an action the engine does not have (or miss one it does)."""
@@ -184,6 +197,10 @@ def main():
         data["demo"], data["board"] = demo, board
     except Exception as exc:
         print("demo skipped:", exc)
+    try:
+        data["tests"] = test_count()
+    except Exception as exc:
+        print("test count skipped:", exc)
     out = HERE / "report_data.json"
     out.write_text(json.dumps(data, indent=1), encoding="utf-8")
     p = data["play"]
