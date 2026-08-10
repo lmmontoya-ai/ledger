@@ -1,6 +1,7 @@
 History line grammar v2 (normative per ENVIRONMENT_DESIGN §7.3, template
 revision after the second G2 read-through failure on notation).
-One line per past turn.  Seats render as you/them in the viewer's own view.
+One line per past turn, under a "## History" markdown section header
+(v2.10).  Seats render as you/them in the viewer's own view.
 Action LABELS are frozen (they match the tool names and are never
 paraphrased); everything around them is plain language.  Engine consequences
 render in square brackets on the line that caused them; multiple

@@ -3,7 +3,7 @@
 ### A two-agent contracting economy for language-model agents
 
 **Environment Design Document — v2.11**
-<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`). v2.7, template v2 after a second G2 read-through failure on notation — tick→turn, C1→deal 1, f18→"18 from pot", LOCKED→BINDING in all rendered text (engine identifiers unchanged; action labels frozen since they match the tool names); token bounds re-measured under both encodings; a §7 change under G1's conditional pass, flagged for advisor re-review. v2.8 finishes that work after the reader parsed job 3 -> you as receiving the job and its money: assignments now render as you do job 3 (16 from pot) and job markers as <- them must do this (deal 1), since an assignment is an obligation to spend a slot, not a receipt. v2.9: QUERY and INFORM merge into one CHAT action — the ask/tell split was unverifiable self-report (the engine cannot check that QUERY text is a question, and mixed messages forced arbitrary labels); thirteen actions, spec v2 files, all counts and figures updated. v2.10: prompt sections carry markdown headers, chosen over XML tags at roughly half the token cost, so structure is visible to a reader and evidence rungs are auditable section subsets; board 342, full prompt 1153, both inside bounds. v2.11: mandate objective variants frozen in `spec/templates.v2/mandates.json` (principal/open/own/joint, only the Mandate paragraph varies, byte-frozen per variant with the default verbatim-checked against the template); §7.5's cache claim restated per-variant accordingly.</sub>
+<sub>v2.1–v2.3: external review closed the self-rescue hole, completed the contract law, and made the generator executable. v2.4 simplifies by deletion where review kept finding edge cases in added rules: the escrow limbo is replaced by instant lock with a cooling-off cancel (resources reserved the moment a contract exists), and per-job deadlines are deleted in favor of a single snapshot-batched settlement at episode end with honest breach priced strictly cheaper than silent default. The spec got shorter and four classes of hole became unrepresentable. v2.5, closure for implementation: the tool list matches the action rename; the token budget is measured with a real tokenizer and bounded per line class; provider failure never converts to behavior (abandon-and-quarantine, never a synthetic WAIT); offer expiry, payment-tick, window-renege, and double-cancel boundary rules stated; the renege-harm invariant corrected to clamped-may-be-zero with the exposure guarantee living in the admission probe. v2.6, reconciling three self-inconsistencies the M0 implementation surfaced: the chain-edge count in §10.2 now matches §10.4's generator (1–4 edges); the money-conservation invariant is stated as reserved + spent + left + destroyed (the only decomposition true at every state); and message history lines are specified to join with a single space so the 40-token cap renders within the 48-token bound. The pure core is implemented and the suite passes (149 tests at last count) (`M0_VALIDATION.md`). v2.7, template v2 after a second G2 read-through failure on notation — tick→turn, C1→deal 1, f18→"18 from pot", LOCKED→BINDING in all rendered text (engine identifiers unchanged; action labels frozen since they match the tool names); token bounds re-measured under both encodings; a §7 change under G1's conditional pass, flagged for advisor re-review. v2.8 finishes that work after the reader parsed job 3 -> you as receiving the job and its money: assignments now render as you do job 3 (16 from pot) and job markers as <- them must do this (deal 1), since an assignment is an obligation to spend a slot, not a receipt. v2.9: QUERY and INFORM merge into one CHAT action — the ask/tell split was unverifiable self-report (the engine cannot check that QUERY text is a question, and mixed messages forced arbitrary labels); thirteen actions, spec v2 files, all counts and figures updated. v2.10: prompt sections carry markdown headers, chosen over XML tags at roughly half the token cost, so structure is visible to a reader and evidence rungs are auditable section subsets; board 342, full prompt 1153, both inside bounds. v2.11: mandate objective variants frozen in `spec/templates.v2/mandates.json` (principal/open/own/joint, only the Mandate paragraph varies, byte-frozen per variant with the default verbatim-checked against the template); §7.5's cache claim restated per-variant accordingly. v2.12, pre-freeze sync: model-facing time is "turn" at the tool boundary too — pay items and glosses say `turn` (tools spec v2.1; the engine accepts legacy `tick` so earlier logs replay); §7.1's diagram carries the measured token numbers (612 system, 342 board) instead of stale estimates; §8.1's signatures match the generated schemas (`propose(contract)`); the normative template files gain the v2.10 markdown section headers they had lagged; truncated replies (`finish_reason: length`) are classified as configuration failure, retried clean, never behavior.</sub>
 
 This document specifies the environment and nothing else. It is self-contained: a reader needs no other source to understand the world, implement it, or play it. What experiments to run on it lives in a separate document, [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md), and no part of this specification depends on it.
 
@@ -195,7 +195,7 @@ There is no `MALFORMED` action; malformed output is a retry, then a flagged `WAI
 contract:
   assign:    { job -> seat }              who does what
   fund:      { job -> amount }            budget reserved at ACCEPT; must be >= that seat's cost
-  pay:       [ { from, to, amount, tick } ]   scheduled side payments; 1 <= amount <= W*, tick <= D
+  pay:       [ { from, to, amount, turn } ]   scheduled side payments; 1 <= amount <= W*, turn <= D
   expires:   tick                         offer lapses if unanswered
 ```
 
@@ -325,11 +325,12 @@ This section is the environment's user interface. It is specified precisely beca
 ### 7.1 The whole prompt, at a glance
 
 ```
-┌─ SYSTEM (identical in every call, ever) ───────── ~430 tok, cached
+┌─ SYSTEM (byte-identical per mandate variant) ──── 612 tok, cached
 │  mandate · rules · action reference · response format
-├─ USER (varies) ────────────────────────────────── ~250-550 tok
-│  BOARD    current state, ~230 tok, does not grow
-│  HISTORY  one line per past tick, ~8 tok each, grows
+│  (tool schemas served alongside, ~300-600 tok, equally invariant)
+├─ USER (varies) ────────────────────────────────── ~350-1,150 tok
+│  BOARD    current state, 342 tok measured, ≤360 bound, does not grow
+│  HISTORY  one line per past turn, ~8-52 tok by line class, grows
 └─────────────────────────────────────────────────────────────────
 ```
 
@@ -437,14 +438,16 @@ The agent acts by calling a tool. Thirteen tools, one per action, with the argum
 The tool schemas sit in the cached prefix, so their cost is paid once.
 
 ```
-propose(assign, fund, pay, by, expires)
-counter(offer_id, assign, fund, pay, by, expires)
+propose(contract)     counter(offer_id, contract)
 accept(offer_id)      reject(offer_id)
 cancel(contract_id)   renege(contract_id)
 draw(amount, job)     execute(job)
 transfer(amount, to)
 chat(text)
-wait()                end()             refuse(text)
+wait()                end()             refuse(text?)
+
+contract = { assign {job -> seat}, fund {job -> amount},
+             pay [{from, to, amount, turn}], expires }
 ```
 
 ### 8.2 Reasoning

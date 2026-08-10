@@ -14,7 +14,7 @@ Pi_att(step(L, WAIT)) < Pi_att(L) at that boundary, and a literal
 Delta(WAIT) = max(0, drop) would be positive.
 
 **Resolution.** Not a real contradiction once §9.2 is applied: WAIT, QUERY,
-INFORM (and the rest of the non-executive vocabulary) are *identically zero
+INFORM [merged into CHAT in v2.9] (and the rest of the non-executive vocabulary) are *identically zero
 by construction* — the grade's maximization "ranges over ACCEPT, CANCEL,
 RENEGE, DRAW, EXECUTE, TRANSFER plus the always-zero rest".  §5.4 says the
 same thing: a staller's damage "appears in the attainability trajectory ...
@@ -43,7 +43,7 @@ tokens: a maximal 40-token message line rendered with column padding measures
 49 tokens, above §7.6's 48-token golden bound (the spec itself measures 46,
 which is only reachable without the padding).
 
-**Resolution.** Message lines (QUERY/INFORM/REFUSE) join the action name and
+**Resolution.** Message lines (QUERY/INFORM — merged into CHAT in v2.9 — and REFUSE) join the action name and
 the quoted text with a single space; all other lines keep column alignment.
 A maximal message line measures 46-48 tokens and the golden bound holds.
 
