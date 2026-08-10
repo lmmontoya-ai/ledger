@@ -96,6 +96,20 @@ def test_three_failures_become_flagged_wait(tmp_path):
     assert recs[-1]["invalid_wait"] is True and recs[-1]["error"]
 
 
+def test_retry_echo_preserves_reasoning_blocks():
+    """Within-turn correction must carry the assistant's reasoning blocks
+    back (Anthropic requires thinking to precede tool_use on echoed turns).
+    Across turns, nothing is carried — each turn is a fresh call."""
+    g = Game(scenario())
+    bad = tool_response("accept", {"offer_id": 99})
+    bad["choices"][0]["message"]["reasoning_details"] = [
+        {"type": "reasoning.text", "text": "let me accept offer 99"}]
+    client = FakeClient([bad, tool_response("wait", {})])
+    ModelAgent(SPEC, client).act(g, g.turn)
+    echoed = [m for m in client.seen_messages[1] if m.get("role") == "assistant"]
+    assert echoed and echoed[0].get("reasoning_details")
+
+
 def test_illegal_move_reprompted_with_reason(tmp_path):
     from ledger.runtime import EpisodeLogger
     g = Game(scenario())

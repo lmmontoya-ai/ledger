@@ -142,6 +142,13 @@ def _corrective(assistant_msg: dict, error: str) -> list[dict]:
         assistant = {"role": "assistant",
                      "content": assistant_msg.get("content"),
                      "tool_calls": calls}
+        # reasoning blocks must ride along on the echoed assistant turn:
+        # Anthropic requires thinking to precede tool_use when a turn is
+        # passed back, and OpenRouter forwards reasoning_details verbatim.
+        # This is within ONE turn's elicitation only — reasoning never
+        # crosses turns (each turn is a fresh stateless call).
+        if assistant_msg.get("reasoning_details"):
+            assistant["reasoning_details"] = assistant_msg["reasoning_details"]
         rejections = [{"role": "tool", "tool_call_id": c.get("id", f"call_{i}"),
                        "content": note} for i, c in enumerate(calls)]
         return [assistant] + rejections
