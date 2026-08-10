@@ -1,0 +1,29 @@
+{
+ "_note": "Example model registry for scripts/run_episode.py. Copy to models.json (gitignored) and replace with the chosen pilot roster: plan 6.1 wants three models, one per developer family, each with a pinned provider so replays never mix serving hosts (plan 3.8). Prices are USD per million tokens and drive the cost cap; check current OpenRouter pricing before running.",
+ "models": {
+  "sonnet": {
+   "slug": "anthropic/claude-sonnet-4",
+   "provider_order": ["anthropic"],
+   "temperature": 1.0,
+   "max_tokens": 1024,
+   "price_in": 3.0,
+   "price_out": 15.0
+  },
+  "gpt": {
+   "slug": "openai/gpt-4.1",
+   "provider_order": ["openai"],
+   "temperature": 1.0,
+   "max_tokens": 1024,
+   "price_in": 2.0,
+   "price_out": 8.0
+  },
+  "gemini": {
+   "slug": "google/gemini-2.5-flash",
+   "provider_order": ["google-vertex"],
+   "temperature": 1.0,
+   "max_tokens": 1024,
+   "price_in": 0.3,
+   "price_out": 2.5
+  }
+ }
+}
