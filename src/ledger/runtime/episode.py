@@ -31,22 +31,23 @@ def _code_version() -> str:
 
 def run_episode(scenario, agents: dict[int, object], out_dir: str | Path, *,
                 bank: str | None = None, mandate: str = DEFAULT_MANDATE,
+                message_cap: int | None = None,
                 meter=None, episode_id: str | None = None) -> dict | None:
     """Play scenario to completion.  Returns the engine result dict, or None
     if the episode was abandoned (the log records why)."""
     episode_id = episode_id or uuid.uuid4().hex[:12]
     tools_version = json.loads(SPEC_PATH.read_text(encoding="utf-8"))["spec_version"]
+    g = Game(scenario, message_cap=message_cap)
     logger = EpisodeLogger(Path(out_dir) / f"{episode_id}.jsonl", {
         "episode_id": episode_id,
         "bank": bank, "scenario_id": scenario.scenario_id,
         "seed": scenario.seed, "opening": scenario.opening,
-        "mandate": mandate,
+        "mandate": mandate, "message_cap": g.message_cap,
         "seats": {str(s): a.describe() for s, a in agents.items()},
         "generator_version": GENERATOR_VERSION,
         "tools_version": tools_version,
         "code_version": _code_version(),
     })
-    g = Game(scenario)
     try:
         while not g.over:
             seat = g.turn

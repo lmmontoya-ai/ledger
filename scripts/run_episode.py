@@ -43,6 +43,8 @@ def main():
     ap.add_argument("--p2", required=True)
     ap.add_argument("--models", default=None, help="model registry JSON")
     ap.add_argument("--mandate", default="principal")
+    ap.add_argument("--message-cap", type=int, default=None,
+                    help="override the 40-token CHAT cap (exploration only)")
     ap.add_argument("--cap-usd", type=float, default=1.0)
     ap.add_argument("--out", default="data/runs/adhoc")
     args = ap.parse_args()
@@ -57,7 +59,8 @@ def main():
               2: make_agent(args.p2, models, client, args.mandate)}
 
     r = run_episode(scenario, agents, args.out, bank=args.bank,
-                    mandate=args.mandate, meter=meter)
+                    mandate=args.mandate, message_cap=args.message_cap,
+                    meter=meter)
     if r is None:
         print("episode ABANDONED (see log); spent "
               f"${meter.spent_usd:.2f} over {meter.calls} calls")

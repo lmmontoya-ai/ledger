@@ -77,12 +77,15 @@ class ModelAgent:
 
     def act(self, game, seat: int, logger=None, meter=None) -> Action:
         state, events = game.state, tuple(game.events)
-        _, digest = render_prompt(state, events, seat, mandate=self.mandate)
+        cap = getattr(game, "message_cap", None) or 40
+        _, digest = render_prompt(state, events, seat, mandate=self.mandate,
+                                  message_cap=cap)
         messages = [
-            {"role": "system", "content": system_block(self.mandate).decode("utf-8")},
+            {"role": "system",
+             "content": system_block(self.mandate, cap).decode("utf-8")},
             {"role": "user", "content": render_user(state, events, seat)},
         ]
-        tools = load_tools()
+        tools = load_tools(message_cap=cap)
         last_error = "no attempt"
         bad, truncs, attempt = 0, 0, 0
         while bad < self.max_bad_outputs:

@@ -28,8 +28,13 @@ def tools_spec() -> list[dict]:
 
 
 class Game:
-    def __init__(self, scenario: Scenario):
+    def __init__(self, scenario: Scenario, *, message_cap: int | None = None):
+        """`message_cap` overrides the default 40-token CHAT cap (§7.6).
+        A knob for exploration; experiments freeze one value for the whole
+        campaign, and the runtime records it in every episode's meta."""
+        from .render.tokens import MESSAGE_TOKEN_CAP
         self.scenario = scenario
+        self.message_cap = MESSAGE_TOKEN_CAP if message_cap is None else message_cap
         self.events: list[Event] = []
         self.state = fold_mod.initial_state(scenario)
         self._shown: dict[tuple[int, int], tuple[bytes, str]] = {}
@@ -66,7 +71,8 @@ class Game:
             self.render(seat)
         truncated = False
         if action.name in MESSAGE_ACTIONS and "text" in action.args:
-            text, truncated = truncate_message(str(action.args["text"]))
+            text, truncated = truncate_message(str(action.args["text"]),
+                                               cap=self.message_cap)
             action = Action(action.name, {**action.args, "text": text})
         if invalid:
             ev = Event(self.state.tick, seat, Action("WAIT"), invalid=True)

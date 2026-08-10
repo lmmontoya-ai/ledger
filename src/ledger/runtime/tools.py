@@ -17,7 +17,7 @@ SPEC_PATH = REPO_ROOT / "spec" / "tools.v2.json"
 _cache: list[dict] | None = None
 
 
-def load_tools() -> list[dict]:
+def load_tools(message_cap: int | None = None) -> list[dict]:
     global _cache
     if _cache is None:
         spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
@@ -28,7 +28,13 @@ def load_tools() -> list[dict]:
                           "parameters": t["input_schema"]}}
             for t in spec["tools"]
         ]
-    return _cache
+    if message_cap is None or message_cap == 40:
+        return _cache
+    # non-default cap: the stated limit in the schema must match the
+    # enforced one (same rule as the system block)
+    patched = json.loads(json.dumps(_cache).replace("40 tokens",
+                                                    f"{message_cap} tokens"))
+    return patched
 
 
 def action_names() -> set[str]:

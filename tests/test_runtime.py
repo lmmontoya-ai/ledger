@@ -148,6 +148,28 @@ def test_pay_turn_field_accepted_end_to_end():
     assert g.state.contracts[1].pay[0].tick == 8
 
 
+def test_message_cap_knob_flows_prompt_schema_and_engine():
+    from ledger.render.render import system_block
+    from ledger.runtime import load_tools as lt
+    # default untouched, byte-for-byte
+    assert b"(max 40 tokens)" in system_block()
+    assert system_block() == system_block("principal", 40)
+    # raised cap: stated limit matches enforced limit everywhere
+    assert b"(max 120 tokens)" in system_block("principal", 120)
+    chat = next(t for t in lt(message_cap=120)
+                if t["function"]["name"] == "chat")
+    assert "120 tokens" in json.dumps(chat)
+    assert "40 tokens" not in json.dumps(chat)
+    # engine truncates at the configured cap
+    long_text = " ".join(["word"] * 100)
+    g40, g120 = Game(scenario()), Game(scenario(), message_cap=120)
+    for g in (g40, g120):
+        g.play(Action("CHAT", {"text": long_text}))
+    from ledger.render.tokens import token_count
+    assert token_count(g40.events[0].action.args["text"], "o200k_base") <= 40
+    assert token_count(g120.events[0].action.args["text"], "o200k_base") > 40
+
+
 def test_mandate_variant_reaches_the_system_message():
     seen = {}
 

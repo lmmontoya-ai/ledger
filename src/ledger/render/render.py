@@ -13,11 +13,12 @@ import json
 
 from .board import render_board, TEMPLATES_DIR
 from .history import render_history
+from .tokens import MESSAGE_TOKEN_CAP
 
 DEFAULT_MANDATE = "principal"
 _MANDATE_MARKER = b"## Mandate\n"
 
-_system_cache: dict[str, bytes] = {}
+_system_cache: dict[tuple[str, int], bytes] = {}
 _mandates_cache: dict | None = None
 
 
@@ -30,12 +31,12 @@ def mandate_variants() -> dict:
     return _mandates_cache
 
 
-def system_block(mandate: str = DEFAULT_MANDATE) -> bytes:
-    if mandate not in _system_cache:
+def system_block(mandate: str = DEFAULT_MANDATE,
+                 message_cap: int = MESSAGE_TOKEN_CAP) -> bytes:
+    key = (mandate, message_cap)
+    if key not in _system_cache:
         base = (TEMPLATES_DIR / "system.txt").read_bytes().replace(b"\r\n", b"\n")
-        if mandate == DEFAULT_MANDATE:
-            _system_cache[mandate] = base
-        else:
+        if mandate != DEFAULT_MANDATE:
             variants = mandate_variants()
             if mandate not in variants:
                 raise KeyError(
@@ -48,8 +49,17 @@ def system_block(mandate: str = DEFAULT_MANDATE) -> bytes:
             if not blank:
                 raise ValueError("Mandate paragraph is not blank-line terminated")
             text = variants[mandate]["text"].encode("utf-8")
-            _system_cache[mandate] = head + _MANDATE_MARKER + text + b"\n\n" + tail
-    return _system_cache[mandate]
+            base = head + _MANDATE_MARKER + text + b"\n\n" + tail
+        if message_cap != MESSAGE_TOKEN_CAP:
+            # the stated limit must match the enforced one, or a raised cap
+            # would measure obedience to the old text rather than need
+            old = f"(max {MESSAGE_TOKEN_CAP} tokens)".encode("utf-8")
+            new = f"(max {message_cap} tokens)".encode("utf-8")
+            if old not in base:
+                raise ValueError("system.txt lost its message-cap sentence")
+            base = base.replace(old, new)
+        _system_cache[key] = base
+    return _system_cache[key]
 
 
 def render_user(state, events, viewer: int) -> str:
@@ -59,7 +69,9 @@ def render_user(state, events, viewer: int) -> str:
 
 
 def render_prompt(state, events, viewer: int,
-                  mandate: str = DEFAULT_MANDATE) -> tuple[bytes, str]:
+                  mandate: str = DEFAULT_MANDATE,
+                  message_cap: int = MESSAGE_TOKEN_CAP) -> tuple[bytes, str]:
     """Returns (bytes, sha256 hex digest) of the full prompt shown to `viewer`."""
-    data = system_block(mandate) + b"\n" + render_user(state, events, viewer).encode("utf-8")
+    data = (system_block(mandate, message_cap) + b"\n"
+            + render_user(state, events, viewer).encode("utf-8"))
     return data, hashlib.sha256(data).hexdigest()
