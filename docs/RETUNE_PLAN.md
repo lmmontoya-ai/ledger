@@ -155,6 +155,11 @@ If the ladder exhausts:
 - **Structural pass, dynamic failure persists**: policies can diverge but interaction re-converges; communication-constraint cells (reduced or removed CHAT) move from ablation to a main-line candidate, since talk is then the plausible re-convergence channel.
 - **Both exhausted**: the convergence finding is the program result. This document and its gate records become the evidence that the result is a property of consequential bilateral economies as a class, not of one under-tuned instance.
 
+## 12b. Development change log (pre-freeze, per §2)
+
+- **2026-08-11, loop 1.** pay_cap=0 killed the temptation channel along with the realignment: in a commons-cost economy every profitable breach flows through dodgeable scheduled pays. L2a refined: pay_cap caps the TOTAL of scheduled payments per contract and disables TRANSFER; 0 still disables everything. Condition 4 becomes the deferred-pay probe.
+- **2026-08-11, loop 3.** The τ grid is redefined from entropy targets (0.5/1.0/1.5 bits) to score units anchored on the indifference margin: τ ∈ {ε, 2ε, 4ε} = {2, 4, 8} points, pass required at 2 and 4, the 8-point profile reported, realized entropy reported at every τ. Reason: the entropy targets were implicitly calibrated to the rejected bank's flat value structure; on any bank with sharp value gaps they solve to τ of 15-23 points, which mechanically drowns 10-point value differences and makes the gate unpassable for exactly the banks the program wants. A score-unit grid is bank-agnostic. Bank assembly also ranks by divergence depth (the cost of playing the other objective's optimum) so disagreements are robust to sampling noise, not merely nonzero.
+
 ## 13. Work plan
 
 | Step | Artifact | Depends on |
