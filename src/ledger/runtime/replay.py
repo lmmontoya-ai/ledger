@@ -53,14 +53,20 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
                   n: int, mandate: str = DEFAULT_MANDATE,
                   message_cap: int = 40, meter=None,
                   max_bad_outputs: int = MAX_BAD_OUTPUTS,
-                  max_truncations: int = MAX_TRUNCATIONS) -> PolicyBatch:
+                  max_truncations: int = MAX_TRUNCATIONS,
+                  parallel_draws: int = 1) -> PolicyBatch:
     """N independent draws of the mover's policy at a frozen decision.
 
     The elicitation procedure — up to `max_bad_outputs` corrective
     re-prompts, then an invalid-flagged WAIT — is byte-identical to live
     play's (agents.py), which is what makes the replayed distribution the
     same measured object as the live one (plan §3.8a).  Truncation is
-    configuration failure and aborts rather than polluting the batch."""
+    configuration failure and aborts rather than polluting the batch.
+
+    `parallel_draws` is pure scheduling, never measurement: each draw is an
+    independent sample of one frozen prompt, so running them concurrently
+    changes no prompt byte, no digest, and no per-draw procedure.  Results
+    are assembled in draw order regardless of completion order."""
     st = state_at(scenario, events, tick)
     seat = st.mover
     prefix = tuple(ev for ev in events if ev.tick < tick)
@@ -73,18 +79,20 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
     ]
     tools = load_tools(message_cap=message_cap)
     batch = PolicyBatch(tick=tick, seat=seat, digest=digest)
-    for _ in range(n):
+
+    def one_draw(_i: int):
         messages = list(base)
         action = None
         bad, truncs = 0, 0
+        records, providers = [], []
         while bad < max_bad_outputs:
             if meter is not None:
                 meter.precheck(spec)
             result = client.chat(spec, messages, tools)
             if meter is not None:
                 meter.add(result, spec)
-            batch.records.append(result)
-            batch.providers.append(result.provider)
+            records.append(result)
+            providers.append(result.provider)
             if result.finish_reason() == "length":
                 truncs += 1
                 if truncs > max_truncations:
@@ -101,10 +109,22 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
                 error = f"illegal action: {reason}"
             bad += 1
             messages = messages + _corrective(msg, error)
-        if action is None:
+        invalid = action is None
+        if invalid:
             action = Action("WAIT", {})
-            batch.invalid_draws += 1
+        return action, records, providers, invalid
+
+    if parallel_draws <= 1:
+        results = [one_draw(i) for i in range(n)]
+    else:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=parallel_draws) as pool:
+            results = list(pool.map(one_draw, range(n)))
+    for action, records, providers, invalid in results:
         batch.actions.append(action)
+        batch.records.extend(records)
+        batch.providers.extend(providers)
+        batch.invalid_draws += invalid
     served = {p for p in batch.providers if p is not None}
     batch.valid = len(served) <= 1
     return batch

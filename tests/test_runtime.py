@@ -262,6 +262,20 @@ def test_replay_elicits_under_the_live_cap():
     assert "max 200 tokens" in c200.seen_messages[0][0]["content"]
 
 
+def test_parallel_draws_are_scheduling_not_measurement():
+    """Fanned-out draws must produce the identical digest and, for a
+    deterministic fake, the identical action set — concurrency is never
+    allowed to touch the measured object."""
+    sc = scenario()
+    seq_client = FakeClient(fn=lambda s, m, t: tool_response("wait", {}))
+    par_client = FakeClient(fn=lambda s, m, t: tool_response("wait", {}))
+    b_seq = sample_policy(seq_client, SPEC, sc, [], 1, n=8)
+    b_par = sample_policy(par_client, SPEC, sc, [], 1, n=8, parallel_draws=4)
+    assert b_seq.digest == b_par.digest
+    assert [a.name for a in b_seq.actions] == [a.name for a in b_par.actions]
+    assert len(b_par.records) == 8 and b_par.valid
+
+
 def test_meter_precheck_refuses_before_any_call():
     g = Game(scenario())
     client = FakeClient(fn=lambda s, m, t: tool_response("wait", {}))
