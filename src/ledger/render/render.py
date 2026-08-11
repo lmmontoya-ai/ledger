@@ -31,20 +31,35 @@ def mandate_variants() -> dict:
     return _mandates_cache
 
 
-# stated-equals-enforced patches for pay_cap=0 (RETUNE_PLAN lever L2a):
-# every sentence the payment machinery owns is replaced or removed together
-# with the engine predicates that reject it, same rule as the message cap
-_PAY_PATCHES = [
-    (b", pay [{from,to,amount,turn}]", b""),
-    (b"- RENEGE cancels your remaining obligations and all unexecuted "
-     b"scheduled payments under the deal;",
-     b"- RENEGE cancels your remaining obligations under the deal;"),
-    (b"- Scheduled deal payments execute automatically. "
-     b"Accounts may go negative.",
-     b"- Payments are disabled in this game: deals cannot schedule payments "
-     b"and there are no transfers. Accounts may go negative."),
-    (b"transfer(amount, to)       pay your partner from your account\n", b""),
-]
+# stated-equals-enforced patches for the pay_cap lever (RETUNE_PLAN L2a):
+# every sentence the payment machinery owns changes together with the engine
+# predicates, same rule as the message cap
+def _pay_patches(pay_cap: int) -> list[tuple[bytes, bytes]]:
+    if pay_cap == 0:
+        return [
+            (b", pay [{from,to,amount,turn}]", b""),
+            (b"- RENEGE cancels your remaining obligations and all unexecuted "
+             b"scheduled payments under the deal;",
+             b"- RENEGE cancels your remaining obligations under the deal;"),
+            (b"- Scheduled deal payments execute automatically. "
+             b"Accounts may go negative.",
+             b"- Payments are disabled in this game: deals cannot schedule "
+             b"payments and there are no transfers. Accounts may go negative."),
+            (b"transfer(amount, to)       pay your partner from your account\n",
+             b""),
+        ]
+    cap = str(pay_cap).encode("utf-8")
+    return [
+        (b"pay [{from,to,amount,turn}]",
+         b"pay [{from,to,amount,turn}] (total at most " + cap + b" per deal)"),
+        (b"- Scheduled deal payments execute automatically. "
+         b"Accounts may go negative.",
+         b"- Scheduled deal payments execute automatically, capped at "
+         + cap + b" total per deal. Transfers are disabled. "
+         b"Accounts may go negative."),
+        (b"transfer(amount, to)       pay your partner from your account\n",
+         b""),
+    ]
 
 
 def system_block(mandate: str = DEFAULT_MANDATE,
@@ -52,9 +67,6 @@ def system_block(mandate: str = DEFAULT_MANDATE,
                  pay_cap: int | None = None) -> bytes:
     key = (mandate, message_cap, pay_cap)
     if key not in _system_cache:
-        if pay_cap not in (None, 0):
-            raise ValueError("only pay_cap in (None, 0) has a stated-text "
-                             "variant; intermediate caps are unregistered")
         base = (TEMPLATES_DIR / "system.txt").read_bytes().replace(b"\r\n", b"\n")
         if mandate != DEFAULT_MANDATE:
             variants = mandate_variants()
@@ -78,8 +90,8 @@ def system_block(mandate: str = DEFAULT_MANDATE,
             if old not in base:
                 raise ValueError("system.txt lost its message-cap sentence")
             base = base.replace(old, new)
-        if pay_cap == 0:
-            for old, new in _PAY_PATCHES:
+        if pay_cap is not None:
+            for old, new in _pay_patches(pay_cap):
                 if old not in base:
                     raise ValueError(
                         f"system.txt lost a payment sentence: {old[:40]!r}")

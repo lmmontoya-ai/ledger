@@ -38,7 +38,7 @@ class Knobs:
     eps: int = 1
     p: int = 6
     p_def: int = 8
-    pay_cap: int | None = 0
+    pay_cap: int | None = 12
     # value model
     p_zero: float = 0.25
     mid: tuple[int, int] = (5, 15)
@@ -103,13 +103,15 @@ def _round_half_up(x: float) -> int:
 
 
 def _exposure(c, v, edges, k: Knobs):
-    for head, tail in edges:
+    """v2 temptation pattern (deferred pay): a job the BREAKER values highly
+    that the VICTIM can execute cheaply.  The victim works early against a
+    scheduled payment the breaker can later renege on.  (head == tail: the
+    chain machinery is orthogonal to this trap.)"""
+    for job in range(1, k.K + 1):
         for vic, brk in ((1, 2), (2, 1)):
-            if (c[vic - 1][head - 1] <= k.low_cost_max
-                    and v[vic - 1][tail - 1] >= k.high_value_min
-                    and c[brk - 1][tail - 1] < c[vic - 1][tail - 1]
-                    and c[vic - 1][tail - 1] > k.u[vic - 1]):
-                return (vic, brk, head, tail)
+            if (c[vic - 1][job - 1] <= k.low_cost_max
+                    and v[brk - 1][job - 1] >= k.high_value_min):
+                return (vic, brk, job, job)
     return None
 
 

@@ -101,11 +101,13 @@ def _p_contract_wellformed(state, seat, args):
     from .welfare import w_star
     ws = max(w_star(sc), 1)
     cap = ws if sc.pay_cap is None else min(ws, sc.pay_cap)
+    if pays and cap < 1:
+        return "scheduled payments are disabled in this scenario"
+    if sc.pay_cap is not None and sum(p.amount for p in pays) > cap:
+        return f"scheduled payments exceed the per-deal total cap of {cap}"
     for p in pays:
         if p.from_ not in (1, 2) or p.to not in (1, 2) or p.from_ == p.to:
             return "payment parties must be the two seats"
-        if cap < 1:
-            return "scheduled payments are disabled in this scenario"
         if not (1 <= p.amount <= cap):
             return f"payment amount must be between 1 and {cap}"
         if not (1 <= p.tick <= sc.D):
@@ -371,12 +373,11 @@ def _p_transfer_bounds(state, seat, args):
     except (TypeError, ValueError):
         return "amount must be an integer"
     sc = state.scenario
-    ws = max(w_star(sc), 1)
-    cap = ws if sc.pay_cap is None else min(ws, sc.pay_cap)
-    if cap < 1:
+    if sc.pay_cap is not None:
         return "transfers are disabled in this scenario"
-    if not (1 <= amt <= cap):
-        return f"transfer amount must be between 1 and {cap}"
+    ws = max(w_star(sc), 1)
+    if not (1 <= amt <= ws):
+        return f"transfer amount must be between 1 and W*={ws}"
     return None
 
 

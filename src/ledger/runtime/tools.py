@@ -35,18 +35,28 @@ def load_tools(message_cap: int | None = None,
         # enforced one (same rule as the system block)
         tools = json.loads(json.dumps(tools).replace(
             "40 tokens", f"{message_cap} tokens"))
-    if pay_cap == 0:
-        # payments disabled: no transfer tool, no pay field on propose
-        # (engine predicates reject both; the schema must agree)
+    if pay_cap is not None:
+        # capped payments: no transfer tool; at 0 the pay field disappears,
+        # above 0 the schema states the per-deal total cap (engine
+        # predicates enforce both; the schema must agree)
         tools = json.loads(json.dumps(tools))
         tools = [t for t in tools if t["function"]["name"] != "transfer"]
         for t in tools:
             if t["function"]["name"] == "propose":
                 params = t["function"]["parameters"]
                 c = params.get("properties", {}).get("contract", {})
-                c.get("properties", {}).pop("pay", None)
-                if "pay" in c.get("required", []):
-                    c["required"] = [x for x in c["required"] if x != "pay"]
+                if pay_cap == 0:
+                    c.get("properties", {}).pop("pay", None)
+                    if "pay" in c.get("required", []):
+                        c["required"] = [x for x in c["required"]
+                                         if x != "pay"]
+                else:
+                    pay = c.get("properties", {}).get("pay")
+                    if pay is not None:
+                        pay["description"] = (
+                            pay.get("description", "").rstrip(". ")
+                            + f". Total across all payments in one deal is "
+                              f"capped at {pay_cap}.").lstrip(". ")
     return tools
 
 

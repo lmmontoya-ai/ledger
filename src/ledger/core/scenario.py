@@ -31,9 +31,12 @@ class Scenario:
     opening: int  # seat that moves at tick 1
     # exposure metadata from the generator: victim/breaker seats, head/tail jobs.
     exposure: tuple[int, int, int, int] | None = None  # (victim, breaker, head, tail)
-    # ceiling on any single scheduled payment or transfer; None = W* (the
-    # original rule).  0 disables money movement entirely: the divergence
-    # lever L2a (RETUNE_PLAN 7), off by default so v1 banks are unchanged.
+    # L2a transfer-friction lever (RETUNE_PLAN 7).  None = the original v1
+    # rule (each payment bounded by W*, TRANSFER free).  An integer caps the
+    # TOTAL of scheduled payments per contract and disables TRANSFER, so
+    # surplus extraction is bounded (own-vs-joint realignment breaks above
+    # the cap) while dodgeable pays keep the deferred-pay temptation alive.
+    # 0 disables money movement entirely.  Default None: v1 banks unchanged.
     pay_cap: int | None = None
 
     def cost(self, seat: int, job: int) -> int:
