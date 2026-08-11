@@ -52,31 +52,65 @@ class CallResult:
 
 
 class CostMeter:
-    """Cumulative spend with a hard cap. Uses OpenRouter's reported cost when
-    present, else the registry's price table, else counts unknown as zero and
-    reports that it did."""
+    """Cumulative spend with a HARD cap: thread-safe, checked before a call
+    is placed (worst-case estimate) as well as after, and a call whose price
+    cannot be determined is an error, never $0.  `on_add` is invoked (under
+    the lock) after every accounted call so callers can persist spend at
+    call granularity rather than stage granularity."""
 
-    def __init__(self, cap_usd: float | None = None):
+    EST_PROMPT_TOKENS = 4_000   # generous worst-case prompt for the precheck
+
+    def __init__(self, cap_usd: float | None = None, *,
+                 strict_pricing: bool = True, on_add=None):
+        import threading
         self.cap_usd = cap_usd
         self.spent_usd = 0.0
         self.calls = 0
         self.unpriced_calls = 0
+        self.strict_pricing = strict_pricing
+        self.on_add = on_add
+        self._lock = threading.Lock()
+
+    def precheck(self, spec: ModelSpec) -> None:
+        """Refuse to place a call whose worst case could breach the cap."""
+        if self.cap_usd is None:
+            return
+        if spec.price_in is None or spec.price_out is None:
+            if self.strict_pricing:
+                raise BudgetExceeded(
+                    f"{spec.slug} has no price entry; refusing to spend "
+                    "unmetered money (set price_in/price_out)")
+            return
+        worst = (self.EST_PROMPT_TOKENS * spec.price_in
+                 + spec.max_tokens * spec.price_out) / 1e6
+        with self._lock:
+            if self.spent_usd + worst > self.cap_usd:
+                raise BudgetExceeded(
+                    f"next call could cost ${worst:.2f}; "
+                    f"${self.spent_usd:.2f} of ${self.cap_usd:.2f} spent")
 
     def add(self, result: CallResult, spec: ModelSpec) -> None:
-        self.calls += 1
         cost = result.cost_usd
         if cost is None and spec.price_in is not None and spec.price_out is not None:
             u = result.usage or {}
             cost = (u.get("prompt_tokens", 0) * spec.price_in
                     + u.get("completion_tokens", 0) * spec.price_out) / 1e6
-        if cost is None:
-            self.unpriced_calls += 1
-            cost = 0.0
-        self.spent_usd += cost
-        if self.cap_usd is not None and self.spent_usd > self.cap_usd:
-            raise BudgetExceeded(
-                f"spent ${self.spent_usd:.2f} > cap ${self.cap_usd:.2f} "
-                f"after {self.calls} calls")
+        with self._lock:
+            self.calls += 1
+            if cost is None:
+                self.unpriced_calls += 1
+                if self.strict_pricing:
+                    raise BudgetExceeded(
+                        f"call to {spec.slug} returned no usage cost and the "
+                        "registry has no prices; unmetered spend refused")
+                cost = 0.0
+            self.spent_usd += cost
+            if self.on_add is not None:
+                self.on_add(self)
+            if self.cap_usd is not None and self.spent_usd > self.cap_usd:
+                raise BudgetExceeded(
+                    f"spent ${self.spent_usd:.2f} > cap ${self.cap_usd:.2f} "
+                    f"after {self.calls} calls")
 
 
 class OpenRouterClient:

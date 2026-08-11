@@ -99,6 +99,8 @@ class ModelAgent:
         bad, truncs, attempt = 0, 0, 0
         while bad < self.max_bad_outputs:
             attempt += 1
+            if meter is not None:
+                meter.precheck(self.spec)
             result = self.client.chat(self.spec, messages, tools)
             if meter is not None:
                 meter.add(result, self.spec)

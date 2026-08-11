@@ -246,6 +246,40 @@ def test_cost_cap_abandons_and_quarantines(tmp_path):
     assert "abandoned" in kinds and "result" not in kinds
 
 
+def test_replay_elicits_under_the_live_cap():
+    """Live play and replay must share one elicitation procedure, message
+    cap included: the E0 review caught replay pinned at the old default."""
+    from ledger.render.render import render_prompt
+    from ledger.runtime import state_at
+    sc = scenario()
+    c40, c200 = (FakeClient(fn=lambda s, m, t: tool_response("wait", {}))
+                 for _ in range(2))
+    b40 = sample_policy(c40, SPEC, sc, [], 1, n=1)
+    b200 = sample_policy(c200, SPEC, sc, [], 1, n=1, message_cap=200)
+    assert b40.digest != b200.digest
+    st = state_at(sc, [], 1)
+    assert b200.digest == render_prompt(st, (), st.mover, message_cap=200)[1]
+    assert "max 200 tokens" in c200.seen_messages[0][0]["content"]
+
+
+def test_meter_precheck_refuses_before_any_call():
+    g = Game(scenario())
+    client = FakeClient(fn=lambda s, m, t: tool_response("wait", {}))
+    meter = CostMeter(cap_usd=0.001)   # worst-case per call exceeds this
+    with pytest.raises(BudgetExceeded):
+        ModelAgent(SPEC, client).act(g, g.turn, None, meter)
+    assert client.seen_messages == []  # refused BEFORE spending
+
+
+def test_unpriced_spend_is_an_error_not_free():
+    g = Game(scenario())
+    noprice = ModelSpec(slug="fake/noprice", provider_order=("prov-a",))
+    raw = tool_response("wait", {})
+    raw["usage"] = {"prompt_tokens": 100, "completion_tokens": 10}  # no cost
+    with pytest.raises(BudgetExceeded, match="unmetered"):
+        ModelAgent(noprice, FakeClient([raw])).act(g, g.turn, None, CostMeter())
+
+
 # ------------------------------------------------------- §3.8 routing ----
 
 def test_provider_mix_invalidates_the_batch(tmp_path):

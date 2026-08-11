@@ -50,7 +50,8 @@ class PolicyBatch:
 
 
 def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
-                  n: int, mandate: str = DEFAULT_MANDATE, meter=None,
+                  n: int, mandate: str = DEFAULT_MANDATE,
+                  message_cap: int = 40, meter=None,
                   max_bad_outputs: int = MAX_BAD_OUTPUTS,
                   max_truncations: int = MAX_TRUNCATIONS) -> PolicyBatch:
     """N independent draws of the mover's policy at a frozen decision.
@@ -63,18 +64,22 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
     st = state_at(scenario, events, tick)
     seat = st.mover
     prefix = tuple(ev for ev in events if ev.tick < tick)
-    _, digest = render_prompt(st, prefix, seat, mandate=mandate)
+    _, digest = render_prompt(st, prefix, seat, mandate=mandate,
+                              message_cap=message_cap)
     base = [
-        {"role": "system", "content": system_block(mandate).decode("utf-8")},
+        {"role": "system",
+         "content": system_block(mandate, message_cap).decode("utf-8")},
         {"role": "user", "content": render_user(st, prefix, seat)},
     ]
-    tools = load_tools()
+    tools = load_tools(message_cap=message_cap)
     batch = PolicyBatch(tick=tick, seat=seat, digest=digest)
     for _ in range(n):
         messages = list(base)
         action = None
         bad, truncs = 0, 0
         while bad < max_bad_outputs:
+            if meter is not None:
+                meter.precheck(spec)
             result = client.chat(spec, messages, tools)
             if meter is not None:
                 meter.add(result, spec)
