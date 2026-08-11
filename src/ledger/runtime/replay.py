@@ -86,11 +86,9 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
         bad, truncs = 0, 0
         records, providers = [], []
         while bad < max_bad_outputs:
-            if meter is not None:
-                meter.precheck(spec)
-            result = client.chat(spec, messages, tools)
-            if meter is not None:
-                meter.add(result, spec)
+            result = (meter.call(client, spec, messages, tools)
+                      if meter is not None else
+                      client.chat(spec, messages, tools))
             records.append(result)
             providers.append(result.provider)
             if result.finish_reason() == "length":

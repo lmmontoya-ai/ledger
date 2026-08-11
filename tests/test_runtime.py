@@ -1,6 +1,8 @@
 """Runtime layer: §8.3 bad-output protocol, §3.8 registration and routing
 rules, episode logging, and byte-exact replay — all without a network."""
 import json
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
@@ -283,6 +285,42 @@ def test_meter_precheck_refuses_before_any_call():
     with pytest.raises(BudgetExceeded):
         ModelAgent(SPEC, client).act(g, g.turn, None, meter)
     assert client.seen_messages == []  # refused BEFORE spending
+
+
+def test_meter_parallel_prechecks_reserve_capacity_atomically():
+    """Concurrent callers cannot all pass against the same unreserved cap."""
+    spec = ModelSpec(slug="fake/reserved", provider_order=("prov-a",),
+                     max_tokens=1_000, price_in=1.0, price_out=1.0)
+    worst = (CostMeter.EST_PROMPT_TOKENS + spec.max_tokens) / 1e6
+    meter = CostMeter(cap_usd=3 * worst + 1e-9)
+    barrier = threading.Barrier(16)
+
+    def attempt(_):
+        barrier.wait()
+        try:
+            return meter.precheck(spec)
+        except BudgetExceeded:
+            return None
+
+    with ThreadPoolExecutor(max_workers=16) as pool:
+        reservations = list(pool.map(attempt, range(16)))
+    admitted = [r for r in reservations if r is not None]
+    assert len(admitted) == 3
+    assert meter.reserved_usd == pytest.approx(3 * worst)
+    for reservation in admitted:
+        meter.release(reservation)
+    assert meter.reserved_usd == pytest.approx(0.0)
+
+
+def test_meter_releases_reservation_when_transport_raises():
+    class BrokenClient:
+        def chat(self, *_args, **_kwargs):
+            raise ProviderError("transport failed")
+
+    meter = CostMeter(cap_usd=1.0)
+    with pytest.raises(ProviderError):
+        meter.call(BrokenClient(), SPEC, [], [])
+    assert meter.reserved_usd == pytest.approx(0.0)
 
 
 def test_unpriced_spend_is_an_error_not_free():

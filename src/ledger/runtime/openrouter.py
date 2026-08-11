@@ -58,7 +58,9 @@ class CostMeter:
     the lock) after every accounted call so callers can persist spend at
     call granularity rather than stage granularity."""
 
-    EST_PROMPT_TOKENS = 4_000   # generous worst-case prompt for the precheck
+    # Covers the longest campaign prompt with ample headroom.  The output
+    # side uses the model's configured max_tokens exactly.
+    EST_PROMPT_TOKENS = 16_000
 
     def __init__(self, cap_usd: float | None = None, *,
                  strict_pricing: bool = True, on_add=None):
@@ -70,32 +72,54 @@ class CostMeter:
         self.strict_pricing = strict_pricing
         self.on_add = on_add
         self._lock = threading.Lock()
+        self.reserved_usd = 0.0
 
-    def precheck(self, spec: ModelSpec) -> None:
-        """Refuse to place a call whose worst case could breach the cap."""
+    def precheck(self, spec: ModelSpec) -> float:
+        """Atomically reserve one call's worst-case cost before launch.
+
+        Pass the returned reservation to :meth:`add`, or release it if the
+        transport fails.  Internal callers use :meth:`call`, which guarantees
+        both paths.
+        """
         if self.cap_usd is None:
-            return
+            return 0.0
         if spec.price_in is None or spec.price_out is None:
             if self.strict_pricing:
                 raise BudgetExceeded(
                     f"{spec.slug} has no price entry; refusing to spend "
                     "unmetered money (set price_in/price_out)")
-            return
+            return 0.0
         worst = (self.EST_PROMPT_TOKENS * spec.price_in
                  + spec.max_tokens * spec.price_out) / 1e6
         with self._lock:
-            if self.spent_usd + worst > self.cap_usd:
+            committed = self.spent_usd + self.reserved_usd
+            if committed + worst > self.cap_usd:
                 raise BudgetExceeded(
                     f"next call could cost ${worst:.2f}; "
-                    f"${self.spent_usd:.2f} of ${self.cap_usd:.2f} spent")
+                    f"${self.spent_usd:.2f} spent + "
+                    f"${self.reserved_usd:.2f} reserved of "
+                    f"${self.cap_usd:.2f}")
+            self.reserved_usd += worst
+        return worst
 
-    def add(self, result: CallResult, spec: ModelSpec) -> None:
+    def release(self, reservation: float) -> None:
+        """Release a reservation after a call failed before billing."""
+        if not reservation:
+            return
+        with self._lock:
+            self.reserved_usd = max(0.0, self.reserved_usd - reservation)
+
+    def add(self, result: CallResult, spec: ModelSpec, *,
+            reservation: float = 0.0) -> None:
         cost = result.cost_usd
         if cost is None and spec.price_in is not None and spec.price_out is not None:
             u = result.usage or {}
             cost = (u.get("prompt_tokens", 0) * spec.price_in
                     + u.get("completion_tokens", 0) * spec.price_out) / 1e6
         with self._lock:
+            if reservation:
+                self.reserved_usd = max(0.0,
+                                        self.reserved_usd - reservation)
             self.calls += 1
             if cost is None:
                 self.unpriced_calls += 1
@@ -111,6 +135,17 @@ class CostMeter:
                 raise BudgetExceeded(
                     f"spent ${self.spent_usd:.2f} > cap ${self.cap_usd:.2f} "
                     f"after {self.calls} calls")
+
+    def call(self, client, spec: ModelSpec, *args, **kwargs) -> CallResult:
+        """Place and account for one call under an atomic reservation."""
+        reservation = self.precheck(spec)
+        try:
+            result = client.chat(spec, *args, **kwargs)
+        except BaseException:
+            self.release(reservation)
+            raise
+        self.add(result, spec, reservation=reservation)
+        return result
 
 
 class OpenRouterClient:
