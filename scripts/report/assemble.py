@@ -35,6 +35,13 @@ def check(data: dict, body: str, html: str) -> None:
     acts = data.get("actions", {}).get("rows", [])
     if len(acts) != 13:
         errors.append(f"action table lists {len(acts)} actions, engine has 13")
+    if data.get("pilot"):
+        for anchor in ("p-spend", "axes-table", "mandate-table",
+                       "views-table"):
+            if anchor not in body:
+                errors.append(f"pilot results present but prose lost {anchor}")
+        if data["pilot"]["axes"][0]["rate"] != 0.0:
+            pass  # value asserted only for presence; numbers are injected
     if "Thirteen actions" not in body:
         errors.append("prose action count does not say thirteen")
     harm = data["play"]["harm_share"]

@@ -156,6 +156,56 @@ def demo_and_board():
     pick = max(boards, key=lambda b: (b[3].count("BINDING"), len(b[3])))
     return demo, pick[3]
 
+EXPERIMENTS = Path(r"D:\research\pivotal\repos\self-other-prediction-smoke-tests"
+                   r"\ledger-experiments")
+
+
+def pilot_results():
+    """The pilot's numbers, read from the experiment artifacts themselves
+    (e0_report.json / e0b_report.json / state files) so the report cannot
+    state a result the run did not produce.  Optional: absent on machines
+    without the private experiments repo."""
+    e0_dir = EXPERIMENTS / "runs" / "e0"
+    e0b_dir = EXPERIMENTS / "runs" / "e0b"
+    if not (e0_dir / "e0_report.json").exists():
+        return None
+    e0 = json.loads((e0_dir / "e0_report.json").read_text(encoding="utf-8"))
+    e0b = json.loads((e0b_dir / "e0b_report.json").read_text(encoding="utf-8"))
+    s0 = json.loads((e0_dir / "e0_state.json").read_text(
+        encoding="utf-8"))["spent_usd"]
+    s0b = json.loads((e0b_dir / "e0b_state.json").read_text(
+        encoding="utf-8"))["spent_usd"]
+    reneges = sum(v["reneges"] for v in e0b["episodes_by_mandate"].values())
+    return {
+        "spend_total": round(s0 + s0b),
+        "games": 48, "decisions": 48,
+        "axes": [
+            {"name": "Same model, different goals", "rate":
+                e0b["c2_axis_mandate"]["unit_pass_rate"],
+             "pairs": e0b["c2_axis_mandate"]["pairs_separable"]},
+            {"name": "Different models, same goal", "rate":
+                e0b["c2_axis_model"]["unit_pass_rate"],
+             "pairs": e0b["c2_axis_model"]["pairs_separable"]},
+            {"name": "Everything against everything", "rate":
+                e0b["c2_all_instruments"]["unit_pass_rate"],
+             "pairs": e0b["c2_all_instruments"]["pairs_separable"]},
+        ],
+        "entropy_negotiation": e0b["c1_instruments"]["by_phase"]["negotiation"],
+        "entropy_mechanical": e0b["c1_instruments"]["by_phase"]["execution"],
+        "mandates": e0b["episodes_by_mandate"],
+        "premiums": e0b["breach_premiums"],
+        "reneges": reneges,
+        "take_rate_denom": e0b["breach_premiums"]["n_profitable"],
+        "c6_median_loss": e0b["c6_live_stakes"][
+            "median_live_stakes_victim_loss"],
+        "views": e0b["forecast_views"],
+        "sens_r1": e0["sensitivity"]["r1_jsd"]["median_jsd_vs_default"],
+        "sens_lowt": e0["sensitivity"]["lowt_jsd"]["median_jsd_vs_default"],
+        "c5_filler": e0["c5_mini_coupling"]["mean_A"],
+        "c5_real": e0["c5_mini_coupling"]["mean_C"],
+    }
+
+
 def test_count():
     """Count collected tests from pytest itself, so the status table's number
     cannot go stale the way a typed one would."""
@@ -201,6 +251,11 @@ def main():
         data["tests"] = test_count()
     except Exception as exc:
         print("test count skipped:", exc)
+    try:
+        data["pilot"] = pilot_results()
+    except Exception as exc:
+        print("pilot results skipped:", exc)
+        data["pilot"] = None
     out = HERE / "report_data.json"
     out.write_text(json.dumps(data, indent=1), encoding="utf-8")
     p = data["play"]

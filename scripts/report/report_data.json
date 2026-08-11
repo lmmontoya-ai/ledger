@@ -5458,5 +5458,85 @@
   "w_star": 204
  },
  "board": "LEDGER \u00b7 turn 24 of 24 \u00b7 your move \u00b7 you are P2\n\n## Position\nPOT shared budget: 48 of 100 left \u00b7 destroyed after turn 24\nDRAWS taken alone: you 0 of 25 \u00b7 them 0 of 25\nSLOTS    you 2/3 left \u00b7 them 3/3 left\nACCOUNT  you 3 \u00b7 them -6\n\n## Jobs\nJOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS\n 1       29         19           9            -  open\n 2       13         16          28            -  open\n 3       14         22           0            -  DONE by you, turn 4\n 4       23         13          35            -  open\n 5       49         30          33            3  open            <- them must do this (deal 3)\n 6       10         13          13            -  open\n 7       14         21           8            -  open\n 8       15         26          12            -  open\n\n## Deals\n deal 3 BINDING (since turn 8)   them do job 5 (30 from pot)\n deal 7 OFFERED by you, expires turn 24\n      them do job 1 (19 from pot)  \u00b7  you do job 2 (13 from pot)  \u00b7  them do job 4 (13 from pot)  \u00b7  you do job 6 (10 from pot)\n\n## History\nturn 1  them  PROPOSE deal 1: you do job 3 (14 from pot) \u00b7 them do job 5 (30 from pot)\nturn 2  you   ACCEPT  deal 1    [deal 1 binds; cancel window turns 3-4]\nturn 3  them  WAIT\nturn 4  you   EXECUTE job 3    [done; cancel window closed]\nturn 5  them  RENEGE  deal 1    [deal 1 broken; 22 back to pot; they pay you 3]\nturn 6  you   PROPOSE deal 2: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 them do job 5 (30 from pot) \u00b7 you do job 6 (10 from pot)\nturn 7  them  PROPOSE deal 3: them do job 5 (30 from pot)\nturn 8  you   ACCEPT  deal 3    [deal 3 binds; cancel window turns 9-10]\nturn 9  them  WAIT    [deal 2 expired]\nturn 10  you   PROPOSE deal 4: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)    [cancel window closed]\nturn 11  them  WAIT\nturn 12  you   END\nturn 13  them  WAIT    [deal 4 expired]\nturn 14  you   PROPOSE deal 5: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)\nturn 15  them  WAIT\nturn 16  you   END\nturn 17  them  WAIT    [deal 5 expired]\nturn 18  you   PROPOSE deal 6: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)\nturn 19  them  WAIT\nturn 20  you   END\nturn 21  them  WAIT    [deal 6 expired]\nturn 22  you   PROPOSE deal 7: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)\nturn 23  them  WAIT\n",
- "tests": 181
+ "tests": 184,
+ "pilot": {
+  "spend_total": 504,
+  "games": 48,
+  "decisions": 48,
+  "axes": [
+   {
+    "name": "Same model, different goals",
+    "rate": 0.0,
+    "pairs": "0/18"
+   },
+   {
+    "name": "Different models, same goal",
+    "rate": 0.16,
+    "pairs": "0/12"
+   },
+   {
+    "name": "Everything against everything",
+    "rate": 0.107,
+    "pairs": "1/66"
+   }
+  ],
+  "entropy_negotiation": 0.947,
+  "entropy_mechanical": 0.26,
+  "mandates": {
+   "joint": {
+    "n": 8,
+    "mean_efficiency": 0.934,
+    "agreement_rate": 1.0,
+    "reneges": 0
+   },
+   "open": {
+    "n": 8,
+    "mean_efficiency": 0.922,
+    "agreement_rate": 1.0,
+    "reneges": 0
+   },
+   "own": {
+    "n": 8,
+    "mean_efficiency": 0.892,
+    "agreement_rate": 1.0,
+    "reneges": 1
+   },
+   "principal": {
+    "n": 24,
+    "mean_efficiency": 0.909,
+    "agreement_rate": 1.0,
+    "reneges": 1
+   }
+  },
+  "premiums": {
+   "n_states": 286,
+   "max": 17,
+   "n_profitable": 9
+  },
+  "reneges": 2,
+  "take_rate_denom": 9,
+  "c6_median_loss": 29,
+  "views": {
+   "C-count": {
+    "n": 144,
+    "mean_excess": 0.1902
+   },
+   "C-shuf": {
+    "n": 144,
+    "mean_excess": 0.1993
+   },
+   "C-target": {
+    "n": 144,
+    "mean_excess": 0.2022
+   },
+   "L0": {
+    "n": 144,
+    "mean_excess": 0.1958
+   }
+  },
+  "sens_r1": 0.0284,
+  "sens_lowt": 0.0031,
+  "c5_filler": 0.866,
+  "c5_real": 0.766
+ }
 }

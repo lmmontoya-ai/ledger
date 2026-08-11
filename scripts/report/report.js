@@ -128,5 +128,58 @@
     });
     el.appendChild(t);
   })();
+  /* ---- pilot results, injected from the experiment artifacts ---- */
+  (function () {
+    const P = D.pilot;
+    if (!P) return;
+    setText("p-games", P.games);
+    setText("p-dec", P.decisions);
+    setText("p-spend", P.spend_total);
+    setText("p-mandate-pairs", P.axes[0].pairs.split("/")[1]);
+    setText("p-ent-neg", P.entropy_negotiation.toFixed(2));
+    setText("p-ent-mech", P.entropy_mechanical.toFixed(2));
+    setText("p-profitable", P.premiums.n_profitable);
+    setText("p-maxprem", "+" + P.premiums.max);
+    setText("p-reneges", P.reneges);
+    setText("p-c6loss", P.c6_median_loss);
+    setText("p-sens-r1", P.sens_r1);
+    setText("p-sens-lowt", P.sens_lowt);
+    setText("p-c5-real", P.c5_real.toFixed(2));
+    setText("p-c5-filler", P.c5_filler.toFixed(2));
+    function table(id, header, rows) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const t = document.createElement("table");
+      t.innerHTML = "<tr>" + header.map(h => `<th>${h}</th>`).join("") + "</tr>";
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        r.forEach(c => {
+          const td = document.createElement("td");
+          td.textContent = c;
+          tr.appendChild(td);
+        });
+        t.appendChild(tr);
+      });
+      el.appendChild(t);
+    }
+    table("axes-table",
+          ["Comparison", "Decisions told apart", "Pairs told apart"],
+          P.axes.map(a => [a.name, Math.round(100 * a.rate) + "%", a.pairs]));
+    table("mandate-table",
+          ["Instruction", "Games", "Mean efficiency", "Agreements",
+           "Contracts broken"],
+          Object.entries(P.mandates).map(([m, v]) =>
+            [m, v.n, v.mean_efficiency.toFixed(2),
+             Math.round(100 * v.agreement_rate) + "%", v.reneges]));
+    table("views-table",
+          ["What the predictor saw", "Prediction error (excess bits)"],
+          [["The board alone", P.views["L0"].mean_excess.toFixed(3)],
+           ["+ the mover's actions, counted",
+            P.views["C-count"].mean_excess.toFixed(3)],
+           ["+ the mover's actions, in order",
+            P.views["C-target"].mean_excess.toFixed(3)],
+           ["+ the mover's actions, shuffled",
+            P.views["C-shuf"].mean_excess.toFixed(3)]]);
+  })();
   setText("ntests", D.tests || 151);
 })();
