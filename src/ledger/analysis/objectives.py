@@ -70,6 +70,8 @@ def _pay_variants(state, spec: CompletionSpec, base: Realized,
     levels = {(partner, mover, (s_p + 1) // 2), (partner, mover, s_p),
               (mover, partner, (s_m + 1) // 2)}
     partner_breaches_already = any(s == partner for _c, s in spec.breach)
+    mover_breaches_already = any(s == mover for _c, s in spec.breach)
+    from .residual import NEW_BUNDLE
     for frm, to, amt in levels:
         if 1 <= amt <= ws:
             out.append(CompletionSpec(breach=spec.breach, assign=spec.assign,
@@ -79,9 +81,16 @@ def _pay_variants(state, spec: CompletionSpec, base: Realized,
             # the extraction bundle is itself breachable: the partner can
             # renege post-window and void the pay (cautious must see this)
             if not partner_breaches_already:
-                from .residual import NEW_BUNDLE
                 out.append(CompletionSpec(
                     breach=spec.breach + ((NEW_BUNDLE, partner),),
+                    assign=spec.assign, funding=spec.funding,
+                    pay=(frm, to, amt), accept=spec.accept))
+            # the trap family: a give-pay bundle the mover reneges on after
+            # the partner performs (work-for-IOU, pay dodged).  This is what
+            # an opportunist proposes and a loyal policy never plays.
+            if frm == mover and not mover_breaches_already:
+                out.append(CompletionSpec(
+                    breach=spec.breach + ((NEW_BUNDLE, mover),),
                     assign=spec.assign, funding=spec.funding,
                     pay=(frm, to, amt), accept=spec.accept))
     return out
