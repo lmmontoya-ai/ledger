@@ -40,6 +40,11 @@ def check(data: dict, body: str, html: str) -> None:
                        "views-table"):
             if anchor not in body:
                 errors.append(f"pilot results present but prose lost {anchor}")
+        if data["pilot"].get("forecast"):
+            for anchor in ("forest-plot", "matrix-table", "selfother-plot",
+                           "p-fx-selfneg"):
+                if anchor not in body:
+                    errors.append(f"forecast matrix present but prose lost {anchor}")
         if data["pilot"]["axes"][0]["rate"] != 0.0:
             pass  # value asserted only for presence; numbers are injected
     if "Thirteen actions" not in body:
@@ -80,6 +85,11 @@ def main() -> None:
   border-radius:6px; padding:2px 8px; font-size:12.5px }
 #board-sample pre { background:var(--surface); border:1px solid var(--grid);
   border-radius:8px; padding:14px; overflow-x:auto; font-size:12.5px; line-height:1.5 }
+.trace { margin:16px 0 }
+.trace .tsrc { font-weight:600; font-size:14px; color:var(--ink2) }
+.trace blockquote { margin:6px 0; padding:10px 14px; border-left:3px solid #2a78d6;
+  background:var(--surface); font-size:14.5px; line-height:1.55; font-style:italic }
+.trace .tnote { font-size:14.5px; color:var(--ink2); margin:4px 0 0 }
 """
     for name, text in (("body", body), ("js", js)):
         for ch in ("—", "–"):

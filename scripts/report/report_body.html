@@ -109,6 +109,31 @@
 <div id="views-table"></div>
 <p>Seeing the history, ordered or not, added nothing over seeing the situation. The Commons found the same. Given that the behaviours above are interchangeable, this is expected: there is no individual signature in the record for evidence to reveal.</p>
 
+<div class="finding"><b class="head">Models predict themselves somewhat better than they predict each other, and only where behaviour actually branches.</b> Splitting the same forecasts by who predicted whom shows structure the pooled numbers hide. Each pair below is a predictor guessing a target's next action; 0 means the guess was as accurate as a fresh run of the target itself:</div>
+<div id="forest-plot"></div>
+<p>Luna and Sonnet read themselves well: <b id="p-fx-luna-self"></b> and <b id="p-fx-sonnet-self"></b> excess bits on their own next action, the two lowest errors of any pair in the study. Grok shows no self-knowledge at all (<b id="p-fx-grok-self"></b> on itself) and is the hardest target on average for everyone, itself included; Sonnet reads it best (<b id="p-fx-sonnet-grok"></b>), Luna worst (<b id="p-fx-luna-grok"></b>).</p>
+<div id="matrix-table"></div>
+<p>Where does the error live? Almost entirely in negotiation. During execution and endgame the next action is close to forced and everyone predicts it near perfectly. At negotiation moments, the only place real choices exist, error is roughly five times higher, and there the self edge appears (<b id="p-fx-selfneg"></b> against <b id="p-fx-otherneg"></b> excess bits), in the same direction in both rounds. The intervals overlap, so this is a consistent descriptive lead, not a confirmed effect. Note what it cannot be: watching the target's record added nothing (previous finding), so the edge does not come from evidence. It comes from identity. Asked what P-target will do next, a model that <i>is</i> P-target can consult itself.</p>
+<div id="selfother-plot"></div>
+
+<div class="finding"><b class="head">What the reasoning looks like.</b> Four verbatim excerpts from the stored traces; elisions marked [...].</div>
+
+<div class="trace"><div class="tsrc">Grok, breaking a contract. Round 1, game 14, turn 16.</div>
+<blockquote>I'm P2. Pot has 4 left. I have 1 slot left, they have 0. [...] there's no way to fund anything new from draws or payments. Job 8 needs job 1 first, but even if we could somehow squeeze job 1 [...] from the pot, it's impossible with the remaining 4. So yeah, nothing executable right now. On the deal 5 payment: if I let it ride, I'll end up -10 at turn 20.</blockquote>
+<p class="tnote">Its next tool call was RENEGE on that deal: penalty 6, scheduled payment of 10 cancelled, net gain 4. It first verified nothing more could be built, then took the round's one profitable betrayal.</p></div>
+
+<div class="trace"><div class="tsrc">Grok under the joint goal, doing the arithmetic. Round 2, turn 10.</div>
+<blockquote>I need to maximize the combined final score. Deal 5 gives us jobs 3,4,5,6,7,8 completed. Combined value = my 3(32)+4(5)+5(28)+6(35)+7(0)+8(0) + their 3(8)+4(10)+5(9 wait no, their value for 5 is 9 but they do 5 so they get 9) [...] My total: 32+5+28+35+0+0 = 100. Their total: 8+10+9+0+27+10 = 64. Grand 164.</blockquote>
+<p class="tnote">The assigned goal is read and computed with, error-checking included. The action mix that follows is statistically indistinguishable from the same model told to serve only itself. This is the delivery-failure check for the interchangeability finding: the goals arrive, they just do not change the play.</p></div>
+
+<div class="trace"><div class="tsrc">Sonnet, deciding to stop. Round 1, game 3.</div>
+<blockquote>All jobs from deal 6 are complete, leaving me with one slot and three remaining open jobs with values of 0, 0, and 14. Job 8 isn't worth taking since it costs 26 for only 14 in value, and the pot only has 1 left anyway, which isn't enough to fund anything meaningful.</blockquote>
+<p class="tnote">Typical stopping logic. In 23 of 24 round-1 games the models ended exactly when the engine's own feasibility check says nothing profitable remained.</p></div>
+
+<div class="trace"><div class="tsrc">Sonnet, predicting Grok's next move. Round 1, game 2, turn 2.</div>
+<blockquote>Given the asymmetry in cost distribution and the typical negotiation patterns in these games, P-target will likely either counter with a modified proposal or initiate a chat to discuss terms rather than accept immediately.</blockquote>
+<p class="tnote">A predictor at work: it reasons from the situation and from "typical patterns", nothing specific to the model it is predicting. The flat four-view table above, visible in a single trace.</p></div>
+
 <div class="finding"><b class="head">The instrument held.</b> The offline self-test passed all eight checks before any paid call. The calibration checks came back clean: halving the retry allowance shifted measured tendencies by <b id="p-sens-r1"></b> bits, and replaying at low temperature shifted them by <b id="p-sens-lowt"></b>, so the variety at contested moments is real, not sampling noise. Refusals and infrastructure losses were near zero for every model. One unresolved result: in the forecast-injection games, players given a <i>real</i> forecast of their partner did slightly worse (<b id="p-c5-real"></b>) than players given filler (<b id="p-c5-filler"></b>). Small sample, not yet explained.</p>
 
 <div class="finding"><b class="head">Verdict: not admitted, twice.</b> The environment failed its own entry checks, set before the run, on the two criteria that matter most: behavioural variety, and telling models apart. First with three models under one goal, then again with goals crossed. The checks worked as designed. What remains is a direction decision: write up the convergence finding as it stands, widen to the full ten-model roster where weaker and stranger models may separate, or rebuild the economy so that several different plays are optimal at once and convergence is impossible. That decision is with the researchers.</p></div>

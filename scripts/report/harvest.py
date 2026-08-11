@@ -203,6 +203,9 @@ def pilot_results():
         "sens_lowt": e0["sensitivity"]["lowt_jsd"]["median_jsd_vs_default"],
         "c5_filler": e0["c5_mini_coupling"]["mean_A"],
         "c5_real": e0["c5_mini_coupling"]["mean_C"],
+        "forecast": json.loads(
+            (EXPERIMENTS / "runs" / "forecast_matrix.json").read_text(
+                encoding="utf-8")),
     }
 
 
