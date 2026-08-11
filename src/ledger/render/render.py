@@ -31,10 +31,30 @@ def mandate_variants() -> dict:
     return _mandates_cache
 
 
+# stated-equals-enforced patches for pay_cap=0 (RETUNE_PLAN lever L2a):
+# every sentence the payment machinery owns is replaced or removed together
+# with the engine predicates that reject it, same rule as the message cap
+_PAY_PATCHES = [
+    (b", pay [{from,to,amount,turn}]", b""),
+    (b"- RENEGE cancels your remaining obligations and all unexecuted "
+     b"scheduled payments under the deal;",
+     b"- RENEGE cancels your remaining obligations under the deal;"),
+    (b"- Scheduled deal payments execute automatically. "
+     b"Accounts may go negative.",
+     b"- Payments are disabled in this game: deals cannot schedule payments "
+     b"and there are no transfers. Accounts may go negative."),
+    (b"transfer(amount, to)       pay your partner from your account\n", b""),
+]
+
+
 def system_block(mandate: str = DEFAULT_MANDATE,
-                 message_cap: int = MESSAGE_TOKEN_CAP) -> bytes:
-    key = (mandate, message_cap)
+                 message_cap: int = MESSAGE_TOKEN_CAP,
+                 pay_cap: int | None = None) -> bytes:
+    key = (mandate, message_cap, pay_cap)
     if key not in _system_cache:
+        if pay_cap not in (None, 0):
+            raise ValueError("only pay_cap in (None, 0) has a stated-text "
+                             "variant; intermediate caps are unregistered")
         base = (TEMPLATES_DIR / "system.txt").read_bytes().replace(b"\r\n", b"\n")
         if mandate != DEFAULT_MANDATE:
             variants = mandate_variants()
@@ -58,6 +78,12 @@ def system_block(mandate: str = DEFAULT_MANDATE,
             if old not in base:
                 raise ValueError("system.txt lost its message-cap sentence")
             base = base.replace(old, new)
+        if pay_cap == 0:
+            for old, new in _PAY_PATCHES:
+                if old not in base:
+                    raise ValueError(
+                        f"system.txt lost a payment sentence: {old[:40]!r}")
+                base = base.replace(old, new)
         _system_cache[key] = base
     return _system_cache[key]
 
@@ -71,7 +97,9 @@ def render_user(state, events, viewer: int) -> str:
 def render_prompt(state, events, viewer: int,
                   mandate: str = DEFAULT_MANDATE,
                   message_cap: int = MESSAGE_TOKEN_CAP) -> tuple[bytes, str]:
-    """Returns (bytes, sha256 hex digest) of the full prompt shown to `viewer`."""
-    data = (system_block(mandate, message_cap) + b"\n"
+    """Returns (bytes, sha256 hex digest) of the full prompt shown to `viewer`.
+    The system block's payment text follows the scenario's pay_cap."""
+    data = (system_block(mandate, message_cap,
+                         pay_cap=state.scenario.pay_cap) + b"\n"
             + render_user(state, events, viewer).encode("utf-8"))
     return data, hashlib.sha256(data).hexdigest()

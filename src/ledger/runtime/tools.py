@@ -17,7 +17,8 @@ SPEC_PATH = REPO_ROOT / "spec" / "tools.v2.json"
 _cache: list[dict] | None = None
 
 
-def load_tools(message_cap: int | None = None) -> list[dict]:
+def load_tools(message_cap: int | None = None,
+               pay_cap: int | None = None) -> list[dict]:
     global _cache
     if _cache is None:
         spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
@@ -28,13 +29,25 @@ def load_tools(message_cap: int | None = None) -> list[dict]:
                           "parameters": t["input_schema"]}}
             for t in spec["tools"]
         ]
-    if message_cap is None or message_cap == 40:
-        return _cache
-    # non-default cap: the stated limit in the schema must match the
-    # enforced one (same rule as the system block)
-    patched = json.loads(json.dumps(_cache).replace("40 tokens",
-                                                    f"{message_cap} tokens"))
-    return patched
+    tools = _cache
+    if message_cap is not None and message_cap != 40:
+        # non-default cap: the stated limit in the schema must match the
+        # enforced one (same rule as the system block)
+        tools = json.loads(json.dumps(tools).replace(
+            "40 tokens", f"{message_cap} tokens"))
+    if pay_cap == 0:
+        # payments disabled: no transfer tool, no pay field on propose
+        # (engine predicates reject both; the schema must agree)
+        tools = json.loads(json.dumps(tools))
+        tools = [t for t in tools if t["function"]["name"] != "transfer"]
+        for t in tools:
+            if t["function"]["name"] == "propose":
+                params = t["function"]["parameters"]
+                c = params.get("properties", {}).get("contract", {})
+                c.get("properties", {}).pop("pay", None)
+                if "pay" in c.get("required", []):
+                    c["required"] = [x for x in c["required"] if x != "pay"]
+    return tools
 
 
 def action_names() -> set[str]:
