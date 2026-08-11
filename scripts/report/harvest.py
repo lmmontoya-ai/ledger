@@ -178,7 +178,7 @@ def pilot_results():
     reneges = sum(v["reneges"] for v in e0b["episodes_by_mandate"].values())
     return {
         "spend_total": round(s0 + s0b),
-        "games": 48, "decisions": 48,
+        "games": 48, "decisions": 96,
         "axes": [
             {"name": "Same model, different goals", "rate":
                 e0b["c2_axis_mandate"]["unit_pass_rate"],
@@ -198,7 +198,16 @@ def pilot_results():
         "take_rate_denom": e0b["breach_premiums"]["n_profitable"],
         "c6_median_loss": e0b["c6_live_stakes"][
             "median_live_stakes_victim_loss"],
-        "views": e0b["forecast_views"],
+        "views": {v: {
+            "n": e0["forecast_views"][v]["n"] + e0b["forecast_views"][v]["n"],
+            "mean_excess": round(
+                (e0["forecast_views"][v]["mean_excess"]
+                 * e0["forecast_views"][v]["n"]
+                 + e0b["forecast_views"][v]["mean_excess"]
+                 * e0b["forecast_views"][v]["n"])
+                / (e0["forecast_views"][v]["n"]
+                   + e0b["forecast_views"][v]["n"]), 4)}
+            for v in e0b["forecast_views"]},
         "sens_r1": e0["sensitivity"]["r1_jsd"]["median_jsd_vs_default"],
         "sens_lowt": e0["sensitivity"]["lowt_jsd"]["median_jsd_vs_default"],
         "c5_filler": e0["c5_mini_coupling"]["mean_A"],

@@ -215,7 +215,7 @@
       const cap = document.createElement("div"); cap.className = "fcap";
       cap.textContent = "Prediction error in excess bits (0 = as accurate as "
         + "a fresh sample of the target itself; darker = worse). Boxed "
-        + "diagonal = a model predicting itself. Both rounds pooled.";
+        + "diagonal = a model predicting itself.";
       el.appendChild(cap);
     })();
 
@@ -270,25 +270,23 @@
       });
       dotChart("forest-plot", rows,
         "Mean prediction error per predictor-target pair, 95% interval, "
-        + "both rounds pooled. Blue = a model predicting itself. "
+        + "all 96 frozen decisions. Blue = a model predicting itself. "
         + "0 = indistinguishable from the target's own repeat runs.");
     })();
 
     (function () {
-      const PH = { negotiation: "negotiation", execution: "execution",
-                   endgame: "endgame" };
-      const RD = { round1: "Round 1", round2: "Round 2" };
+      const PH = { negotiation: "Negotiation", execution: "Execution",
+                   endgame: "Endgame" };
       const rows = [];
-      for (const rd of ["round1", "round2"])
-        for (const ph of ["negotiation", "execution", "endgame"]) {
-          const s = F.self_other.by_round_phase[`${rd}|${ph}`];
-          rows.push({ label: `${RD[rd]}, ${PH[ph]}`,
-            strong: ph === "negotiation",
-            pts: [{ v: s.self.mean, lo: s.self.lo, hi: s.self.hi, dy: -5,
-                    color: BLUE },
-                  { v: s.other.mean, lo: s.other.lo, hi: s.other.hi, dy: 6,
-                    color: GRAY }] });
-        }
+      for (const ph of ["negotiation", "execution", "endgame"]) {
+        const s = F.self_other.by_phase[ph];
+        rows.push({ label: PH[ph],
+          strong: ph === "negotiation",
+          pts: [{ v: s.self.mean, lo: s.self.lo, hi: s.self.hi, dy: -5,
+                  color: BLUE },
+                { v: s.other.mean, lo: s.other.lo, hi: s.other.hi, dy: 6,
+                  color: GRAY }] });
+      }
       dotChart("selfother-plot", rows,
         "Blue = predicting yourself, gray = predicting the other two "
         + "models. 95% intervals; one point per frozen decision, the four "

@@ -5462,7 +5462,7 @@
  "pilot": {
   "spend_total": 504,
   "games": 48,
-  "decisions": 48,
+  "decisions": 96,
   "axes": [
    {
     "name": "Same model, different goals",
@@ -5518,20 +5518,20 @@
   "c6_median_loss": 29,
   "views": {
    "C-count": {
-    "n": 144,
-    "mean_excess": 0.1902
+    "n": 288,
+    "mean_excess": 0.1933
    },
    "C-shuf": {
-    "n": 144,
-    "mean_excess": 0.1993
+    "n": 288,
+    "mean_excess": 0.1965
    },
    "C-target": {
-    "n": 144,
-    "mean_excess": 0.2022
+    "n": 288,
+    "mean_excess": 0.2048
    },
    "L0": {
-    "n": 144,
-    "mean_excess": 0.1958
+    "n": 288,
+    "mean_excess": 0.2001
    }
   },
   "sens_r1": 0.0284,
