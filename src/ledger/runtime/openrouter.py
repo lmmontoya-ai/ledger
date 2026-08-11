@@ -116,14 +116,20 @@ class CostMeter:
 class OpenRouterClient:
     def __init__(self, api_key: str | None = None, *, session=None,
                  timeout_s: float = 180.0, max_attempts: int = 6,
-                 wall_clock_cap_s: float = 900.0, app_name: str = "ledger"):
+                 wall_clock_cap_s: float = 900.0, app_name: str = "ledger",
+                 pool: int = 64):
         self.api_key = api_key or os.environ.get("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ProviderError(
                 "no API key: pass api_key or set OPENROUTER_API_KEY")
         if session is None:
             import requests
+            from requests.adapters import HTTPAdapter
             session = requests.Session()
+            # size the connection pool to the intended concurrency, else
+            # urllib3 churns unpooled sockets above 10 in-flight
+            session.mount("https://", HTTPAdapter(pool_connections=10,
+                                                  pool_maxsize=pool))
         self.session = session
         self.timeout_s = timeout_s
         self.max_attempts = max_attempts
