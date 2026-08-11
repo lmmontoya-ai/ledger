@@ -204,7 +204,7 @@ def legal_omega2_alphabet(state, seat: int) -> list[str]:
     sc = state.scenario
     labels: set[str] = {"CHAT", "WAIT", "END", "REFUSE"}
     from ..core.welfare import w_star
-    if w_star(sc) >= 1:
+    if w_star(sc) >= 1 and (sc.pay_cap is None or sc.pay_cap >= 1):
         labels.add("TRANSFER")
     # an offer needs expires in (tick, D]: none constructible at the final tick
     if state.tick < sc.D:

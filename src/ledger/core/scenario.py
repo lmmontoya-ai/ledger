@@ -31,6 +31,10 @@ class Scenario:
     opening: int  # seat that moves at tick 1
     # exposure metadata from the generator: victim/breaker seats, head/tail jobs.
     exposure: tuple[int, int, int, int] | None = None  # (victim, breaker, head, tail)
+    # ceiling on any single scheduled payment or transfer; None = W* (the
+    # original rule).  0 disables money movement entirely: the divergence
+    # lever L2a (RETUNE_PLAN 7), off by default so v1 banks are unchanged.
+    pay_cap: int | None = None
 
     def cost(self, seat: int, job: int) -> int:
         return self.c[seat - 1][job - 1]
@@ -73,6 +77,7 @@ class Scenario:
             p_def=d["p_def"],
             opening=d["opening"],
             exposure=tuple(d["exposure"]) if d.get("exposure") else None,
+            pay_cap=d.get("pay_cap"),
         )
 
     def with_opening(self, opening: int) -> "Scenario":
