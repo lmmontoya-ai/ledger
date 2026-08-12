@@ -74,11 +74,14 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
                               message_cap=message_cap)
     base = [
         {"role": "system",
-         "content": system_block(mandate, message_cap,
-                                 pay_cap=scenario.pay_cap).decode("utf-8")},
+         "content": system_block(
+             mandate, message_cap, pay_cap=scenario.pay_cap,
+             settle_window=scenario.settle_window).decode("utf-8")},
         {"role": "user", "content": render_user(st, prefix, seat)},
     ]
-    tools = load_tools(message_cap=message_cap, pay_cap=scenario.pay_cap)
+    tools = load_tools(message_cap=message_cap, pay_cap=scenario.pay_cap,
+                       settle_window=scenario.settle_window,
+                       deadline=scenario.D)
     batch = PolicyBatch(tick=tick, seat=seat, digest=digest)
 
     def one_draw(_i: int):

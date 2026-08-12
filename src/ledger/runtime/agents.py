@@ -81,8 +81,9 @@ class ModelAgent:
         import hashlib
         state, events = game.state, tuple(game.events)
         cap = getattr(game, "message_cap", None) or 40
-        system = system_block(self.mandate, cap,
-                              pay_cap=state.scenario.pay_cap).decode("utf-8")
+        system = system_block(
+            self.mandate, cap, pay_cap=state.scenario.pay_cap,
+            settle_window=state.scenario.settle_window).decode("utf-8")
         user = render_user(state, events, seat)
         digest = hashlib.sha256((system + "\n" + user).encode("utf-8")).hexdigest()
         return system, user, digest
@@ -95,7 +96,9 @@ class ModelAgent:
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ]
-        tools = load_tools(message_cap=cap, pay_cap=state.scenario.pay_cap)
+        tools = load_tools(message_cap=cap, pay_cap=state.scenario.pay_cap,
+                           settle_window=state.scenario.settle_window,
+                           deadline=state.scenario.D)
         last_error = "no attempt"
         bad, truncs, attempt = 0, 0, 0
         while bad < self.max_bad_outputs:

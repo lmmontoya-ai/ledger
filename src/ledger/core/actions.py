@@ -105,11 +105,15 @@ def _p_contract_wellformed(state, seat, args):
         return "scheduled payments are disabled in this scenario"
     if sc.pay_cap is not None and sum(p.amount for p in pays) > cap:
         return f"scheduled payments exceed the per-deal total cap of {cap}"
+    earliest = 1 if sc.settle_window is None else sc.D - sc.settle_window + 1
     for p in pays:
         if p.from_ not in (1, 2) or p.to not in (1, 2) or p.from_ == p.to:
             return "payment parties must be the two seats"
         if not (1 <= p.amount <= cap):
             return f"payment amount must be between 1 and {cap}"
+        if p.tick < earliest:
+            return (f"payments settle at the end: the earliest allowed "
+                    f"payment turn is {earliest}")
         if not (1 <= p.tick <= sc.D):
             return f"payment turn must be within 1..{sc.D}"
     if not (state.tick < expires <= sc.D):

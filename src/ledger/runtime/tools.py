@@ -18,7 +18,9 @@ _cache: list[dict] | None = None
 
 
 def load_tools(message_cap: int | None = None,
-               pay_cap: int | None = None) -> list[dict]:
+               pay_cap: int | None = None,
+               settle_window: int | None = None,
+               deadline: int | None = None) -> list[dict]:
     global _cache
     if _cache is None:
         spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
@@ -53,10 +55,16 @@ def load_tools(message_cap: int | None = None,
                 else:
                     pay = c.get("properties", {}).get("pay")
                     if pay is not None:
+                        note = (f". Total across all payments in one deal "
+                                f"is capped at {pay_cap}.")
+                        if settle_window is not None and deadline is not None:
+                            note = note.rstrip(".") + (
+                                f"; payment turns must be in the final "
+                                f"{settle_window} turns (turn "
+                                f"{deadline - settle_window + 1} or later).")
                         pay["description"] = (
                             pay.get("description", "").rstrip(". ")
-                            + f". Total across all payments in one deal is "
-                              f"capped at {pay_cap}.").lstrip(". ")
+                            + note).lstrip(". ")
     return tools
 
 

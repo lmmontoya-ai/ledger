@@ -38,6 +38,12 @@ class Scenario:
     # the cap) while dodgeable pays keep the deferred-pay temptation alive.
     # 0 disables money movement entirely.  Default None: v1 banks unchanged.
     pay_cap: int | None = None
+    # L2a companion (loop 5): scheduled payments may only fall in the final
+    # `settle_window` turns (end-of-period net settlement), so every payment
+    # is an IOU that outlives the cooling-off window and can be reneged on.
+    # Trust exposure becomes a property of ordinary deals rather than a
+    # special contract type nobody rationally proposes.  None = v1 rule.
+    settle_window: int | None = None
 
     def cost(self, seat: int, job: int) -> int:
         return self.c[seat - 1][job - 1]
@@ -81,6 +87,7 @@ class Scenario:
             opening=d["opening"],
             exposure=tuple(d["exposure"]) if d.get("exposure") else None,
             pay_cap=d.get("pay_cap"),
+            settle_window=d.get("settle_window"),
         )
 
     def with_opening(self, opening: int) -> "Scenario":

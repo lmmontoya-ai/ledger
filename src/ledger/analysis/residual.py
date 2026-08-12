@@ -318,8 +318,11 @@ def realize(state, spec: CompletionSpec) -> Realized | None:
             pays = []
             frm, to, amt = spec.pay
             if amt > 0:
+                turn = min(st.tick + 2, sc.D)
+                if sc.settle_window is not None:
+                    turn = max(turn, sc.D - sc.settle_window + 1)
                 pays = [{"from": frm, "to": to, "amount": amt,
-                         "turn": min(st.tick + 2, sc.D)}]
+                         "turn": turn}]
             contract = {"assign": {str(j): s for j, s in new_assign.items()},
                         "fund": fund, "pay": pays,
                         "expires": min(st.tick + 3, sc.D)}

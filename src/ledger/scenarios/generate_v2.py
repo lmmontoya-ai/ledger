@@ -39,6 +39,7 @@ class Knobs:
     p: int = 6
     p_def: int = 8
     pay_cap: int | None = 12
+    settle_window: int | None = 8    # pays fall in the final third (D=24)
     # value model
     p_zero: float = 0.25
     mid: tuple[int, int] = (5, 15)
@@ -152,6 +153,6 @@ def generate_v2(seed: int, knobs: Knobs = Knobs(),
             prereqs=tuple(tuple(p) for p in prereqs),
             B=k.B, kappa=k.kappa, u=k.u, D=k.D, r=k.r, eps=k.eps,
             p=k.p, p_def=k.p_def, opening=opening, exposure=exposure,
-            pay_cap=k.pay_cap,
+            pay_cap=k.pay_cap, settle_window=k.settle_window,
         )
     return None

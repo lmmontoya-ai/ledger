@@ -78,6 +78,8 @@ def _pay_variants(state, spec: CompletionSpec, base: Realized,
                                       funding=spec.funding,
                                       pay=(frm, to, amt),
                                       accept=spec.accept))
+            # (the realizer schedules the pay at the latest legal turn, which
+            # under a settle_window is inside the settlement period)
             # the extraction bundle is itself breachable: the partner can
             # renege post-window and void the pay (cautious must see this)
             if not partner_breaches_already:
