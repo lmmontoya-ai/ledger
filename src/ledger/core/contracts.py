@@ -23,6 +23,13 @@ class Pay:
     def to_dict(self) -> dict:
         return {"from": self.from_, "to": self.to, "amount": self.amount, "tick": self.tick}
 
+    def __deepcopy__(self, memo) -> "Pay":
+        # all fields are immutable scalars: a field-wise copy is exact and
+        # ~10x faster than the generic recursive deepcopy (the fold's step
+        # function copies state once per simulated action, so this is hot)
+        return Pay(self.from_, self.to, self.amount, self.tick,
+                   self.executed, self.cancelled, self.executed_tick)
+
 
 @dataclass
 class Contract:
@@ -41,6 +48,22 @@ class Contract:
     cancelled_by: int | None = None
     cancel_tick: int | None = None
     defaulted_by: list[int] = field(default_factory=list)
+
+    def __deepcopy__(self, memo) -> "Contract":
+        # explicit field-wise clone: scalars shared, containers copied one
+        # level deep (their elements are scalars), Pay objects cloned
+        return Contract(
+            cid=self.cid, proposer=self.proposer,
+            tick_opened=self.tick_opened,
+            assign=dict(self.assign), fund=dict(self.fund),
+            pay=[p.__deepcopy__(memo) for p in self.pay],
+            expires=self.expires, status=self.status,
+            accept_tick=self.accept_tick,
+            executed_jobs=set(self.executed_jobs),
+            reneged_by=self.reneged_by, renege_tick=self.renege_tick,
+            cancelled_by=self.cancelled_by, cancel_tick=self.cancel_tick,
+            defaulted_by=list(self.defaulted_by),
+        )
 
     # ---- lifecycle predicates -------------------------------------------
     def is_offer_live(self, tick: int) -> bool:

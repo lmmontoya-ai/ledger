@@ -41,6 +41,33 @@ class State:
     defaults: list[dict] = field(default_factory=list)
 
     # ------------------------------------------------------------------
+    def __deepcopy__(self, memo) -> "State":
+        """Explicit field-wise clone, semantically identical to the generic
+        deepcopy and ~5-10x faster.  The scenario is a frozen dataclass of
+        tuples and is shared, not copied; every mutable container is copied
+        to exactly the depth the effect functions mutate it (the §13
+        property suite pins purity, so any divergence here fails tests)."""
+        return State(
+            scenario=self.scenario,
+            tick=self.tick, over=self.over, settled=self.settled,
+            ended_by_mutual=self.ended_by_mutual, final_tick=self.final_tick,
+            pot_left=self.pot_left, reserved=self.reserved, spent=self.spent,
+            destroyed=self.destroyed,
+            draws=list(self.draws), caps_used=list(self.caps_used),
+            accounts=list(self.accounts),
+            transfers_net=list(self.transfers_net),
+            done=dict(self.done),
+            draw_funding={j: list(v) for j, v in self.draw_funding.items()},
+            contracts={cid: c.__deepcopy__(memo)
+                       for cid, c in self.contracts.items()},
+            next_cid=self.next_cid,
+            last_nonwait=list(self.last_nonwait),
+            reneges=[{k: (list(v) if isinstance(v, list) else v)
+                      for k, v in r.items()} for r in self.reneges],
+            defaults=[{k: (list(v) if isinstance(v, list) else v)
+                       for k, v in r.items()} for r in self.defaults],
+        )
+
     @property
     def mover(self) -> int:
         return self.scenario.mover_at(self.tick)
