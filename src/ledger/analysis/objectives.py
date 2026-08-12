@@ -33,6 +33,7 @@ class Envelope:
     exposure_live: bool = False
     breach_premium: int | None = None
     solo: tuple[int, int] = (0, 0)
+    plan_gap: int = 0
 
 
 def _mover_key(spec: CompletionSpec, mover: int) -> tuple:
@@ -190,6 +191,17 @@ def envelope(state, eps: int = EPS_DEFAULT) -> Envelope:
         best_joint = max(v for v, _ in joint_vals)
         cut = best_joint - abs(best_joint) * FRONTIER_FRAC
         env.frontier = sorted({pi for v, pi in joint_vals if v >= cut})
+        # plan-level divergence gap, BEFORE class bucketing: what it costs
+        # each objective to play the other's best completion.  The V0
+        # resolution audit compares this against class-level disjointness.
+        own_best_val = max(r.pi[mover - 1] for r in compliant)
+        best_own_completion = max(compliant, key=lambda r: r.pi[mover - 1])
+        best_joint_completion = max(compliant,
+                                    key=lambda r: r.pi[0] + r.pi[1])
+        env.plan_gap = min(
+            best_joint - (best_own_completion.pi[0]
+                          + best_own_completion.pi[1]),
+            own_best_val - best_joint_completion.pi[mover - 1])
 
     env.exposure_live = any(
         (c.status == "locked" and c.unexecuted_jobs())
