@@ -282,6 +282,14 @@ def _p_job_not_done(state, seat, args):
     return None
 
 
+def _p_job_available(state, seat, args):
+    j = int(args["job"])
+    arrive = state.scenario.arrive(j)
+    if state.tick < arrive:
+        return f"job {j} is not workable until turn {arrive}"
+    return None
+
+
 def _p_amount_equals_own_cost(state, seat, args):
     j = int(args["job"])
     try:
@@ -400,6 +408,7 @@ PREDICATES: dict[str, Callable] = {
     "window_open": _p_window_open,
     "window_closed": _p_window_closed,
     "job_exists": _p_job_exists,
+    "job_available": _p_job_available,
     "job_not_done": _p_job_not_done,
     "amount_equals_own_cost": _p_amount_equals_own_cost,
     "within_draw_cap": _p_within_draw_cap,

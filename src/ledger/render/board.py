@@ -97,6 +97,8 @@ def render_board(state, viewer: int) -> str:
         if j in state.done:
             seat, t = state.done[j]
             status = f"DONE by {rel(F('job_done_by', seat))}, turn {F('job_done_tick', t)}"
+        elif state.tick < sc.arrive(j):
+            status = f"opens turn {F('job_arrives', sc.arrive(j))}"
         else:
             status = "open"
         marker = ""

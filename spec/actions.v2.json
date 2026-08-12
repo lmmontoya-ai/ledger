@@ -88,6 +88,7 @@
       "legality": [
         "episode_live",
         "job_exists",
+        "job_available",
         "job_not_done",
         "amount_equals_own_cost",
         "within_draw_cap",
@@ -105,6 +106,7 @@
       "legality": [
         "episode_live",
         "job_exists",
+        "job_available",
         "job_not_done",
         "chains_satisfied",
         "capacity_left",

@@ -44,6 +44,16 @@ class Scenario:
     # Trust exposure becomes a property of ordinary deals rather than a
     # special contract type nobody rationally proposes.  None = v1 rule.
     settle_window: int | None = None
+    # loop 6 (FORGE-informed): per-job earliest workable turn.  Jobs are on
+    # the board from turn 1 but cannot be drawn for or executed before their
+    # arrival, so late arrivals reopen negotiation mid-game and deals struck
+    # early about them are forward contracts whose payments (under the
+    # settlement window) are IOUs by construction.  Empty = all jobs
+    # available from turn 1 (v1 banks unchanged).
+    available_from: tuple[int, ...] = ()
+
+    def arrive(self, job: int) -> int:
+        return self.available_from[job - 1] if self.available_from else 1
 
     def cost(self, seat: int, job: int) -> int:
         return self.c[seat - 1][job - 1]
@@ -88,6 +98,7 @@ class Scenario:
             exposure=tuple(d["exposure"]) if d.get("exposure") else None,
             pay_cap=d.get("pay_cap"),
             settle_window=d.get("settle_window"),
+            available_from=tuple(d.get("available_from") or ()),
         )
 
     def with_opening(self, opening: int) -> "Scenario":

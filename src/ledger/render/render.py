@@ -74,11 +74,20 @@ def _pay_patches(pay_cap: int | None,
     ]
 
 
+_ARRIVALS_SENTENCE = (
+    b"- Chains: some jobs need another job finished first.",
+    b"- Chains: some jobs need another job finished first.\n"
+    b"- Openings: some jobs open mid-game; the board shows the turn each "
+    b"opens. Deals may assign and fund them in advance, but the work "
+    b"cannot start before they open.")
+
+
 def system_block(mandate: str = DEFAULT_MANDATE,
                  message_cap: int = MESSAGE_TOKEN_CAP,
                  pay_cap: int | None = None,
-                 settle_window: int | None = None) -> bytes:
-    key = (mandate, message_cap, pay_cap, settle_window)
+                 settle_window: int | None = None,
+                 arrivals: bool = False) -> bytes:
+    key = (mandate, message_cap, pay_cap, settle_window, arrivals)
     if key not in _system_cache:
         base = (TEMPLATES_DIR / "system.txt").read_bytes().replace(b"\r\n", b"\n")
         if mandate != DEFAULT_MANDATE:
@@ -109,6 +118,11 @@ def system_block(mandate: str = DEFAULT_MANDATE,
                     raise ValueError(
                         f"system.txt lost a payment sentence: {old[:40]!r}")
                 base = base.replace(old, new)
+        if arrivals:
+            old, new = _ARRIVALS_SENTENCE
+            if old not in base:
+                raise ValueError("system.txt lost its chains sentence")
+            base = base.replace(old, new)
         _system_cache[key] = base
     return _system_cache[key]
 
@@ -124,8 +138,11 @@ def render_prompt(state, events, viewer: int,
                   message_cap: int = MESSAGE_TOKEN_CAP) -> tuple[bytes, str]:
     """Returns (bytes, sha256 hex digest) of the full prompt shown to `viewer`.
     The system block's payment text follows the scenario's pay_cap."""
+    sc = state.scenario
     data = (system_block(mandate, message_cap,
-                         pay_cap=state.scenario.pay_cap,
-                         settle_window=state.scenario.settle_window) + b"\n"
+                         pay_cap=sc.pay_cap,
+                         settle_window=sc.settle_window,
+                         arrivals=bool(sc.available_from)
+                         and any(a > 1 for a in sc.available_from)) + b"\n"
             + render_user(state, events, viewer).encode("utf-8"))
     return data, hashlib.sha256(data).hexdigest()

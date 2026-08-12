@@ -76,7 +76,9 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
         {"role": "system",
          "content": system_block(
              mandate, message_cap, pay_cap=scenario.pay_cap,
-             settle_window=scenario.settle_window).decode("utf-8")},
+             settle_window=scenario.settle_window,
+             arrivals=bool(scenario.available_from)
+             and any(a > 1 for a in scenario.available_from)).decode("utf-8")},
         {"role": "user", "content": render_user(st, prefix, seat)},
     ]
     tools = load_tools(message_cap=message_cap, pay_cap=scenario.pay_cap,

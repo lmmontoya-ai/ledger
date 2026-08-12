@@ -57,7 +57,8 @@ def greedy_schedule_feasible(
         if not mine:
             continue
         ready = [j for j in mine
-                 if all(pre in done_sim for pre in scenario.prereqs[j - 1])]
+                 if all(pre in done_sim for pre in scenario.prereqs[j - 1])
+                 and tick >= scenario.arrive(j)]
         if not ready:
             continue
         # prefer jobs other pending jobs depend on; tie-break by job number

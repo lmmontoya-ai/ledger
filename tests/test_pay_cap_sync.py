@@ -28,6 +28,23 @@ def test_tools_drop_transfer_and_pay_field():
     assert "pay" not in contract.get("properties", {})
 
 
+def test_arrivals_gate_work_but_not_deals():
+    sc = simple_scenario(available_from=(1, 14, 1, 1))
+    st = fold_mod.initial_state(sc)
+    # drawing for or executing an unopened job is illegal, with the turn named
+    reason = actions_mod.validate(st, 1, Action("DRAW",
+                                                {"amount": 12, "job": 2}))
+    assert reason and "until turn 14" in reason
+    # proposing a deal about it now is legal: forward contracts are the point
+    contract = {"assign": {"2": 2}, "fund": {"2": 10}, "pay": [],
+                "expires": 4}
+    assert actions_mod.validate(st, 1, Action("PROPOSE",
+                                              {"contract": contract})) is None
+    # the stated text moves with the mechanism
+    assert "Openings" in system_block(arrivals=True).decode()
+    assert "Openings" not in system_block().decode()
+
+
 def test_engine_rejects_payments_under_cap_zero():
     sc = simple_scenario(pay_cap=0)
     st = fold_mod.initial_state(sc)

@@ -40,6 +40,11 @@ class Knobs:
     p_def: int = 8
     pay_cap: int | None = 12
     settle_window: int | None = 8    # pays fall in the final third (D=24)
+    # loop 6: mid-game job openings (0 disables).  Opened jobs are leaves
+    # (nothing depends on them) excluding the exposure job, chosen highest
+    # joint value so late negotiation is worth having.
+    n_arrivals: int = 2
+    arrive_turn: int = 14
     # value model
     p_zero: float = 0.25
     mid: tuple[int, int] = (5, 15)
@@ -145,6 +150,17 @@ def generate_v2(seed: int, knobs: Knobs = Knobs(),
         exposure = _exposure((c1, c2), (v1, v2), edges, k)
         if exposure is None:
             continue
+        available = ()
+        if k.n_arrivals > 0:
+            is_prereq = {p for pre in prereqs for p in pre}
+            leaves = [j for j in range(1, k.K + 1)
+                      if j not in is_prereq and j != exposure[2]]
+            leaves.sort(key=lambda j: -(v1[j - 1] + v2[j - 1]))
+            late = set(leaves[:k.n_arrivals])
+            if len(late) < k.n_arrivals:
+                continue
+            available = tuple(k.arrive_turn if j in late else 1
+                              for j in range(1, k.K + 1))
         return Scenario(
             scenario_id=scenario_id_v2(k, seed),
             seed=seed,
@@ -154,5 +170,6 @@ def generate_v2(seed: int, knobs: Knobs = Knobs(),
             B=k.B, kappa=k.kappa, u=k.u, D=k.D, r=k.r, eps=k.eps,
             p=k.p, p_def=k.p_def, opening=opening, exposure=exposure,
             pay_cap=k.pay_cap, settle_window=k.settle_window,
+            available_from=available,
         )
     return None

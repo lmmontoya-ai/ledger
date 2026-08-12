@@ -81,9 +81,12 @@ class ModelAgent:
         import hashlib
         state, events = game.state, tuple(game.events)
         cap = getattr(game, "message_cap", None) or 40
+        sc = state.scenario
         system = system_block(
-            self.mandate, cap, pay_cap=state.scenario.pay_cap,
-            settle_window=state.scenario.settle_window).decode("utf-8")
+            self.mandate, cap, pay_cap=sc.pay_cap,
+            settle_window=sc.settle_window,
+            arrivals=bool(sc.available_from)
+            and any(a > 1 for a in sc.available_from)).decode("utf-8")
         user = render_user(state, events, seat)
         digest = hashlib.sha256((system + "\n" + user).encode("utf-8")).hexdigest()
         return system, user, digest
