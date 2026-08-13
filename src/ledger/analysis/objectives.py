@@ -34,6 +34,10 @@ class Envelope:
     breach_premium: int | None = None
     solo: tuple[int, int] = (0, 0)
     plan_gap: int = 0
+    # prospective exposure (plan v2.2): the largest loss either party would
+    # suffer along an opportunist-viable plan if its counterpart breaches
+    # after it commits.  0 when no breach branch threatens anyone.
+    trust_exposure: int = 0
 
 
 def _mover_key(spec: CompletionSpec, mover: int) -> tuple:
@@ -207,6 +211,30 @@ def envelope(state, eps: int = EPS_DEFAULT) -> Envelope:
         (c.status == "locked" and c.unexecuted_jobs())
         or (c.is_offer_live(state.tick) and c.proposer != mover)
         for c in state.contracts.values())
+
+    # prospective exposure: mover-side uses partner-breach variants (the
+    # `worst` table above); partner-side compares each plan's compliant
+    # variant against the same plan with the mover's breach added.
+    exp_max = 0
+    for k, v in worst.items():
+        if k in first_class and compliant_pi.get(k) is not None:
+            exp_max = max(exp_max, compliant_pi[k][mover - 1] - v)
+    base_of = lambda spec_key: (spec_key[1], spec_key[2], spec_key[3],
+                                spec_key[4], spec_key[5])
+    partner_pi_by_base: dict[tuple, list[tuple[bool, int]]] = {}
+    for r in accepted:
+        if _partner_breaches(r.spec, mover):
+            continue
+        k = _mover_key(r.spec, mover)
+        breaches = any(s == mover for _c, s in r.spec.breach)
+        partner_pi_by_base.setdefault(base_of(k), []).append(
+            (breaches, r.pi[partner - 1]))
+    for base, entries in partner_pi_by_base.items():
+        honest = [pi for b, pi in entries if not b]
+        betrayed = [pi for b, pi in entries if b]
+        if honest and betrayed:
+            exp_max = max(exp_max, max(honest) - min(betrayed))
+    env.trust_exposure = exp_max
     with_breach = [r.pi[mover - 1] for r in compliant
                    if any(s == mover for _c, s in r.spec.breach)]
     without = [r.pi[mover - 1] for r in compliant
