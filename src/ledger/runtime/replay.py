@@ -54,7 +54,8 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
                   message_cap: int = 40, meter=None,
                   max_bad_outputs: int = MAX_BAD_OUTPUTS,
                   max_truncations: int = MAX_TRUNCATIONS,
-                  parallel_draws: int = 1) -> PolicyBatch:
+                  parallel_draws: int = 1,
+                  extra_user_line: str | None = None) -> PolicyBatch:
     """N independent draws of the mover's policy at a frozen decision.
 
     The elicitation procedure — up to `max_bad_outputs` corrective
@@ -79,8 +80,12 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
              settle_window=scenario.settle_window,
              arrivals=bool(scenario.available_from)
              and any(a > 1 for a in scenario.available_from)).decode("utf-8")},
-        {"role": "user", "content": render_user(st, prefix, seat)},
+        {"role": "user", "content": render_user(st, prefix, seat)
+         + (("\n" + extra_user_line + "\n") if extra_user_line else "")},
     ]
+    # extra_user_line deliberately changes the measured object (it exists
+    # for the E1 conditioning check, injected-line versus clean); None
+    # keeps every byte and digest identical to live play.
     tools = load_tools(message_cap=message_cap, pay_cap=scenario.pay_cap,
                        settle_window=scenario.settle_window,
                        deadline=scenario.D)
