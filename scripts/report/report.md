@@ -7,7 +7,7 @@ Design and results report, August 13, 2026, v3 · companion to the [Predictive C
 
 The programme asks whether one AI model can predict what another will do. Oversight proposals assume it can. A monitor flagging an agent's next action, a reviewer checking a system before it acts, a team of agents dividing work, all of them assume anticipation is possible.
 
-Two environments have tried to answer it so far.
+Two environments have tried to answer it.
 
 **Predictive Commons** was a small office simulation with three agents, eleven actions and eight turns. It worked as an instrument and gave a clear answer. The ten models were behaviourally distinct, 42 of 45 pairs told apart, yet none predicted another better than a simple count of that agent's recent actions. Predicting a copy of yourself helped not at all. The finding was narrow because the world was small. Nothing was at stake and the agents could not talk.
 
