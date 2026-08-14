@@ -67,7 +67,11 @@ def main() -> None:
             raise SystemExit("harvest failed")
 
     data = json.loads((HERE / "report_data.json").read_text(encoding="utf-8"))
-    body = (HERE / "report_body.html").read_text(encoding="utf-8")
+    # the prose lives in report.md; report_body.html is a build artifact,
+    # rewritten here so the rendered markup stays inspectable and diffable
+    import md_render
+    body = md_render.render_file(HERE / "report.md")
+    (HERE / "report_body.html").write_text(body, encoding="utf-8")
     js = (HERE / "report.js").read_text(encoding="utf-8")
     css = (CSS_SRC if CSS_SRC.exists() else CSS_LOCAL).read_text(encoding="utf-8")
     css += """
