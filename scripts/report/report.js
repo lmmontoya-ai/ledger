@@ -301,5 +301,42 @@
       setText("p-fx-luna-grok", F.matrix.luna.grok.mean.toFixed(2));
     })();
   })();
+  /* ---- the rebuilt economy and the study, injected from artifacts ---- */
+  (function () {
+    const V = D.v2;
+    if (!V) return;
+    const pc = v => Math.round(100 * v) + "%";
+    // small shares keep a decimal: "1%" and "0%" hide the real values
+    const pc1 = v => (100 * v).toFixed(1) + "%";
+    setText("v2-oldn", "759");
+    setText("v2-oldall", pc1(V.old_tradeoff_all));
+    setText("v2-oldneg", pc1(V.old_tradeoff_negotiation));
+    setText("v2-realign", pc(V.old_realignment));
+    setText("v2-newtrade", pc(V.new_tradeoff));
+    setText("v2-newtrust", V.new_trust_states);
+    setText("v2-res", pc(V.resolution));
+    setText("v2-tpr", pc(V.gate_tpr));
+    setText("v2-fpr", pc(V.gate_fpr));
+    setText("v2-nfc", V.n_forecasts.toLocaleString("en-US"));
+    setText("v2-ent", V.q0_entropy.toFixed(2));
+    setText("v2-p-ls", pc(V.q0_pairs["luna|sonnet"]));
+    setText("v2-p-lg", pc(V.q0_pairs["luna|grok"]));
+    setText("v2-p-sg", pc(V.q0_pairs["sonnet|grok"]));
+    const r1 = V.rq1.primary_ordered_vs_board;
+    setText("v2-rq1p", r1.mean_diff.toFixed(3));
+    setText("v2-rq1pp", r1.p_sign.toFixed(2));
+    setText("v2-hself", V.h_self.mean_other_minus_self.toFixed(3));
+    setText("v2-hselfn", V.h_self.n_pairs);
+    setText("v2-hselfp", V.h_self.p_sign_two_sided.toFixed(3));
+    setText("v2-hcy", V.h_choice.mean_excess_choice.toFixed(3));
+    setText("v2-hcn", V.h_choice.mean_excess_other.toFixed(3));
+    setText("v2-rq3", "+" + V.rq3.mean_projection.toFixed(3));
+    setText("v2-rq3n", V.rq3.mean_null_third_model.toFixed(3));
+    if (V.coupling) {
+      setText("v2-cpc", V.coupling.arm_C_forecast_mean_surplus.toFixed(2));
+      setText("v2-cpa", V.coupling.arm_A_filler_mean_surplus.toFixed(2));
+    }
+  })();
+
   setText("ntests", D.tests || 151);
 })();

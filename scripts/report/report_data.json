@@ -5458,7 +5458,7 @@
   "w_star": 204
  },
  "board": "LEDGER \u00b7 turn 24 of 24 \u00b7 your move \u00b7 you are P2\n\n## Position\nPOT shared budget: 48 of 100 left \u00b7 destroyed after turn 24\nDRAWS taken alone: you 0 of 25 \u00b7 them 0 of 25\nSLOTS    you 2/3 left \u00b7 them 3/3 left\nACCOUNT  you 3 \u00b7 them -6\n\n## Jobs\nJOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS\n 1       29         19           9            -  open\n 2       13         16          28            -  open\n 3       14         22           0            -  DONE by you, turn 4\n 4       23         13          35            -  open\n 5       49         30          33            3  open            <- them must do this (deal 3)\n 6       10         13          13            -  open\n 7       14         21           8            -  open\n 8       15         26          12            -  open\n\n## Deals\n deal 3 BINDING (since turn 8)   them do job 5 (30 from pot)\n deal 7 OFFERED by you, expires turn 24\n      them do job 1 (19 from pot)  \u00b7  you do job 2 (13 from pot)  \u00b7  them do job 4 (13 from pot)  \u00b7  you do job 6 (10 from pot)\n\n## History\nturn 1  them  PROPOSE deal 1: you do job 3 (14 from pot) \u00b7 them do job 5 (30 from pot)\nturn 2  you   ACCEPT  deal 1    [deal 1 binds; cancel window turns 3-4]\nturn 3  them  WAIT\nturn 4  you   EXECUTE job 3    [done; cancel window closed]\nturn 5  them  RENEGE  deal 1    [deal 1 broken; 22 back to pot; they pay you 3]\nturn 6  you   PROPOSE deal 2: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 them do job 5 (30 from pot) \u00b7 you do job 6 (10 from pot)\nturn 7  them  PROPOSE deal 3: them do job 5 (30 from pot)\nturn 8  you   ACCEPT  deal 3    [deal 3 binds; cancel window turns 9-10]\nturn 9  them  WAIT    [deal 2 expired]\nturn 10  you   PROPOSE deal 4: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)    [cancel window closed]\nturn 11  them  WAIT\nturn 12  you   END\nturn 13  them  WAIT    [deal 4 expired]\nturn 14  you   PROPOSE deal 5: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)\nturn 15  them  WAIT\nturn 16  you   END\nturn 17  them  WAIT    [deal 5 expired]\nturn 18  you   PROPOSE deal 6: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)\nturn 19  them  WAIT\nturn 20  you   END\nturn 21  them  WAIT    [deal 6 expired]\nturn 22  you   PROPOSE deal 7: them do job 1 (19 from pot) \u00b7 you do job 2 (13 from pot) \u00b7 them do job 4 (13 from pot) \u00b7 you do job 6 (10 from pot)\nturn 23  them  WAIT\n",
- "tests": 184,
+ "tests": 192,
  "pilot": {
   "spend_total": 504,
   "games": 48,
@@ -5852,6 +5852,85 @@
      }
     }
    }
+  }
+ },
+ "v2": {
+  "old_tradeoff_negotiation": 0.0,
+  "old_tradeoff_all": 0.0079,
+  "old_realignment": 0.7233,
+  "new_tradeoff": 0.4304,
+  "new_trust_states": 39,
+  "resolution": 0.9448,
+  "gate_tpr": 0.915,
+  "gate_fpr": 0.0,
+  "q0_entropy": 0.781,
+  "q0_pairs": {
+   "luna|sonnet": 0.462,
+   "luna|grok": 0.538,
+   "sonnet|grok": 0.154
+  },
+  "q0_n_certified": 13,
+  "c3_median_exposure": 77,
+  "c3_n_trust": 15,
+  "rq1": {
+   "primary_ordered_vs_board": {
+    "n": 192,
+    "mean_diff": -0.0054,
+    "p_sign": 0.74364
+   },
+   "secondary_counts_vs_board": {
+    "n": 192,
+    "mean_diff": -0.0154,
+    "p_sign": 0.3557
+   },
+   "secondary_shuffled_vs_board": {
+    "n": 192,
+    "mean_diff": -0.0184,
+    "p_sign": 0.4452
+   },
+   "note": "negative mean_diff means the richer view helps; Holm over the two secondaries"
+  },
+  "h_choice": {
+   "mean_excess_choice": 0.3716,
+   "mean_excess_other": 0.2588,
+   "n_choice": 420,
+   "n_other": 348,
+   "confirmed": true
+  },
+  "h_self": {
+   "n_pairs": 140,
+   "mean_other_minus_self": 0.1061,
+   "p_sign_two_sided": 0.00785,
+   "confirmed_direction": true
+  },
+  "rq3": {
+   "n_cells": 100,
+   "mean_projection": 0.0243,
+   "mean_null_third_model": -0.0971,
+   "note": "positive projection = misses land nearer the predictor's own tendency than the target's"
+  },
+  "n_forecasts": 6144,
+  "coupling": {
+   "arm_A_filler_mean_surplus": 0.726,
+   "arm_C_forecast_mean_surplus": 0.6871,
+   "n_per_arm": {
+    "A": 10,
+    "C": 10
+   },
+   "conditioning_jsd_median": 0.0759,
+   "conditioning_jsd_all": [
+    0.0,
+    0.0,
+    0.0101,
+    0.0452,
+    0.047,
+    0.1049,
+    0.1398,
+    0.1939,
+    0.2177,
+    0.2531
+   ],
+   "note": "replication of the v1 anomaly (filler beat forecasts); conditioning near 0 = injected text ignored, large = used"
   }
  }
 }

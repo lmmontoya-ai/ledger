@@ -218,6 +218,49 @@ def pilot_results():
     }
 
 
+def v2_results():
+    """The rebuilt economy's numbers, read from the run artifacts: the
+    offline gates, the identifiability gate, and the confirmatory battery.
+    Optional, like pilot_results()."""
+    R = EXPERIMENTS / "runs"
+    need = [R / "v0" / "v0_report.json", R / "q0_gate" / "q0_report.json",
+            R / "q0_c3val" / "c3val_report.json", R / "e1" / "e1_report.json"]
+    if not all(p.exists() for p in need):
+        return None
+    v0, q0, c3, e1 = (json.loads(p.read_text(encoding="utf-8")) for p in need)
+    gate_a = json.loads((R / "divergence_audit" / "gate_a.json")
+                        .read_text(encoding="utf-8"))
+    gate_c = json.loads((R / "divergence_audit" / "gate_c_VALIDATION2.json")
+                        .read_text(encoding="utf-8"))
+    sel = json.loads((R / "q0_gate" / "selection.json")
+                     .read_text(encoding="utf-8"))
+    cp_path = R / "e1" / "coupling" / "coupling_report.json"
+    cp = json.loads(cp_path.read_text(encoding="utf-8")) if cp_path.exists() \
+        else None
+    return {
+        "old_tradeoff_negotiation":
+            gate_a["live"]["by_phase"]["negotiation"]["tradeoff_share"],
+        "old_tradeoff_all": gate_a["live"]["tradeoff_share"],
+        "old_realignment": gate_a["live"]["realignment_identity_share"],
+        "new_tradeoff": gate_c["mixture"]["tradeoff_share"],
+        "new_trust_states": gate_c["mixture"]["visited"].get("trust", 0),
+        "resolution": v0["check1_resolution"]["fraction"],
+        "gate_tpr": v0["check3_gate_tpr"]["at_n32"]["tpr"],
+        "gate_fpr": v0["check3_gate_tpr"]["at_n32"]["fpr"],
+        "q0_entropy": q0["criterion1_branching"]["median_bits"],
+        "q0_pairs": q0["criterion2_distinctness"]["pair_rates"],
+        "q0_n_certified": sel["tradeoff"],
+        "c3_median_exposure": c3["fresh_median_exposure"],
+        "c3_n_trust": c3["fresh_trust_moments"],
+        "rq1": e1["rq1"],
+        "h_choice": e1["h_choice"],
+        "h_self": e1["h_self"],
+        "rq3": e1["rq3"],
+        "n_forecasts": e1["n_forecast_rows"] * 8,
+        "coupling": cp,
+    }
+
+
 def test_count():
     """Count collected tests from pytest itself, so the status table's number
     cannot go stale the way a typed one would."""
@@ -268,6 +311,11 @@ def main():
     except Exception as exc:
         print("pilot results skipped:", exc)
         data["pilot"] = None
+    try:
+        data["v2"] = v2_results()
+    except Exception as exc:
+        print("v2 results skipped:", exc)
+        data["v2"] = None
     out = HERE / "report_data.json"
     out.write_text(json.dumps(data, indent=1), encoding="utf-8")
     p = data["play"]

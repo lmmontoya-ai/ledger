@@ -1,11 +1,11 @@
 <nav id="toc">
-  <span class="toc-head">Contents</span><a href="#why">Why build this</a><a href="#world">The game</a><a href="#example">A worked game</a><a href="#stakes">Where the stakes are</a><a href="#see">What an agent sees</a><a href="#measure">What we will measure</a><a href="#ran">The pilot</a><a href="#found">What we found</a><a href="#status">Status</a>
+  <span class="toc-head">Contents</span><a href="#why">Why build this</a><a href="#world">The game</a><a href="#example">A worked game</a><a href="#stakes">Where the stakes are</a><a href="#see">What an agent sees</a><a href="#measure">What we will measure</a><a href="#ran">The first pilot</a><a href="#found">What it found</a><a href="#rebuilt">Why it failed, and the rebuild</a><a href="#study">The study</a><a href="#conclude">What we conclude</a><a href="#status">Status</a>
 </nav>
 <main>
 <header class="hero">
   <h1>LEDGER</h1>
   <p class="subtitle">A two-agent contracting economy, built to test whether one AI model can predict another when the prediction is worth something. The name is not an acronym. The world literally is a ledger, an append-only log of events with every state computed as a fold over it, which is what lets any moment of any game be replayed exactly.</p>
-  <p class="version">Design and pilot report, August 11, 2026, v2 &middot; companion to the <a href="/r/predictive-commons-jul26/">Predictive Commons</a> and <a href="/r/predictive-commons-shade/">SHADE</a> reports. The environment is built, validated, and piloted: 48 live games under four different instructions, with full entry checks. The verdict and the main finding are in <a href="#found">What we found</a>; the full prediction study is paused pending direction.</p>
+  <p class="version">Design and results report, August 13, 2026, v3 &middot; companion to the <a href="/r/predictive-commons-jul26/">Predictive Commons</a> and <a href="/r/predictive-commons-shade/">SHADE</a> reports. The first pilot failed its own entry checks; an exact enumeration of the economy showed why, two rules changed, and the rebuilt version carried a registered three-model study. Results in <a href="#study">The study</a>, bounded claims in <a href="#conclude">What we conclude</a>.</p>
   <div class="statstrip" id="statstrip"></div>
 </header>
 
@@ -89,13 +89,13 @@
 </section>
 
 <section id="ran">
-<h2>The pilot: what we ran</h2>
+<h2>The first pilot: what we ran</h2>
 <p>Three frontier models, one each from OpenAI, Anthropic and xAI, played <b id="p-games">48</b> full games against each other: twenty-four under the standard instruction (look after your own side), eight with no goal stated at all, eight told to maximise their own score, eight told to maximise the combined score.</p>
 <p>From those games we froze <b id="p-dec">96</b> decision moments, picked by a random rule fixed before any results existed, so nothing could steer the choice. At each moment the acting model was asked the same question 32 times to measure its tendencies. The same moments were then re-run with the other models in the seat, and at half of them the <i>same model</i> was re-run under each of the four instructions, so identical situations can be compared across models and across goals. We also ran the guessing battery (each model predicting the mover under four levels of information), twenty games where one player secretly received a real forecast of its partner or meaningless filler, and the calibration checks the plan requires. Total pilot cost <b id="p-spend"></b> dollars, every call logged and replayable.</p>
 </section>
 
 <section id="found">
-<h2>What we found</h2>
+<h2>What the first pilot found</h2>
 
 <div class="finding"><b class="head">The models are interchangeable here, and changing their goals changes nothing.</b> The pilot's central test asked whether two measured behaviours can be told apart beyond their own noise. The answer, across every comparison:</div>
 <div id="axes-table"></div>
@@ -139,6 +139,46 @@
 <div class="finding"><b class="head">Verdict: not admitted.</b> The environment failed its own entry checks, set before the run, on the two criteria that matter most: behavioural variety, and telling models apart. Varying the assigned goals, the registered fallback, did not change the outcome. The checks worked as designed. What remains is a direction decision: write up the convergence finding as it stands, widen to the full ten-model roster where weaker and stranger models may separate, or rebuild the economy so that several different plays are optimal at once and convergence is impossible. That decision is with the researchers.</p></div>
 </section>
 
+<section id="rebuilt">
+<h2>Why it failed, and the rebuild</h2>
+
+<p>The first pilot could not tell whether the models were interchangeable or the economy left them nothing to disagree about. We built a tool to answer that. Given any game position, it enumerates every legal way the game can finish, replays each one through the engine, and reads off what a selfish player, a joint-welfare player, a cautious player and an opportunist would each do best. Where the selfish and joint answers are different actions, the position is a certified <b>trade-off moment</b>. Where the cautious and opportunist answers differ, it is a certified <b>trust moment</b>. The tool reproduces two things the models did unaided: the one contract break of the first pilot, ranked as the selfish optimum at its exact value, and the stopping turn in 22 of 23 games that ended by agreement.</p>
+
+<div class="finding"><b class="head">The old economy offered almost no moments where objectives disagreed.</b> Across <b id="v2-oldn"></b> positions the models actually reached, the share of trade-off moments was <b id="v2-oldall"></b> overall and <b id="v2-oldneg"></b> during negotiation, the phase where all the behavioural variety lived. The mechanism is visible in the arithmetic: in <b id="v2-realign"></b> of positions, the selfish optimum equals the joint optimum minus a side payment. With payments unrestricted, a selfish player picks the largest total and buys the partner's consent, so it ranks plans exactly as a joint-welfare player does. Convergence was a property of the economy, not a discovery about the models.</p></div>
+
+<h3>What changed</h3>
+<p>Two rule changes, both structural, neither touching what the models are told. Scheduled payments are capped at 12 points per deal and transfers are disabled, so consent cannot be bought without limit. Payments may only fall in the second half of the game, so a promise outstays the window in which a deal can be cancelled and becomes something that can be broken. Admission was inverted: the old rule required one clearly best plan, the new rule requires at least two near-best plans with materially different splits that need different opening moves.</p>
+<p>Eight tuning rounds produced the current settings; two of them made things worse and are recorded as such. Every threshold was frozen before the scenarios that judge it were generated, and one candidate design failed its held-out check and its seed range was burned. The final settings were then generated fresh from untouched seeds and tested once: trade-off moments at <b id="v2-newtrade"></b> of visited positions, uniform across phases, and <b id="v2-newtrust"></b> trust moments in 48 scripted games.</p>
+
+<h3>Checking the instrument before spending</h3>
+<p>Three offline checks, each with a threshold set in advance. The measurement vocabulary buckets actions into classes, and a disagreement invisible at class resolution cannot be measured: <b id="v2-res"></b> of plan-level disagreements survive bucketing. The separability test was simulated against known differences at the collection size we planned: it detects <b id="v2-tpr"></b> of them, with a false-positive rate of <b id="v2-fpr"></b>. That number is the reason the results below are interpretable at all; the equivalent figure in the first pilot's own simulation was 25.7%, low enough that its null was uninformative about the models.</p>
+</section>
+
+<section id="study">
+<h2>The study</h2>
+<p>24 games between GPT-5.6 Luna, Claude Sonnet 5 and Grok 4.5 on the rebuilt economy, then 48 positions frozen by a sealed random rule with quotas on certified moments, then each model asked the same question 32 times at each position to measure its tendencies, then <b id="v2-nfc"></b> predictions in which every model predicted the actual mover under four levels of information.</p>
+
+<div class="finding"><b class="head">The three models are distinguishable, in two of three pairs.</b> At certified trade-off moments, the share of positions where a pair's tendencies separate beyond their own sampling noise: Luna against Sonnet <b id="v2-p-ls"></b>, Luna against Grok <b id="v2-p-lg"></b>, Sonnet against Grok <b id="v2-p-sg"></b>. Median action variety at negotiation moments was <b id="v2-ent"></b> bits. Read carefully: this is the first separation the programme has measured in an environment with stakes, and it rests on 13 certified positions with a test we know sees 91.5% of real differences. Sonnet and Grok remain indistinguishable here, and three models cannot tell us whether that is a fact about those two or about the sample.</div>
+
+<div class="finding"><b class="head">Watching a model's past actions did not help predict it.</b> Ordered history against the board alone: <b id="v2-rq1p"></b> excess bits, in the direction of helping, not distinguishable from zero (sign test p = <b id="v2-rq1pp"></b>). Counts and shuffled history are the same size and equally undecidable. All three are far below the 0.05 bits registered in advance as the smallest effect worth caring about. The Commons found this in a world without stakes; it now holds in a world with them, and this time the targets are known to be distinguishable, so the usual escape (nothing to recognise) is closed.</div>
+
+<div class="finding"><b class="head">Models predicted themselves better than others predicted them.</b> On matched information, byte-identical prompts, at negotiation moments: other-minus-self <b id="v2-hself"></b> excess bits across <b id="v2-hselfn"></b> paired cells, sign test p = <b id="v2-hselfp"></b>. This was written down as a prediction before collection, from a pattern in the first pilot. Two limits worth stating: the predictions are made in an observer frame, so this is self-recognition by a model reading its own position, not introspection while acting; and predictors never saw any model's reasoning, so the result bounds what the behavioural record carries, not what deliberation would.</div>
+
+<div class="finding"><b class="head">Prediction error concentrates where the enumerator says choices exist.</b> Mean excess error <b id="v2-hcy"></b> at certified trade-off and trust moments against <b id="v2-hcn"></b> elsewhere, also registered in advance. This is a property of the positions, not of any model, and it is the reason the null above is worth believing: the predictors were tested where prediction is hard rather than where the next move is forced.</div>
+
+<div class="finding"><b class="head">Two weaker results, reported as weak.</b> When a prediction missed, it sat slightly closer to the predictor's own tendencies than to the target's (<b id="v2-rq3"></b> bits, against <b id="v2-rq3n"></b> for a third-model comparison, 100 cells). And handing a player a real forecast of its partner did not help: mean surplus captured <b id="v2-cpc"></b> with a genuine forecast against <b id="v2-cpa"></b> with matched filler, ten games each, repeating the direction the first pilot saw. Replaying the injected position with and without the forecast line shows the text was read at about half the moments and ignored at the rest, so the reading is uptake without benefit rather than pure inattention. At these sample sizes neither result would survive a demanding test on its own.</div>
+</section>
+
+<section id="conclude">
+<h2>What we conclude</h2>
+<p>1. <b>The environment, not the models, produced the first pilot's null.</b> An exact enumeration of the old economy finds objective disagreement at 0.8% of visited positions and none at all during negotiation, with the mechanism identified: unrestricted side payments make a selfish planner rank plans exactly as a joint planner does. Two rule changes remove that, and the same measurement then separates two of three model pairs. The bounded claim is about this economy; it says nothing about how often real deployments have the same property, though transferable value and free side payments are not rare.</p>
+<p>2. <b>Behavioural evidence about a target did not improve prediction of it, under stakes.</b> Neither ordered history, counts, nor shuffled history beat the board alone, all within 0.02 bits of zero, against a registered threshold of 0.05. This replicates the Commons null in a consequential world and closes its main escape route, because here the targets are demonstrably distinguishable. The claim is bounded to these prompts, these four views, and behavioural records; reasoning traces were captured but never shown to predictors, which is the obvious next experiment.</p>
+<p>3. <b>A self-prediction advantage appeared where the first pilot hinted at one.</b> 0.106 excess bits, p = 0.008, on identical information, registered in advance. It is an observer-frame advantage measured at negotiation positions in one economy with three models. Whether it is privileged access or a shared cause (a model recognising its own style in a position it would have produced) is not decided by this design.</p>
+<p>4. <b>Prediction error tracks certified choice.</b> Error is 44% higher where enumeration proves a genuine dilemma exists. This is the cleanest thing in the study to carry into future designs: it lets an experiment aim its budget at positions where prediction is a real question.</p>
+<p>5. <b>Anticipation did not pay.</b> Real forecasts of a partner produced no advantage over filler, and the conditioning check rules out simple inattention as the whole story. Ten games per arm is not enough to make this a finding; it is enough to say the effect is not large and obvious.</p>
+<p>6. <b>What this cost, and what it does not show.</b> The rebuild and the whole registered campaign ran for about $370 of live model calls, with every threshold, amendment and burned seed range on the record, including one criterion redefined after it failed and re-tested on games it had never seen. Three models, one economy, 64 frozen positions. The nine-model cohort is the next test of whether any of it generalises.</p>
+</section>
+
 <section id="status">
 <h2>Status</h2>
 <table>
@@ -149,8 +189,10 @@
 <tr><td>Model connection</td><td>Complete. Episodes run against live models through one routed gateway with a fixed serving host per model, or against scripted policies; every call is logged with its exact input fingerprint and full raw reply, so any moment of any game can be revisited. Exploratory tuning games with live models began August 2026.</td></tr>
 <tr><td>Experiment plan</td><td>Written and frozen, including what would falsify it.</td></tr>
 <tr><td>Human readability check</td><td>Passed. Two earlier rounds changed the design; the third read-through, on the rebuilt walkthrough, passed.</td></tr>
-<tr><td>Pilot</td><td>Complete: 48 games across four instructions. The entry checks failed on behavioural variety and telling models apart; everything else passed. See <a href="#found">What we found</a>.</td></tr>
-<tr><td>Full study</td><td>Paused pending direction: write up the convergence finding, widen to ten models, or rebuild the economy for multiple optima.</td></tr>
+<tr><td>First pilot</td><td>Complete: 48 games across four instructions. Failed its entry checks on behavioural variety and telling models apart. See <a href="#found">What it found</a>.</td></tr>
+<tr><td>Rebuild</td><td>Complete and frozen. Payment cap and settlement window replace unrestricted side payments; admission requires a payoff frontier rather than one best plan. Validated once on untouched seeds. See <a href="#rebuilt">the rebuild</a>.</td></tr>
+<tr><td>Registered study</td><td>Complete on three models: identifiability gate passed, evidence ladder null, self-prediction advantage confirmed, error tracks certified choice. See <a href="#study">The study</a>.</td></tr>
+<tr><td>Nine-model cohort</td><td>Priced and preflighted, not run. All nine candidate models return legal actions with pinned providers; the cohort tests whether these results generalise beyond three near-equal models.</td></tr>
 </table>
 <p>The order matters. SHADE's confirmatory campaign was designed before anyone measured whether its models could be told apart, and the answer turned out to be no. Here the gate comes first. A small pilot tests whether behaviour branches and whether models differ, and the expensive work is authorised only if it does. If it does not, that is a finding about the models rather than a reason to spend.</p>
 </section>

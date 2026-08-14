@@ -40,6 +40,12 @@ def check(data: dict, body: str, html: str) -> None:
                        "views-table"):
             if anchor not in body:
                 errors.append(f"pilot results present but prose lost {anchor}")
+    if data.get("v2"):
+        for anchor in ("v2-tpr", "v2-p-ls", "v2-rq1p", "v2-hself",
+                       "v2-hcy", "v2-realign"):
+            if anchor not in body:
+                errors.append(f"v2 results present but prose lost {anchor}")
+    if data.get("pilot"):
         if data["pilot"].get("forecast"):
             for anchor in ("forest-plot", "matrix-table", "selfother-plot",
                            "p-fx-selfneg"):
