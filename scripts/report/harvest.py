@@ -256,6 +256,8 @@ def v2_results():
         "h_choice": e1["h_choice"],
         "h_self": e1["h_self"],
         "rq3": e1["rq3"],
+        "matrix": e1["matrix"],
+        "self_other": e1["self_other"],
         "n_forecasts": e1["n_forecast_rows"] * 8,
         "coupling": cp,
     }
@@ -306,11 +308,6 @@ def main():
         data["tests"] = test_count()
     except Exception as exc:
         print("test count skipped:", exc)
-    try:
-        data["pilot"] = pilot_results()
-    except Exception as exc:
-        print("pilot results skipped:", exc)
-        data["pilot"] = None
     try:
         data["v2"] = v2_results()
     except Exception as exc:

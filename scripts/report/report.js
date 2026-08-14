@@ -128,190 +128,12 @@
     });
     el.appendChild(t);
   })();
-  /* ---- pilot results, injected from the experiment artifacts ---- */
-  (function () {
-    const P = D.pilot;
-    if (!P) return;
-    setText("p-games", P.games);
-    setText("p-dec", P.decisions);
-    setText("p-spend", P.spend_total);
-    setText("p-mandate-pairs", P.axes[0].pairs.split("/")[1]);
-    setText("p-ent-neg", P.entropy_negotiation.toFixed(2));
-    setText("p-ent-mech", P.entropy_mechanical.toFixed(2));
-    setText("p-profitable", P.premiums.n_profitable);
-    setText("p-maxprem", "+" + P.premiums.max);
-    setText("p-reneges", P.reneges);
-    setText("p-c6loss", P.c6_median_loss);
-    setText("p-sens-r1", P.sens_r1);
-    setText("p-sens-lowt", P.sens_lowt);
-    setText("p-c5-real", P.c5_real.toFixed(2));
-    setText("p-c5-filler", P.c5_filler.toFixed(2));
-    function table(id, header, rows) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const t = document.createElement("table");
-      t.innerHTML = "<tr>" + header.map(h => `<th>${h}</th>`).join("") + "</tr>";
-      rows.forEach(r => {
-        const tr = document.createElement("tr");
-        r.forEach(c => {
-          const td = document.createElement("td");
-          td.textContent = c;
-          tr.appendChild(td);
-        });
-        t.appendChild(tr);
-      });
-      el.appendChild(t);
-    }
-    table("axes-table",
-          ["Comparison", "Decisions told apart", "Pairs told apart"],
-          P.axes.map(a => [a.name, Math.round(100 * a.rate) + "%", a.pairs]));
-    table("mandate-table",
-          ["Instruction", "Games", "Mean efficiency", "Agreements",
-           "Contracts broken"],
-          Object.entries(P.mandates).map(([m, v]) =>
-            [m, v.n, v.mean_efficiency.toFixed(2),
-             Math.round(100 * v.agreement_rate) + "%", v.reneges]));
-    table("views-table",
-          ["What the predictor saw", "Prediction error (excess bits)"],
-          [["The board alone", P.views["L0"].mean_excess.toFixed(3)],
-           ["+ the mover's actions, counted",
-            P.views["C-count"].mean_excess.toFixed(3)],
-           ["+ the mover's actions, in order",
-            P.views["C-target"].mean_excess.toFixed(3)],
-           ["+ the mover's actions, shuffled",
-            P.views["C-shuf"].mean_excess.toFixed(3)]]);
 
-    /* ---- who predicts whom: matrix, forest, self-vs-other ---- */
-    const F = P.forecast;
-    if (!F) return;
-    const NAME = { luna: "Luna", sonnet: "Sonnet", grok: "Grok" };
-    const ORDER = ["luna", "sonnet", "grok"];
-
-    (function () {
-      const el = document.getElementById("matrix-table"); if (!el) return;
-      const t = document.createElement("table");
-      t.innerHTML = "<tr><th>Predictor</th>"
-        + ORDER.map(m => `<th>predicting ${NAME[m]}</th>`).join("") + "</tr>";
-      const vals = ORDER.flatMap(p => ORDER.map(q => F.matrix[p][q].mean));
-      const vmax = Math.max(...vals);
-      ORDER.forEach(p => {
-        const tr = document.createElement("tr");
-        const h = document.createElement("td");
-        h.textContent = NAME[p]; h.style.fontWeight = 600;
-        tr.appendChild(h);
-        ORDER.forEach(q => {
-          const c = F.matrix[p][q];
-          const td = document.createElement("td");
-          td.textContent = c.mean.toFixed(2);
-          td.style.textAlign = "center";
-          td.style.background =
-            `rgba(42,120,214,${(0.45 * c.mean / vmax).toFixed(3)})`;
-          if (p === q) { td.style.fontWeight = 700; td.style.outline = `2px solid ${INK}`; td.style.outlineOffset = "-2px"; }
-          tr.appendChild(td);
-        });
-        t.appendChild(tr);
-      });
-      el.appendChild(t);
-      const cap = document.createElement("div"); cap.className = "fcap";
-      cap.textContent = "Prediction error in excess bits (0 = as accurate as "
-        + "a fresh sample of the target itself; darker = worse). Boxed "
-        + "diagonal = a model predicting itself.";
-      el.appendChild(cap);
-    })();
-
-    /* dot-and-interval rows shared by the two charts */
-    function dotChart(elId, rows, caption) {
-      const el = document.getElementById(elId); if (!el) return;
-      const w = 860, rowH = 36, labW = 250, padR = 30, axisH = 30;
-      const h = rows.length * rowH + axisH + 14;
-      const hi = Math.max(...rows.flatMap(r => r.pts.map(p => p.hi ?? p.v)));
-      const xmax = Math.max(0.1, Math.ceil(hi * 10) / 10);
-      const X = v => labW + (w - labW - padR) * v / xmax;
-      const svg = svgEl("svg", { viewBox: `0 0 ${w} ${h}`, width: "100%" });
-      el.appendChild(svg);
-      for (let v = 0; v <= xmax + 1e-9; v += 0.1) {
-        svg.appendChild(svgEl("line", { x1: X(v), y1: 2, x2: X(v),
-          y2: h - axisH, stroke: v < 0.05 ? INK2 : GRID,
-          "stroke-width": v < 0.05 ? 1.5 : 1 }));
-        const t = svgEl("text", { x: X(v), y: h - axisH + 16,
-          "text-anchor": "middle", "font-size": 12, fill: MUTED });
-        t.textContent = v.toFixed(1); svg.appendChild(t);
-      }
-      rows.forEach((r, i) => {
-        const y = i * rowH + rowH / 2;
-        const lab = svgEl("text", { x: labW - 12, y: y + 4,
-          "text-anchor": "end", "font-size": 13.5,
-          fill: r.strong ? INK : INK2, "font-weight": r.strong ? 600 : 400 });
-        lab.textContent = r.label; svg.appendChild(lab);
-        r.pts.forEach(p => {
-          if (p.lo != null) svg.appendChild(svgEl("line", { x1: X(p.lo),
-            y1: y + p.dy, x2: X(p.hi), y2: y + p.dy, stroke: p.color,
-            "stroke-width": 2 }));
-          svg.appendChild(svgEl("circle", { cx: X(p.v), cy: y + p.dy, r: 5,
-            fill: p.color }));
-        });
-      });
-      const cap = document.createElement("div"); cap.className = "fcap";
-      cap.textContent = caption; el.appendChild(cap);
-    }
-
-    (function () {
-      const rows = [];
-      ORDER.forEach(tgt => {
-        const cells = ORDER.map(p => ({ p, c: F.matrix[p][tgt] }))
-          .sort((a, b) => a.c.mean - b.c.mean);
-        cells.forEach(({ p, c }) => rows.push({
-          label: (p === tgt ? `${NAME[p]} about itself`
-                            : `${NAME[p]} about ${NAME[tgt]}`),
-          strong: p === tgt,
-          pts: [{ v: c.mean, lo: c.lo, hi: c.hi, dy: 0,
-                  color: p === tgt ? BLUE : GRAY }]
-        }));
-      });
-      dotChart("forest-plot", rows,
-        "Mean prediction error per predictor-target pair, 95% interval, "
-        + "all 96 frozen decisions. Blue = a model predicting itself. "
-        + "0 = indistinguishable from the target's own repeat runs.");
-    })();
-
-    (function () {
-      const PH = { negotiation: "Negotiation", execution: "Execution",
-                   endgame: "Endgame" };
-      const rows = [];
-      for (const ph of ["negotiation", "execution", "endgame"]) {
-        const s = F.self_other.by_phase[ph];
-        rows.push({ label: PH[ph],
-          strong: ph === "negotiation",
-          pts: [{ v: s.self.mean, lo: s.self.lo, hi: s.self.hi, dy: -5,
-                  color: BLUE },
-                { v: s.other.mean, lo: s.other.lo, hi: s.other.hi, dy: 6,
-                  color: GRAY }] });
-      }
-      dotChart("selfother-plot", rows,
-        "Blue = predicting yourself, gray = predicting the other two "
-        + "models. 95% intervals; one point per frozen decision, the four "
-        + "views averaged first.");
-      const n = F.self_other.by_phase.negotiation;
-      setText("p-fx-selfneg", n.self.mean.toFixed(2));
-      setText("p-fx-otherneg", n.other.mean.toFixed(2));
-      setText("p-fx-luna-self", F.matrix.luna.luna.mean.toFixed(2));
-      setText("p-fx-sonnet-self", F.matrix.sonnet.sonnet.mean.toFixed(2));
-      setText("p-fx-grok-self", F.matrix.grok.grok.mean.toFixed(2));
-      setText("p-fx-sonnet-grok", F.matrix.sonnet.grok.mean.toFixed(2));
-      setText("p-fx-luna-grok", F.matrix.luna.grok.mean.toFixed(2));
-    })();
-  })();
-  /* ---- the rebuilt economy and the study, injected from artifacts ---- */
+  /* ---- the study, injected from the run artifacts ---- */
   (function () {
     const V = D.v2;
     if (!V) return;
     const pc = v => Math.round(100 * v) + "%";
-    // small shares keep a decimal: "1%" and "0%" hide the real values
-    const pc1 = v => (100 * v).toFixed(1) + "%";
-    setText("v2-oldn", "759");
-    setText("v2-oldall", pc1(V.old_tradeoff_all));
-    setText("v2-oldneg", pc1(V.old_tradeoff_negotiation));
-    setText("v2-realign", pc(V.old_realignment));
     setText("v2-newtrade", pc(V.new_tradeoff));
     setText("v2-newtrust", V.new_trust_states);
     setText("v2-res", pc(V.resolution));
@@ -336,6 +158,90 @@
       setText("v2-cpc", V.coupling.arm_C_forecast_mean_surplus.toFixed(2));
       setText("v2-cpa", V.coupling.arm_A_filler_mean_surplus.toFixed(2));
     }
+
+    const NAME = { luna: "Luna", sonnet: "Sonnet", grok: "Grok" };
+    const ORDER = ["luna", "sonnet", "grok"];
+
+    /* predictor x target error matrix */
+    (function () {
+      const el = document.getElementById("v2-matrix"); if (!el) return;
+      const t = document.createElement("table");
+      t.innerHTML = "<tr><th>Predictor</th>"
+        + ORDER.map(m => `<th>predicting ${NAME[m]}</th>`).join("") + "</tr>";
+      const vals = ORDER.flatMap(p => ORDER.map(
+        q => (V.matrix[p] && V.matrix[p][q] ? V.matrix[p][q].mean : 0)));
+      const vmax = Math.max(...vals);
+      ORDER.forEach(p => {
+        const tr = document.createElement("tr");
+        const h = document.createElement("td");
+        h.textContent = NAME[p]; h.style.fontWeight = 600;
+        tr.appendChild(h);
+        ORDER.forEach(q => {
+          const c = V.matrix[p] && V.matrix[p][q];
+          const td = document.createElement("td");
+          td.textContent = c ? c.mean.toFixed(2) : "-";
+          td.style.textAlign = "center";
+          if (c) td.style.background =
+            `rgba(42,120,214,${(0.45 * c.mean / vmax).toFixed(3)})`;
+          if (p === q) {
+            td.style.fontWeight = 700;
+            td.style.outline = `2px solid ${INK}`;
+            td.style.outlineOffset = "-2px";
+          }
+          tr.appendChild(td);
+        });
+        t.appendChild(tr);
+      });
+      el.appendChild(t);
+      const cap = document.createElement("div"); cap.className = "fcap";
+      cap.textContent = "Mean prediction error in excess bits, all views "
+        + "pooled (0 = as close to the target's tendency as a fresh sample "
+        + "of the target itself; darker = worse). Boxed diagonal = a model "
+        + "predicting itself.";
+      el.appendChild(cap);
+    })();
+
+    /* self versus other, by phase */
+    (function () {
+      const el = document.getElementById("v2-selfother"); if (!el) return;
+      const phases = ["negotiation", "execution", "endgame"];
+      const rows = phases.map(ph => ({ label: ph, d: V.self_other[ph] }))
+                         .filter(r => r.d && r.d.self && r.d.other);
+      const w = 860, rowH = 44, labW = 170, padR = 40, axisH = 28;
+      const h = rows.length * rowH + axisH + 10;
+      const hi = Math.max(...rows.flatMap(r => [r.d.self.hi ?? r.d.self.mean,
+                                                r.d.other.hi ?? r.d.other.mean]));
+      const xmax = Math.max(0.1, Math.ceil(hi * 10) / 10);
+      const X = v => labW + (w - labW - padR) * v / xmax;
+      const svg = svgEl("svg", { viewBox: `0 0 ${w} ${h}`, width: "100%" });
+      el.appendChild(svg);
+      for (let v = 0; v <= xmax + 1e-9; v += 0.1) {
+        svg.appendChild(svgEl("line", { x1: X(v), y1: 2, x2: X(v),
+          y2: h - axisH, stroke: v < 0.05 ? INK2 : GRID }));
+        const tx = svgEl("text", { x: X(v), y: h - axisH + 16,
+          "text-anchor": "middle", "font-size": 12, fill: MUTED });
+        tx.textContent = v.toFixed(1); svg.appendChild(tx);
+      }
+      rows.forEach((r, i) => {
+        const y = i * rowH + rowH / 2;
+        const lab = svgEl("text", { x: labW - 12, y: y + 4,
+          "text-anchor": "end", "font-size": 13.5, fill: INK2 });
+        lab.textContent = r.label; svg.appendChild(lab);
+        [["self", BLUE, -6], ["other", GRAY, 7]].forEach(([k, color, dy]) => {
+          const c = r.d[k];
+          if (c.lo != null) svg.appendChild(svgEl("line", { x1: X(c.lo),
+            y1: y + dy, x2: X(c.hi), y2: y + dy, stroke: color,
+            "stroke-width": 2 }));
+          svg.appendChild(svgEl("circle", { cx: X(c.mean), cy: y + dy, r: 5,
+            fill: color }));
+        });
+      });
+      const cap = document.createElement("div"); cap.className = "fcap";
+      cap.textContent = "Blue = a model predicting itself, gray = the other "
+        + "two models predicting it. 95% intervals. Error is far lower at "
+        + "endgame positions, where the next move is close to forced.";
+      el.appendChild(cap);
+    })();
   })();
 
   setText("ntests", D.tests || 151);
