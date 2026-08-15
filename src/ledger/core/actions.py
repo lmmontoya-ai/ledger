@@ -282,6 +282,12 @@ def _p_job_not_done(state, seat, args):
     return None
 
 
+def _p_chat_enabled(state, seat, args):
+    if not state.scenario.chat_enabled:
+        return "talking is disabled in this game"
+    return None
+
+
 def _p_job_available(state, seat, args):
     j = int(args["job"])
     arrive = state.scenario.arrive(j)
@@ -407,6 +413,7 @@ PREDICATES: dict[str, Callable] = {
     "contract_locked": _p_contract_locked,
     "window_open": _p_window_open,
     "window_closed": _p_window_closed,
+    "chat_enabled": _p_chat_enabled,
     "job_exists": _p_job_exists,
     "job_available": _p_job_available,
     "job_not_done": _p_job_not_done,

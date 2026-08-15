@@ -20,7 +20,8 @@ _cache: list[dict] | None = None
 def load_tools(message_cap: int | None = None,
                pay_cap: int | None = None,
                settle_window: int | None = None,
-               deadline: int | None = None) -> list[dict]:
+               deadline: int | None = None,
+               chat: bool = True) -> list[dict]:
     global _cache
     if _cache is None:
         spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
@@ -37,6 +38,11 @@ def load_tools(message_cap: int | None = None,
         # enforced one (same rule as the system block)
         tools = json.loads(json.dumps(tools).replace(
             "40 tokens", f"{message_cap} tokens"))
+    if not chat:
+        # the engine rejects CHAT in this configuration, so the schema must
+        # not offer it
+        tools = [t for t in json.loads(json.dumps(tools))
+                 if t["function"]["name"] != "chat"]
     if pay_cap is not None:
         # capped payments: no transfer tool; at 0 the pay field disappears,
         # above 0 the schema states the per-deal total cap (engine

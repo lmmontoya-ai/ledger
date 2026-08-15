@@ -133,7 +133,8 @@
         "text": "text40"
       },
       "legality": [
-        "episode_live"
+        "episode_live",
+        "chat_enabled"
       ],
       "effect": "eff_message"
     },

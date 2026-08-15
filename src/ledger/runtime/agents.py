@@ -86,7 +86,8 @@ class ModelAgent:
             self.mandate, cap, pay_cap=sc.pay_cap,
             settle_window=sc.settle_window,
             arrivals=bool(sc.available_from)
-            and any(a > 1 for a in sc.available_from)).decode("utf-8")
+            and any(a > 1 for a in sc.available_from),
+            chat=sc.chat_enabled).decode("utf-8")
         user = render_user(state, events, seat)
         digest = hashlib.sha256((system + "\n" + user).encode("utf-8")).hexdigest()
         return system, user, digest
@@ -101,7 +102,8 @@ class ModelAgent:
         ]
         tools = load_tools(message_cap=cap, pay_cap=state.scenario.pay_cap,
                            settle_window=state.scenario.settle_window,
-                           deadline=state.scenario.D)
+                           deadline=state.scenario.D,
+                           chat=state.scenario.chat_enabled)
         last_error = "no attempt"
         bad, truncs, attempt = 0, 0, 0
         while bad < self.max_bad_outputs:

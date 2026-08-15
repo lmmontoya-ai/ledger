@@ -82,12 +82,27 @@ _ARRIVALS_SENTENCE = (
     b"cannot start before they open.")
 
 
+# the communication switch (chat_enabled): the action list loses CHAT and
+# the rules say plainly that there is no talking, alongside the engine
+# predicate that rejects it
+_NO_CHAT = (
+    (b"chat(text)                 say something to them - ask, tell, or both",
+     b"(no talking in this game)"),
+    (b"- Chains: some jobs need another job finished first.",
+     b"- Chains: some jobs need another job finished first.\n"
+     b"- There is no talking in this game. You cannot send messages and "
+     b"neither can your partner, so everything either of you knows about "
+     b"the other comes from the actions on the board."),
+)
+
+
 def system_block(mandate: str = DEFAULT_MANDATE,
                  message_cap: int = MESSAGE_TOKEN_CAP,
                  pay_cap: int | None = None,
                  settle_window: int | None = None,
-                 arrivals: bool = False) -> bytes:
-    key = (mandate, message_cap, pay_cap, settle_window, arrivals)
+                 arrivals: bool = False,
+                 chat: bool = True) -> bytes:
+    key = (mandate, message_cap, pay_cap, settle_window, arrivals, chat)
     if key not in _system_cache:
         base = (TEMPLATES_DIR / "system.txt").read_bytes().replace(b"\r\n", b"\n")
         if mandate != DEFAULT_MANDATE:
@@ -118,6 +133,12 @@ def system_block(mandate: str = DEFAULT_MANDATE,
                     raise ValueError(
                         f"system.txt lost a payment sentence: {old[:40]!r}")
                 base = base.replace(old, new)
+        if not chat:
+            for old, new in _NO_CHAT:
+                if old not in base:
+                    raise ValueError(
+                        f"system.txt lost a chat sentence: {old[:40]!r}")
+                base = base.replace(old, new)
         if arrivals:
             old, new = _ARRIVALS_SENTENCE
             if old not in base:
@@ -143,6 +164,7 @@ def render_prompt(state, events, viewer: int,
                          pay_cap=sc.pay_cap,
                          settle_window=sc.settle_window,
                          arrivals=bool(sc.available_from)
-                         and any(a > 1 for a in sc.available_from)) + b"\n"
+                         and any(a > 1 for a in sc.available_from),
+                         chat=sc.chat_enabled) + b"\n"
             + render_user(state, events, viewer).encode("utf-8"))
     return data, hashlib.sha256(data).hexdigest()

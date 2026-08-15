@@ -51,6 +51,10 @@ class Scenario:
     # settlement window) are IOUs by construction.  Empty = all jobs
     # available from turn 1 (v1 banks unchanged).
     available_from: tuple[int, ...] = ()
+    # communication switch: when False, CHAT is illegal, the action is
+    # removed from the tool schema, and the rules text says so.  Values
+    # then have to be inferred from actions rather than told.
+    chat_enabled: bool = True
 
     def arrive(self, job: int) -> int:
         return self.available_from[job - 1] if self.available_from else 1
@@ -99,6 +103,7 @@ class Scenario:
             pay_cap=d.get("pay_cap"),
             settle_window=d.get("settle_window"),
             available_from=tuple(d.get("available_from") or ()),
+            chat_enabled=bool(d.get("chat_enabled", True)),
         )
 
     def with_opening(self, opening: int) -> "Scenario":

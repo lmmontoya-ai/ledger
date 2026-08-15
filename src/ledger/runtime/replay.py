@@ -79,7 +79,8 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
              mandate, message_cap, pay_cap=scenario.pay_cap,
              settle_window=scenario.settle_window,
              arrivals=bool(scenario.available_from)
-             and any(a > 1 for a in scenario.available_from)).decode("utf-8")},
+             and any(a > 1 for a in scenario.available_from),
+             chat=scenario.chat_enabled).decode("utf-8")},
         {"role": "user", "content": render_user(st, prefix, seat)
          + (("\n" + extra_user_line + "\n") if extra_user_line else "")},
     ]
@@ -88,7 +89,7 @@ def sample_policy(client, spec: ModelSpec, scenario, events, tick: int, *,
     # keeps every byte and digest identical to live play.
     tools = load_tools(message_cap=message_cap, pay_cap=scenario.pay_cap,
                        settle_window=scenario.settle_window,
-                       deadline=scenario.D)
+                       deadline=scenario.D, chat=scenario.chat_enabled)
     batch = PolicyBatch(tick=tick, seat=seat, digest=digest)
 
     def one_draw(_i: int):
