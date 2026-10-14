@@ -1,0 +1,1042 @@
+{
+ "_note": "Results of scripts/check_report_equivalence.py against the research harness's logs, stores and manifests (self-other-prediction-smoke-tests). Counts are checks that passed; every check passed when this was written. Per-episode entries hold the sha256 of the logged digests joined by newlines, in log order. No prompt text is stored here.",
+ "harness_commit": "e5673cdcb6c5ff4acbb8d519734a750ff215c0a4",
+ "ledger_commit_at_generation": "9ab94a175bbc2c2890a30f006d89be34303442a3",
+ "report": "final report v4, 2026-09-03",
+ "sections": {
+  "bank": {
+   "file": "banks/v2-d0.json",
+   "generator_version": [
+    "ledger-gen-v2-dev"
+   ],
+   "scenarios": 12,
+   "sha256": "a62d64f18755c737100c567e34062961bd980782afe29cec5eb60ddc6eba871f",
+   "templates": 24
+  },
+  "default": {
+   "q0_c3val": {
+    "bank_cap_commit_mandate": [
+     [
+      "v2-d0",
+      200,
+      "7471c9a",
+      "principal",
+      24
+     ]
+    ],
+    "episodes": 24,
+    "logged_digests": 398,
+    "matched": 398,
+    "per_episode": [
+     {
+      "calls": 13,
+      "digests_sha256": "ad922c6c7193ecfb2a8999c9cedb6155215232e1b1c7407b993ebeda93a0e6a4",
+      "episode_id": "q0v00"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "e812004169ae8e8aa609051a7e3375f7e8b516400ee7d698d30f847e07fd28d8",
+      "episode_id": "q0v01"
+     },
+     {
+      "calls": 20,
+      "digests_sha256": "4f265f856af311ca496d8afe8250a2c14d5cad13cdc7ba1f5eaf833873c8bd2f",
+      "episode_id": "q0v02"
+     },
+     {
+      "calls": 26,
+      "digests_sha256": "4baa64bdaf3496a9faf10b52c2060f4676a312b3675b321403f5a1ba1821a7cc",
+      "episode_id": "q0v03"
+     },
+     {
+      "calls": 11,
+      "digests_sha256": "8a1a13ae83d1af7b34924aaef1a37bdadca218ea926c6f9c1b0cbcd9fc95da3a",
+      "episode_id": "q0v04"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "1224436e576a5e324f4c3d0d82b9c6d56694fb963e2172bbdad5cad507e10aa1",
+      "episode_id": "q0v05"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "9e37adfd2438b9319183ec821d4ed25c205d5e4b48febbcdd7ac580b4426a522",
+      "episode_id": "q0v06"
+     },
+     {
+      "calls": 14,
+      "digests_sha256": "5f0a383a1d36c81cec12b589c4c3a11ebd6b88373c949d1ffc332fd42b6a407f",
+      "episode_id": "q0v07"
+     },
+     {
+      "calls": 10,
+      "digests_sha256": "116c786a08b8b35eca317c3918da4713a2ff665f836539cac985026c2f8d3f05",
+      "episode_id": "q0v08"
+     },
+     {
+      "calls": 17,
+      "digests_sha256": "1a008757b5499cf189f65300afc0b33bf9d483388ab6156d2f83c69edb365eab",
+      "episode_id": "q0v09"
+     },
+     {
+      "calls": 14,
+      "digests_sha256": "d27877410dee78ad2a15e9fd9ff28d38bbd2c436c7cd32b44e5f3192702f963a",
+      "episode_id": "q0v10"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "6798be63a97203d026e1ee076db8e602ad7f6d31cb8d9f977de07b6e45706c05",
+      "episode_id": "q0v11"
+     },
+     {
+      "calls": 23,
+      "digests_sha256": "b4495b232d3d6e395f84f6af8fe7581e008676ea0263b12a512b64e8aff64503",
+      "episode_id": "q0v12"
+     },
+     {
+      "calls": 15,
+      "digests_sha256": "0c8b9a7a09e1df4c6cf6ada5465f72a0dd98319e15eb22a25157ea46def0f21e",
+      "episode_id": "q0v13"
+     },
+     {
+      "calls": 24,
+      "digests_sha256": "3b73add87445e907a450f12c3dc67590e6f3ab279373bdd74e80424982959959",
+      "episode_id": "q0v14"
+     },
+     {
+      "calls": 27,
+      "digests_sha256": "362531cad7cfd6e45723ae05de5714cf24e241129c66ebce5a6b94c1ee54d80a",
+      "episode_id": "q0v15"
+     },
+     {
+      "calls": 12,
+      "digests_sha256": "55d0175b0ac773dd2b49deece2e811a304e3d40ca9d7c15502af9abd2a3121f3",
+      "episode_id": "q0v16"
+     },
+     {
+      "calls": 22,
+      "digests_sha256": "3a8e11540164984703360a3602002ad48dd21a7a21e9d188f5305bf9d80fb72e",
+      "episode_id": "q0v17"
+     },
+     {
+      "calls": 19,
+      "digests_sha256": "a3d6d95f030410cedc07e77639cd7d117916531403bbc5481a26c190e40eb440",
+      "episode_id": "q0v18"
+     },
+     {
+      "calls": 12,
+      "digests_sha256": "3ab4bc8ef4cf47ccb4d46b58a61e99e58642f890c2182a6d5e794e1832eecd70",
+      "episode_id": "q0v19"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "6787e80ae8f8a39fa689b2656a68790242b5806c9a727dbe92995aafab0d235e",
+      "episode_id": "q0v20"
+     },
+     {
+      "calls": 20,
+      "digests_sha256": "d184f5e4dc905133431376d77250de3c65a8569294a6c6da457909a1dd2c1023",
+      "episode_id": "q0v21"
+     },
+     {
+      "calls": 15,
+      "digests_sha256": "c9da038779d6d54a4d13ecb79d5f930b9662150d60e794bc13ffa9554a6fcd56",
+      "episode_id": "q0v22"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "7ccf7bb405a52372e86394edd3e89261b5a6b2951191616afca076b864c42082",
+      "episode_id": "q0v23"
+     }
+    ]
+   },
+   "q0_gate": {
+    "bank_cap_commit_mandate": [
+     [
+      "v2-d0",
+      200,
+      "7471c9a",
+      "principal",
+      24
+     ]
+    ],
+    "episodes": 24,
+    "logged_digests": 476,
+    "matched": 476,
+    "per_episode": [
+     {
+      "calls": 25,
+      "digests_sha256": "191ae444b2b1a26cbc2ce904b9e752816b403edc94110cd0fe21d2e42eb79948",
+      "episode_id": "q0g00"
+     },
+     {
+      "calls": 20,
+      "digests_sha256": "3d2164f57399a3c98c13149ae8407058f5ec8e2d129d00358ad41fc6fcfe5b6a",
+      "episode_id": "q0g01"
+     },
+     {
+      "calls": 20,
+      "digests_sha256": "08acbe348857a61312b1c5dbdfba09126b9c72bc44f0c76cd9b39a12c815664c",
+      "episode_id": "q0g02"
+     },
+     {
+      "calls": 30,
+      "digests_sha256": "6a708facffcbcda1920d66198d07aab5719dc04b6337271535b925202d423af8",
+      "episode_id": "q0g03"
+     },
+     {
+      "calls": 23,
+      "digests_sha256": "700fae797dead440131aa25e2247b8c9a3ad0ab3507c722b7588e83a76ebf7ea",
+      "episode_id": "q0g04"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "db02a4b79cfa113c7e5b6f8c3aac997801a8a1c2f4efbe3000cbdefc1a119de5",
+      "episode_id": "q0g05"
+     },
+     {
+      "calls": 18,
+      "digests_sha256": "8fd7d021eccb835a910d5b3858ff7f18d2e817cab1268d4ed1ebd194d15190e4",
+      "episode_id": "q0g06"
+     },
+     {
+      "calls": 12,
+      "digests_sha256": "ff399acd5cd50a8dbbdac49a726ebfb25ec42d0fb819c46f3a4f1e9360e00cf3",
+      "episode_id": "q0g07"
+     },
+     {
+      "calls": 20,
+      "digests_sha256": "dbe5916c6730fedc1a3d03ab60fd427c2fd82a17d73a72407f375665f1856d26",
+      "episode_id": "q0g08"
+     },
+     {
+      "calls": 32,
+      "digests_sha256": "1a5cbd796a2d42a05daade233f5f0cb5bdebf695067477e330d2502f8dd4c6c0",
+      "episode_id": "q0g09"
+     },
+     {
+      "calls": 11,
+      "digests_sha256": "bca657a3e2c2e33f6f9773f2d7347673917e5cd96e06ef5a5ce9e6c65888b495",
+      "episode_id": "q0g10"
+     },
+     {
+      "calls": 15,
+      "digests_sha256": "6c288bdeb3a7e36bc0452ff27a5278711e7be6e3d6e2d0aa09241aad15a3c91a",
+      "episode_id": "q0g11"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "f4eadf849c1c4d1c129934205ab54d0dcaab836290a2a3801e367243573676ec",
+      "episode_id": "q0g12"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "e6d473c330e6c1eb78102d525d691d9e6eb62acfee36fd1d16b1ddc7619df97d",
+      "episode_id": "q0g13"
+     },
+     {
+      "calls": 18,
+      "digests_sha256": "2645380419df8e1ae750cd238293c54ff192748a1a6ed94e205163cc5d95f75d",
+      "episode_id": "q0g14"
+     },
+     {
+      "calls": 19,
+      "digests_sha256": "e1e76d81ce0fd3c6927c5b3ce958f357a8985fcc29e026fab11b08402885cc55",
+      "episode_id": "q0g15"
+     },
+     {
+      "calls": 24,
+      "digests_sha256": "5e025418d8bf34e5800fffe66c54521186c71e2d9e30acd2b26979d3432bbff5",
+      "episode_id": "q0g16"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "af9aee1735b2574d1e59c5cd17cfaf4d6ed27fcd2ea87dd5a01885edd6bf21cb",
+      "episode_id": "q0g17"
+     },
+     {
+      "calls": 21,
+      "digests_sha256": "cb6821c19bdf48ed7dcb2c542bdb81b89d3f17997268893a0a0fa4080ddf59cd",
+      "episode_id": "q0g18"
+     },
+     {
+      "calls": 19,
+      "digests_sha256": "8b38cb5dd88bb492922aed4fede343657b03235dbbd6f2137f1a724e7adfd31f",
+      "episode_id": "q0g19"
+     },
+     {
+      "calls": 22,
+      "digests_sha256": "898d370095d81ed7651adf827386a1e0ac78c0a3342728fdd2947fb47e2c404c",
+      "episode_id": "q0g20"
+     },
+     {
+      "calls": 33,
+      "digests_sha256": "d35bc66d59497522b5585ae13d607ed8cbb1a3ba915f34c6f8ed2f68c4fb340e",
+      "episode_id": "q0g21"
+     },
+     {
+      "calls": 12,
+      "digests_sha256": "eb0672e283130861113488af72d7a55b52b1209a11d9c94b4b3e0e3a57eb46ad",
+      "episode_id": "q0g22"
+     },
+     {
+      "calls": 30,
+      "digests_sha256": "e09ca3d02e9759a67d881d4778d146cfbf6d31065291d8ef10583a6657fcdb18",
+      "episode_id": "q0g23"
+     }
+    ]
+   },
+   "r1": {
+    "bank_cap_commit_mandate": [
+     [
+      "v2-d0",
+      200,
+      "008de57",
+      "principal",
+      12
+     ]
+    ],
+    "episodes": 12,
+    "logged_digests": 231,
+    "matched": 231,
+    "per_episode": [
+     {
+      "calls": 12,
+      "digests_sha256": "d5935e2248abb03fac491dad6a2c2050a1c3ab75e501b8019d58b452a1aca7d4",
+      "episode_id": "r1g00"
+     },
+     {
+      "calls": 18,
+      "digests_sha256": "9d29e03fcb6370fb98738e04e08130d6dec9c3b232ec76799e29bbac0b66b68c",
+      "episode_id": "r1g01"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "c1a11cf501c1e909b8e0a3624425150563d93c706377f14a43268257dacbee4d",
+      "episode_id": "r1g02"
+     },
+     {
+      "calls": 29,
+      "digests_sha256": "42ba168b7c4d9cb561c56cc264290a7c9f81420aefae964532be22327bcf65a9",
+      "episode_id": "r1g03"
+     },
+     {
+      "calls": 21,
+      "digests_sha256": "50bfc75a096343bda4c6ad77f3b15868a19d26fa2e001da26fca4f1b0c8183bc",
+      "episode_id": "r1g04"
+     },
+     {
+      "calls": 17,
+      "digests_sha256": "f58fb4029c213c427829eee6e0d6220a0b03b67d54077895067368b1d2b6b4c3",
+      "episode_id": "r1g05"
+     },
+     {
+      "calls": 18,
+      "digests_sha256": "45d98937780d30ea2575ee18e7da1fd761ffe64e19aaadc7a11e5c65a1576995",
+      "episode_id": "r1g06"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "1cee04fa2f04871a6b931907d1313ea61fb7aa76bc6090478b7459df53e795f0",
+      "episode_id": "r1g07"
+     },
+     {
+      "calls": 24,
+      "digests_sha256": "8ff73565da681d30be91acd264d907b69d44a7804d5d37957281e5985c76ffae",
+      "episode_id": "r1g08"
+     },
+     {
+      "calls": 19,
+      "digests_sha256": "07fd279bb68f1be44f9a3592acd13241f243e99312586472d3dbdcce5efd12f2",
+      "episode_id": "r1g09"
+     },
+     {
+      "calls": 21,
+      "digests_sha256": "4bdfbd7b8b17913b2a08c3abd2a3902edac5f9d0bdc79a5fd2496bd9a7ed1458",
+      "episode_id": "r1g10"
+     },
+     {
+      "calls": 20,
+      "digests_sha256": "6a414c2bb734abf801820e8e2ed11ba79cade377f543edfce8858712ac13bd16",
+      "episode_id": "r1g11"
+     }
+    ]
+   }
+  },
+  "phase3": {
+   "active": {
+    "episodes": 45,
+    "logged_digests": 1372,
+    "matched": 1372,
+    "per_episode": [
+     {
+      "calls": 14,
+      "digests_sha256": "08f0a4b94b91d04e61f4e60d45d0382b632f77eda2a30e4517b683ba3202e452",
+      "episode_id": "p3_active_000_cash-cash_luna-sonnet_o1"
+     },
+     {
+      "calls": 9,
+      "digests_sha256": "8498bda112a094638da1f8fde537832ef8db7ecd9ee606b2e26014b0d3923938",
+      "episode_id": "p3_active_001_cash-cash_sonnet-grok_o2"
+     },
+     {
+      "calls": 66,
+      "digests_sha256": "945a133004ac775f7b756e7f745d34c671323f977474be0c4bdeaa103561867f",
+      "episode_id": "p3_active_002_cash-cash_grok-gemini37_o1"
+     },
+     {
+      "calls": 33,
+      "digests_sha256": "9aef4e89793f3da15f99915eced80d19bd1eb9ecc037da64aedbc0f2cfb851f8",
+      "episode_id": "p3_active_003_cash-cash_gemini37-glm53_o2"
+     },
+     {
+      "calls": 14,
+      "digests_sha256": "985df625bc6b3fde3eeecfc9f3f628c388697251428ba939f0808a8f8e0af6a0",
+      "episode_id": "p3_active_004_cash-cash_glm53-luna_o1"
+     },
+     {
+      "calls": 6,
+      "digests_sha256": "1ee621b16940e57949337be2b11463b45f656ef8f41346b2aa091bba78cc986a",
+      "episode_id": "p3_active_005_cash-mate_luna-sonnet_o2"
+     },
+     {
+      "calls": 7,
+      "digests_sha256": "13f1e001c56a71b4c45aa1cb42a9ea510b72805d0c8aa83586105d25f9e17243",
+      "episode_id": "p3_active_006_cash-mate_sonnet-grok_o1"
+     },
+     {
+      "calls": 37,
+      "digests_sha256": "bc01afe370ec0bf03c34fceaa270608f2a7e4d7efcfc9e1b923dbc7aedf35e3f",
+      "episode_id": "p3_active_007_cash-mate_grok-gemini37_o2"
+     },
+     {
+      "calls": 44,
+      "digests_sha256": "e6bb6f10714fbbaee97ca8b9ddf32602044b99c996eed8da8e9f8c8f10315a2c",
+      "episode_id": "p3_active_008_cash-mate_gemini37-glm53_o1"
+     },
+     {
+      "calls": 14,
+      "digests_sha256": "1aa044b39b5ad87dd5fb9506d65b3f6a05e2cf67c5207880f055703cb00b17ea",
+      "episode_id": "p3_active_009_cash-mate_glm53-luna_o2"
+     },
+     {
+      "calls": 33,
+      "digests_sha256": "fa26b67fa5089f905175f4df659fe20001f91fbd5fd21eb4638816e10e285fa6",
+      "episode_id": "p3_active_010_cash-stan_luna-sonnet_o1"
+     },
+     {
+      "calls": 48,
+      "digests_sha256": "093bfc3a4fb77c90aad22d9318f45944f542d857202688dec1869c3e19450281",
+      "episode_id": "p3_active_011_cash-stan_sonnet-grok_o2"
+     },
+     {
+      "calls": 56,
+      "digests_sha256": "74fed596270f43f4e19b54d9990eae12da6068d898854946b9acc4eab5355ae2",
+      "episode_id": "p3_active_012_cash-stan_grok-gemini37_o1"
+     },
+     {
+      "calls": 38,
+      "digests_sha256": "108314cfe64fe73f8d8d26fcffadbd3b1168c518efc6cab352abc013ad69a3ad",
+      "episode_id": "p3_active_013_cash-stan_gemini37-glm53_o2"
+     },
+     {
+      "calls": 43,
+      "digests_sha256": "00834e7ebf9f5b0b90e767a462a1b2dfc4d68581aa844845464f15da4321fad4",
+      "episode_id": "p3_active_014_cash-stan_glm53-luna_o1"
+     },
+     {
+      "calls": 33,
+      "digests_sha256": "da7c09844e09d674116522733e628991c1fcce4b9554a0170c3044ca89a308ce",
+      "episode_id": "p3_active_015_mate-cash_luna-sonnet_o2"
+     },
+     {
+      "calls": 23,
+      "digests_sha256": "857c2a1f49fbb28446dc6c486ac895f726dbee99c013558ac238cab8a9ba547e",
+      "episode_id": "p3_active_016_mate-cash_sonnet-grok_o1"
+     },
+     {
+      "calls": 35,
+      "digests_sha256": "44b92999ee5ad3ff4255f43c21b1c24e3d961666da24201245ceb424c2afe1da",
+      "episode_id": "p3_active_017_mate-cash_grok-gemini37_o2"
+     },
+     {
+      "calls": 60,
+      "digests_sha256": "e39e221d57cc5668e6c9413b10cf3d46814442937f5ee2f2e516f5d0e321ecc3",
+      "episode_id": "p3_active_018_mate-cash_gemini37-glm53_o1"
+     },
+     {
+      "calls": 32,
+      "digests_sha256": "91344716d7ff18d7a42a743aa898a3c4d47ae5fca0838e045781930ddbda4e1e",
+      "episode_id": "p3_active_019_mate-cash_glm53-luna_o2"
+     },
+     {
+      "calls": 23,
+      "digests_sha256": "2f195d9304087ffae208401c9e99a49160d0855be97d6dc0af576c9247068cb2",
+      "episode_id": "p3_active_020_mate-mate_luna-sonnet_o1"
+     },
+     {
+      "calls": 30,
+      "digests_sha256": "0b61f42209fbdef68e1df1c36bb50376aada55d53f0fb58842d4324b17ca3351",
+      "episode_id": "p3_active_021_mate-mate_sonnet-grok_o2"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "15b7c2451a58ff8a147e226718ba0f79d848863803909e3a4003836ffcc7315a",
+      "episode_id": "p3_active_022_mate-mate_grok-gemini37_o1"
+     },
+     {
+      "calls": 35,
+      "digests_sha256": "6c7bdff4ef00794d9d8554b9e0188994b5bb01c6e070c8a3390532bd7cdcfd13",
+      "episode_id": "p3_active_023_mate-mate_gemini37-glm53_o2"
+     },
+     {
+      "calls": 10,
+      "digests_sha256": "3ce86a430faaaa1d3359532f8891a7e39d2bebe1e71a20d709361997663158ab",
+      "episode_id": "p3_active_024_mate-mate_glm53-luna_o1"
+     },
+     {
+      "calls": 12,
+      "digests_sha256": "832406193a5bb71a3763d28d11264000535cfcb5c16e1ad6f8ce49bd177fb6fc",
+      "episode_id": "p3_active_025_mate-stan_luna-sonnet_o2"
+     },
+     {
+      "calls": 31,
+      "digests_sha256": "2eb19e622e87713c37967ace802b15e83a5ac84fac8dfc615746c42b61c1cf9c",
+      "episode_id": "p3_active_026_mate-stan_sonnet-grok_o1"
+     },
+     {
+      "calls": 34,
+      "digests_sha256": "af31b53a32313e5ff80e37915dcd66fd29cf4778f97cfab6c4a7720fd3562229",
+      "episode_id": "p3_active_027_mate-stan_grok-gemini37_o2"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "c26fbd23696dc1d78f64214c4b86002e71c9e12f043592a51691d7d6b34078a4",
+      "episode_id": "p3_active_028_mate-stan_gemini37-glm53_o1"
+     },
+     {
+      "calls": 33,
+      "digests_sha256": "3da94c82fa5fd968a4b5f7466a121cc2b448369c42729bb7c6f1f05eb452b260",
+      "episode_id": "p3_active_029_mate-stan_glm53-luna_o2"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "ae353495b95859804069a1002b4f80e4b6c1614a116695d2059f1b06d10b6c5b",
+      "episode_id": "p3_active_030_stan-cash_luna-sonnet_o1"
+     },
+     {
+      "calls": 31,
+      "digests_sha256": "5652ae06041ffacf6900214910b309f4fe3de1e04384c513d43873f390b397f4",
+      "episode_id": "p3_active_031_stan-cash_sonnet-grok_o2"
+     },
+     {
+      "calls": 53,
+      "digests_sha256": "de57897afd3cc5303f6773e772e471a40b2803a2cdf77f1a1e18b19b48eab0fc",
+      "episode_id": "p3_active_032_stan-cash_grok-gemini37_o1"
+     },
+     {
+      "calls": 49,
+      "digests_sha256": "e7ec69ca64eeb5dd352d26a454814c97304481696b1acebc2dcdfc2975530ca1",
+      "episode_id": "p3_active_033_stan-cash_gemini37-glm53_o2"
+     },
+     {
+      "calls": 34,
+      "digests_sha256": "486a7fee064f1f7d8724d4040764f67941deb5fd07f5ff538fa37f3135bc4588",
+      "episode_id": "p3_active_034_stan-cash_glm53-luna_o1"
+     },
+     {
+      "calls": 8,
+      "digests_sha256": "66eaa7f8199b7f8559e53e75247aa1bc9d86df22442dfd4f39177daf060b50a7",
+      "episode_id": "p3_active_035_stan-mate_luna-sonnet_o2"
+     },
+     {
+      "calls": 20,
+      "digests_sha256": "b88e348d0ed8a4e72c0af0f81c34b84c86af7b374522a84c733c0b6a365571e2",
+      "episode_id": "p3_active_036_stan-mate_sonnet-grok_o1"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "60f9051e628eef3d2bcb4f7ab45898d70af692524362151b51269e18fcf97dcd",
+      "episode_id": "p3_active_037_stan-mate_grok-gemini37_o2"
+     },
+     {
+      "calls": 58,
+      "digests_sha256": "81d3b2eca77ce43fc475b6934e4ef0cb88b2a7cf780ade6e44c37e0e928e22d5",
+      "episode_id": "p3_active_038_stan-mate_gemini37-glm53_o1"
+     },
+     {
+      "calls": 14,
+      "digests_sha256": "958050d7e7c4a2fbbb1921eb312aea861d721909d25bcfbc8ac84074639819a3",
+      "episode_id": "p3_active_039_stan-mate_glm53-luna_o2"
+     },
+     {
+      "calls": 7,
+      "digests_sha256": "3a882d5c35e42e34a118eb763f7d9a2b2b778c47c5f4676c87c367f215e0588e",
+      "episode_id": "p3_active_040_stan-stan_luna-sonnet_o1"
+     },
+     {
+      "calls": 11,
+      "digests_sha256": "7dc708c5d0e1eecea0933d805bea4cefc1bef79d8091ffb5aa94e0236f7a8e69",
+      "episode_id": "p3_active_041_stan-stan_sonnet-grok_o2"
+     },
+     {
+      "calls": 86,
+      "digests_sha256": "fe115c2b9df4d911355673029d34a6ad97f76cbfe4332e65d479759cddf860fe",
+      "episode_id": "p3_active_042_stan-stan_grok-gemini37_o1"
+     },
+     {
+      "calls": 53,
+      "digests_sha256": "6dad2f1f20cecc16a365d35d558b6364d18ee535439b5c190906f59b8c2cc795",
+      "episode_id": "p3_active_043_stan-stan_gemini37-glm53_o2"
+     },
+     {
+      "calls": 34,
+      "digests_sha256": "c3e3539ad22c29018d38434a1ea6793b6eb8f5b9922bbb61980f9b756e0e9db1",
+      "episode_id": "p3_active_044_stan-stan_glm53-luna_o1"
+     }
+    ],
+    "restarted_logs": 45
+   },
+   "sham": {
+    "episodes": 45,
+    "logged_digests": 1357,
+    "matched": 1357,
+    "per_episode": [
+     {
+      "calls": 10,
+      "digests_sha256": "2feaef37ba92708ef88f4b0700b6b28007e867480462929ec32d76b24fb0e24d",
+      "episode_id": "p3_sham_045_cash-cash_luna-sonnet_o2"
+     },
+     {
+      "calls": 37,
+      "digests_sha256": "73abb60dd118abfcc44c5a7fcf6172eb6c1d29437628662fc7800cdbf78acd0c",
+      "episode_id": "p3_sham_046_cash-cash_sonnet-grok_o1"
+     },
+     {
+      "calls": 22,
+      "digests_sha256": "aaea00daab52ec9882ffe86e3131406da98f6fc806a3c20bd5d90aa22ee1b272",
+      "episode_id": "p3_sham_047_cash-cash_grok-gemini37_o2"
+     },
+     {
+      "calls": 77,
+      "digests_sha256": "357a2596951fbf95715f1c303aa046969568417ae0ff0f86576ab41723c3e3a2",
+      "episode_id": "p3_sham_048_cash-cash_gemini37-glm53_o1"
+     },
+     {
+      "calls": 10,
+      "digests_sha256": "f1c271d65e34c880cc82ea7518278ee913c2db98356174d292fbe9a263e8d5ef",
+      "episode_id": "p3_sham_049_cash-cash_glm53-luna_o2"
+     },
+     {
+      "calls": 21,
+      "digests_sha256": "9297a6d8fa83883c8f2b0f88622e09e2d518ddba3e7d3e32572bbd1331cd8fff",
+      "episode_id": "p3_sham_050_cash-mate_luna-sonnet_o1"
+     },
+     {
+      "calls": 19,
+      "digests_sha256": "a3cdd1155b91d1d3457ca56a587d951236be99f793efa10f3af385dbf70eaecc",
+      "episode_id": "p3_sham_051_cash-mate_sonnet-grok_o2"
+     },
+     {
+      "calls": 47,
+      "digests_sha256": "e87324fe242d9da80dd44e969c86d19550e9fb07bc185fcec198180926154354",
+      "episode_id": "p3_sham_052_cash-mate_grok-gemini37_o1"
+     },
+     {
+      "calls": 36,
+      "digests_sha256": "d6aaf69a5ca3ce74693ac3822619c062d4526e1f2c1aedeeb99e7bb90e5395d8",
+      "episode_id": "p3_sham_053_cash-mate_gemini37-glm53_o2"
+     },
+     {
+      "calls": 22,
+      "digests_sha256": "ef0892280009dec0ea5ef691c95f8ba3297f141bb317d1bf52bec7ae8132629e",
+      "episode_id": "p3_sham_054_cash-mate_glm53-luna_o1"
+     },
+     {
+      "calls": 34,
+      "digests_sha256": "9a5521b26aa1c1866efc04aab9d3d9c6250f3614a211b292435602fed9ecef26",
+      "episode_id": "p3_sham_055_cash-stan_luna-sonnet_o2"
+     },
+     {
+      "calls": 18,
+      "digests_sha256": "551dcb149f61e5afa604382389c1bf064deb59bba75e8f50100543914f3bc315",
+      "episode_id": "p3_sham_056_cash-stan_sonnet-grok_o1"
+     },
+     {
+      "calls": 74,
+      "digests_sha256": "b095f8a4cc0067f32509230691fd2126f460e773ab2f44332ac69e8ab265e0f0",
+      "episode_id": "p3_sham_057_cash-stan_grok-gemini37_o2"
+     },
+     {
+      "calls": 49,
+      "digests_sha256": "9149712210cd13a43ae66300ae86d6102612080509636dd2874924a640c8de4d",
+      "episode_id": "p3_sham_058_cash-stan_gemini37-glm53_o1"
+     },
+     {
+      "calls": 9,
+      "digests_sha256": "9fcd31674fc3857a4c36441dad9a9c7a57d1b3f7aa50f490721bdc24d9ac6990",
+      "episode_id": "p3_sham_059_cash-stan_glm53-luna_o2"
+     },
+     {
+      "calls": 26,
+      "digests_sha256": "d8fd031d86df8e083610471334c12380c0c564a8f2beb52162df17bdf6ac66ef",
+      "episode_id": "p3_sham_060_mate-cash_luna-sonnet_o1"
+     },
+     {
+      "calls": 7,
+      "digests_sha256": "0f67ac7011b391a4762bdb2ad765d806f13f54e776902cd024a5d20000d3c868",
+      "episode_id": "p3_sham_061_mate-cash_sonnet-grok_o2"
+     },
+     {
+      "calls": 41,
+      "digests_sha256": "ffb136ef8b1f031ae98c01771c6630146ec9338431492cbdaa721d72398b1ebe",
+      "episode_id": "p3_sham_062_mate-cash_grok-gemini37_o1"
+     },
+     {
+      "calls": 30,
+      "digests_sha256": "35cf24933a5e8d378c195afe79137ebd4e07fc60f988bb79610af7855f4c5665",
+      "episode_id": "p3_sham_063_mate-cash_gemini37-glm53_o2"
+     },
+     {
+      "calls": 31,
+      "digests_sha256": "3dc7b89dce220b8e8853a65447b26d47dd2e826205b9c9916c5b7be485da7eaf",
+      "episode_id": "p3_sham_064_mate-cash_glm53-luna_o1"
+     },
+     {
+      "calls": 29,
+      "digests_sha256": "7b85284e3d40e5a06b0cec41c78f439f020e4f8a40dc97ebc65058d0678c4c6c",
+      "episode_id": "p3_sham_065_mate-mate_luna-sonnet_o2"
+     },
+     {
+      "calls": 34,
+      "digests_sha256": "b502e80a86c3675bef09b5c56374debb56f059bf883e7f0eb7352cc57642e286",
+      "episode_id": "p3_sham_066_mate-mate_sonnet-grok_o1"
+     },
+     {
+      "calls": 44,
+      "digests_sha256": "85ee8db05ebedc14682baba44bec71ef8551494eb901823848b578a55ef039bd",
+      "episode_id": "p3_sham_067_mate-mate_grok-gemini37_o2"
+     },
+     {
+      "calls": 13,
+      "digests_sha256": "ed2bf5ea223d50aeca51e588104afd9957452fe4ac56e495812030ac7664dd6f",
+      "episode_id": "p3_sham_068_mate-mate_gemini37-glm53_o1"
+     },
+     {
+      "calls": 12,
+      "digests_sha256": "175786a25f2447472f436bdac5b88efaa35ed1e84ecf21421db825f8b443c2d7",
+      "episode_id": "p3_sham_069_mate-mate_glm53-luna_o2"
+     },
+     {
+      "calls": 32,
+      "digests_sha256": "ec4e52208579177230b1fcb41852bd07e85fd49dfa16021ec501a7622be22706",
+      "episode_id": "p3_sham_070_mate-stan_luna-sonnet_o1"
+     },
+     {
+      "calls": 9,
+      "digests_sha256": "61b8d4d539e92ee839e2ad571267425274b52ad73fbd88fe9ab8925f7cf588bf",
+      "episode_id": "p3_sham_071_mate-stan_sonnet-grok_o2"
+     },
+     {
+      "calls": 35,
+      "digests_sha256": "f05589e7088e48cc5409901a011668a68d0cc83bdef00d92fb750436048f4ef5",
+      "episode_id": "p3_sham_072_mate-stan_grok-gemini37_o1"
+     },
+     {
+      "calls": 47,
+      "digests_sha256": "f453ec45786bf652776503f7c58d3c149cfea6e1cc432cf02cfeaf82cefe5115",
+      "episode_id": "p3_sham_073_mate-stan_gemini37-glm53_o2"
+     },
+     {
+      "calls": 21,
+      "digests_sha256": "13c5cc6ecc827eb86bd3dcb4e574605eddb06e5c46799037ff1f72097ea8c26e",
+      "episode_id": "p3_sham_074_mate-stan_glm53-luna_o1"
+     },
+     {
+      "calls": 18,
+      "digests_sha256": "145e7403f202dd97137cc8ac1eb9f9da55504a475d214d7f27b37ffb61ac7fbe",
+      "episode_id": "p3_sham_075_stan-cash_luna-sonnet_o2"
+     },
+     {
+      "calls": 37,
+      "digests_sha256": "9c5816b851a6f353a582928148977efd003b415bc39c8e1ee9b19fb6401bf8b7",
+      "episode_id": "p3_sham_076_stan-cash_sonnet-grok_o1"
+     },
+     {
+      "calls": 42,
+      "digests_sha256": "da0f436acf462b12edefd24f1c9a9df66919af261112bd0585ba165a116fee37",
+      "episode_id": "p3_sham_077_stan-cash_grok-gemini37_o2"
+     },
+     {
+      "calls": 63,
+      "digests_sha256": "3b36f9a128915b7d468e95c6de69c3381be95f8dbaacc7549e83d573375f7ad8",
+      "episode_id": "p3_sham_078_stan-cash_gemini37-glm53_o1"
+     },
+     {
+      "calls": 33,
+      "digests_sha256": "4d09545459955ede8fdcbca24098a5c6b3cc866a3c30e1ae98701c2df936c7ad",
+      "episode_id": "p3_sham_079_stan-cash_glm53-luna_o2"
+     },
+     {
+      "calls": 23,
+      "digests_sha256": "ea89618d5ef0f7dd77d04f637001d5f39ca851ba2c7eca991f4d510c88ebf66d",
+      "episode_id": "p3_sham_080_stan-mate_luna-sonnet_o1"
+     },
+     {
+      "calls": 9,
+      "digests_sha256": "6afe154cb4c185b46fa2b9d0fbe6622ac41d35183f0e29933a942095ffe242d6",
+      "episode_id": "p3_sham_081_stan-mate_sonnet-grok_o2"
+     },
+     {
+      "calls": 45,
+      "digests_sha256": "f3f620ddf56cab04c647d2619ef7e10efaafb963082bb00d3f0458c3cb4989e7",
+      "episode_id": "p3_sham_082_stan-mate_grok-gemini37_o1"
+     },
+     {
+      "calls": 9,
+      "digests_sha256": "96ee74631269d6f89e8e59451c5d799e53503f61d915eef159b70860bd2d5e39",
+      "episode_id": "p3_sham_083_stan-mate_gemini37-glm53_o2"
+     },
+     {
+      "calls": 16,
+      "digests_sha256": "69fafd76d7cfe6468fb7a561ac844181265e4f8836df08461437cdce9f18a293",
+      "episode_id": "p3_sham_084_stan-mate_glm53-luna_o1"
+     },
+     {
+      "calls": 21,
+      "digests_sha256": "9366ea9e79393e55982b5800c8f3a2cc9cd5e5a781bce5e6ce74a7c1f187c151",
+      "episode_id": "p3_sham_085_stan-stan_luna-sonnet_o2"
+     },
+     {
+      "calls": 25,
+      "digests_sha256": "ac0b290e96d26046b6caeb94e958dec7b540a9d3ad47ddbf7d2ba86a3e93281e",
+      "episode_id": "p3_sham_086_stan-stan_sonnet-grok_o1"
+     },
+     {
+      "calls": 26,
+      "digests_sha256": "086c70093fe6b0a19f1646d7226c7cf64657a92943accab9ea2d9fd462866742",
+      "episode_id": "p3_sham_087_stan-stan_grok-gemini37_o2"
+     },
+     {
+      "calls": 70,
+      "digests_sha256": "ee68d9884c7c80ed0fd143e760d2af8d78c62a313178e45cdf0265433b52a825",
+      "episode_id": "p3_sham_088_stan-stan_gemini37-glm53_o1"
+     },
+     {
+      "calls": 24,
+      "digests_sha256": "a0d13bcd6309af51a4436911c1805fd9c7ec7a4c8b078b8f0279d34ade513ce0",
+      "episode_id": "p3_sham_089_stan-stan_glm53-luna_o2"
+     }
+    ],
+    "restarted_logs": 45
+   }
+  },
+  "reader": {
+   "e1_views": {
+    "matched_harness": {
+     "C-count": 64,
+     "C-shuf": 64,
+     "C-target": 64,
+     "L0": 64
+    },
+    "moments": 64
+   },
+   "goal_naming_probe": {
+    "distinct_prompts": 96,
+    "matched_harness": 96,
+    "note": "the store records no prompt hash",
+    "store_cells": 288
+   },
+   "ordinary_panel": {
+    "cells": 1152,
+    "distinct_prompts": 128,
+    "manifest": "docs/ordinary_prediction_panel/manifests/ledger.json",
+    "matched": 1152,
+    "prompt_sha256_list_sha256": "1e6b1503ff3116b68973d363eaea2e8911a8230a369d16b9c6aadc75955c289a",
+    "views": {
+     "full_record": "C-target",
+     "situation": "L0"
+    }
+   },
+   "perspective_goal": {
+    "cells": 480,
+    "manifest": "docs/self_simulation_prediction/manifests/goal/manifests/ledger.json",
+    "matched": {
+     "imagine": 240,
+     "standard": 240
+    },
+    "note": "standard = the variant's ordered view"
+   },
+   "perspective_ordinary": {
+    "cells": 640,
+    "manifest": "docs/self_simulation_prediction/manifests/ordinary/manifests/ledger.json",
+    "matched": {
+     "imagine": 320,
+     "standard": 320
+    },
+    "note": "standard = C-target; the other view appends the study's perspective sentence, read from the harness at check time"
+   },
+   "phase2_forecast_store": {
+    "cells": 558,
+    "cells_by_view": {
+     "board": 144,
+     "ordered": 144,
+     "shuffled": 144,
+     "trace": 126
+    },
+    "digests_sha256": "c7335620fec9b1ea63804acba12220495b5fcd9b2885b8c01cad440e5e7d5275",
+    "matched": {
+     "board": 144,
+     "ordered": 144,
+     "shuffled": 144,
+     "trace": 126
+    },
+    "positions": 48,
+    "store": "ledger-experiments/runs/ledger_v2_campaign/s2/_store",
+    "trace_chars_matched": 126
+   },
+   "predictor_extension_store": {
+    "cells_by_arm": {
+     "board": 240,
+     "ordered": 240,
+     "shuffled": 240,
+     "tally": 240
+    },
+    "frozen_digest_matched": 720,
+    "ladder_cells": 960,
+    "matched": {
+     "board": 240,
+     "ordered": 240,
+     "shuffled": 240,
+     "tally": 240
+    },
+    "store": "data/outputs/predictor_extension/ledger/_store"
+   },
+   "proj_r_own_policy": {
+    "cells": 192,
+    "matched": 192,
+    "store": "data/outputs/successor_bridge/ledger/proj_r_ownpolicy/_store_proj_r_ownpolicy"
+   },
+   "r1_views": {
+    "matched_harness": {
+     "C-target": 48,
+     "R-full": 43,
+     "R-redacted": 43
+    },
+    "moments": 48,
+    "recorded_sizes_matched": {
+     "C-target": 48,
+     "R-full": 43,
+     "R-redacted": 43
+    },
+    "view_files": 402
+   },
+   "reasoning_traces": {
+    "matched_harness": {
+     "full": 64,
+     "redacted": 64
+    },
+    "moments": 64,
+    "recorded_sizes_matched": {
+     "full": 56,
+     "redacted": 56
+    }
+   },
+   "s1_summaries": {
+    "matched_harness": 43,
+    "recorded_sizes_matched": 43,
+    "summaries": 43
+   },
+   "successor_bridge_r2": {
+    "cells": 48,
+    "matched": 48,
+    "store": "data/outputs/successor_bridge/ledger/_store_r2_reasoning_contract"
+   }
+  },
+  "solver": {
+   "fixed_state_gate_rollouts": {
+    "episodes": 24,
+    "families": {
+     "best_response": {
+      "belief_robust_hedge_share": 0.8091,
+      "belief_sensitivity_share": 0.3432,
+      "hedge_share_where_the_optimum_differs": 0.4437,
+      "no_common_eps_optimum_share": 0.1909,
+      "positions_qualifying": 440,
+      "positions_single_class": 105,
+      "positions_total": 545,
+      "positions_where_the_optimum_differs": 151
+     },
+     "cautious": {
+      "belief_robust_hedge_share": 0.8886,
+      "belief_sensitivity_share": 0.3705,
+      "hedge_share_where_the_optimum_differs": 0.6994,
+      "no_common_eps_optimum_share": 0.1114,
+      "positions_qualifying": 440,
+      "positions_single_class": 105,
+      "positions_total": 545,
+      "positions_where_the_optimum_differs": 163
+     },
+     "ir_only": {
+      "belief_robust_hedge_share": 0.8091,
+      "belief_sensitivity_share": 0.3455,
+      "hedge_share_where_the_optimum_differs": 0.4474,
+      "no_common_eps_optimum_share": 0.1909,
+      "positions_qualifying": 440,
+      "positions_single_class": 105,
+      "positions_total": 545,
+      "positions_where_the_optimum_differs": 152
+     }
+    },
+    "ledgers_matched": 24,
+    "rows": 545,
+    "rows_matched": 545,
+    "run": "ledger-experiments/runs/ledger_v2_iter3"
+   },
+   "fixed_state_position_bank": {
+    "candidates": 545,
+    "divergent_candidates": 281,
+    "divergent_picked": 16,
+    "identical_to_stored": true,
+    "note": "the bank's states and strata; the 0.2445-bit corrected divergence is computed from model draws at these states and is not recomputed here",
+    "picked": 24,
+    "positions": "ledger-experiments/runs/ledger_v2_g1a_iter3/positions.json"
+   },
+   "goal_revealing_census": {
+    "artifact": "data/outputs/phase3/ledger/ledger_freerun_divergence_2026-08-24.json",
+    "by_arm": {
+     "active": {
+      "classified": 856,
+      "declined": [
+       "p3_active_026_mate-stan_sonnet-grok_o1@18",
+       "p3_active_026_mate-stan_sonnet-grok_o1@20",
+       "p3_active_026_mate-stan_sonnet-grok_o1@22",
+       "p3_active_026_mate-stan_sonnet-grok_o1@24"
+      ],
+      "flat": 387,
+      "flip": 469,
+      "hedged_among_flips": 127,
+      "no_hedge_flips": 342,
+      "states": 860
+     },
+     "sham": {
+      "classified": 874,
+      "declined": [
+       "p3_sham_055_cash-stan_luna-sonnet_o2@24"
+      ],
+      "flat": 426,
+      "flip": 448,
+      "hedged_among_flips": 121,
+      "no_hedge_flips": 327,
+      "states": 875
+     }
+    },
+    "eps_points": 2,
+    "per_state_sha256": "66a9533a14eda96cae1fa515c0643a3dad474757703ef05d35bce7b7ace1af21",
+    "states": 1735,
+    "states_matched": 1735
+   }
+  }
+ },
+ "tokenizer": "o200k_base"
+}
