@@ -1,0 +1,3 @@
+# banks/v2-d0.json is a byte copy of the research harness's frozen bank
+# (CRLF line endings, sha256 a62d64f1...). Never convert its line endings.
+banks/v2-d0.json -text

@@ -4,6 +4,12 @@
     python scripts/run_episode.py --bank v1-e0 --index 0 \
         --p1 scripted:always-cooperate --p2 scripted:tit-for-tat --out data/runs/smoke
 
+    # the default game on bank v2-d0, as played in the report's ordinary-play
+    # Contracting runs (cap 200; template 2*i is scenario i, 2*i+1 the other
+    # seat order):
+    python scripts/run_episode.py --bank v2-d0 --index 0 --message-cap 200 \
+        --p1 scripted:tit-for-tat --p2 scripted:always-cooperate --out data/runs/smoke
+
     # the hidden-objectives variant studied in the paper ("Contracting"),
     # zero cost with scripted players:
     python scripts/run_episode.py --variant hidden-objectives --index 0 \
