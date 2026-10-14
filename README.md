@@ -13,7 +13,9 @@ Numbers below are the default game. Full rules are in [docs/ENVIRONMENT_DESIGN.m
 - Seats make contracts that assign jobs and set payments. An accepted contract binds at once.
 - A seat can take money from the pot alone, without the partner's consent. The partner sees it at once.
 - A seat can break a contract, but it pays a penalty. A job that is never finished also costs a penalty.
-- Seats can send short messages to each other. A seat's score is the value of finished jobs for that seat, plus payments and penalties in its account. There is no shell, network, or file access inside the game.
+- Seats can send short messages to each other.
+- A seat's score is the value of finished jobs for that seat, plus payments and penalties in its account.
+- There is no shell, network, or file access inside the game.
 
 ## Quick start
 
@@ -87,7 +89,8 @@ The game is deterministic. The same scenario and the same actions always give th
 
 ## Documentation
 
-- [docs/VARIANTS.md](docs/VARIANTS.md): exact usage for the hidden-objectives variant and its observer view. [docs/ENVIRONMENT_DESIGN.md](docs/ENVIRONMENT_DESIGN.md): the full design of the default game.
+- [docs/VARIANTS.md](docs/VARIANTS.md): exact usage for the hidden-objectives variant and its observer view.
+- [docs/ENVIRONMENT_DESIGN.md](docs/ENVIRONMENT_DESIGN.md): the full design of the default game.
 - [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md): determinism, replay, log format, equivalence counts, token budget, and repository layout.
 - [docs/EXPERIMENT_PLAN.md](docs/EXPERIMENT_PLAN.md), [docs/RETUNE_PLAN.md](docs/RETUNE_PLAN.md), [docs/M0_VALIDATION.md](docs/M0_VALIDATION.md), [docs/M0_DECISIONS.md](docs/M0_DECISIONS.md), [docs/M0_SPEC_FINDINGS.md](docs/M0_SPEC_FINDINGS.md), [docs/M0_SAMPLE_BOARDS.md](docs/M0_SAMPLE_BOARDS.md): dated plans and first-build records, kept as written.
 
