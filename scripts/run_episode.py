@@ -30,7 +30,8 @@ sys.path.insert(0, str(ROOT / "src"))
 from ledger.policies.scripted import POLICIES  # noqa: E402
 from ledger.render.tokens import tokenizer_available  # noqa: E402
 from ledger.runtime import (CostMeter, ModelAgent, OpenRouterClient,  # noqa: E402
-                            ScriptedAgent, load_models, run_episode)
+                            ProviderError, ScriptedAgent, load_models,
+                            run_episode)
 from ledger.scenarios.bank import load_bank  # noqa: E402
 from ledger.variants import hidden_objectives as ho  # noqa: E402
 
@@ -84,7 +85,10 @@ def main():
             "model seats need tiktoken with the o200k_base encoding: without "
             "it CHAT truncation falls back to a whitespace approximation and "
             "the game differs from the studied one. pip install -e '.[runtime]'")
-    client = OpenRouterClient() if needs_client else None
+    try:
+        client = OpenRouterClient() if needs_client else None
+    except ProviderError as e:
+        raise SystemExit(str(e))
     meter = CostMeter(cap_usd=args.cap_usd)
 
     if args.variant == "hidden-objectives":
