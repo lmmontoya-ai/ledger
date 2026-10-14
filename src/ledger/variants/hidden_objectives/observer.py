@@ -19,25 +19,19 @@ This module provides the view only.  It does not call a model, collect
 forecasts, or score them.
 
 Ported from `ledger-experiments/ledger_v2_bridge.py` (`predictor_system_v2`,
-`redact_user_v2`) and `ledger-experiments/harness/views.py`
-(`PREDICTION_MANDATE`, `redact_board`) in self-other-prediction-smoke-tests;
-the bytes are identical.
+`redact_user_v2`) in self-other-prediction-smoke-tests; the bytes are
+identical.  `PREDICTION_MANDATE` and `redact_board` are the default game's
+(`ledger.reader.views`), as in the original.
 """
 from __future__ import annotations
 
 import re
 
+from ...reader.views import PREDICTION_MANDATE, redact_board
 from ...render.board import render_board
 from ...render.render import DEFAULT_MANDATE
 from .render import V2_ADDENDUM, system_block_v2
 from .scenario import ScenarioV2
-
-PREDICTION_MANDATE = (
-    "You are an observer, not a player. The position below belongs to another "
-    "agent, P-target, whose private job values you cannot see. Your task is to "
-    "predict the single action P-target will take next. Reply with exactly one "
-    "tool call: the action you predict."
-)
 
 # The observer's copy of the resource and objective briefing.  Same facts as
 # `render.V2_ADDENDUM`, in the third person, because the observer is not a
@@ -67,48 +61,6 @@ assignment, and you are not told either one.
 
 Scoring covers the first {scored} turns of the {deadline}-turn game.
 """
-
-_COLS = re.compile(r"\s{2,}")
-
-
-def redact_board(board: str) -> str:
-    """Remove the private value column from a core board; relabel every seat
-    reference from the viewer's perspective to P-target's."""
-    out = []
-    in_jobs = False
-    for line in board.splitlines():
-        if line.startswith("LEDGER · turn"):
-            line = re.sub(r" · (your|their) move · you are P\d",
-                          " · P-target to move", line)
-        if line.startswith("## Jobs"):
-            in_jobs = True
-        elif line.startswith("## "):
-            in_jobs = False
-        if in_jobs and line.startswith("JOB"):
-            line = "JOB  P-TARGET-COST  PARTNER-COST  NEEDS FIRST  STATUS"
-        elif in_jobs and re.match(r"\s*\d+\s{2,}", line):
-            # split the fixed-width row, drop the YOUR-VALUE field (index 3)
-            head_part, marker = line, ""
-            if "<-" in line:
-                head_part, marker = line.split("<-", 1)
-                marker = "<-" + marker
-            fields = _COLS.split(head_part.strip())
-            del fields[3]  # YOUR-VALUE
-            line = "  ".join(fields)
-            if marker:
-                line += "  " + marker
-        out.append(line)
-    text = "\n".join(out)
-    # seat relabeling, case-sensitive, word-bounded; order matters
-    text = text.replace("YOUR-COST", "P-TARGET-COST").replace(
-        "THEIR-COST", "PARTNER-COST")
-    text = re.sub(r"\byour\b", "P-target's", text)
-    text = re.sub(r"\byou\b", "P-target", text)
-    text = re.sub(r"\btheir\b", "the partner's", text)
-    text = re.sub(r"\bthem\b", "the partner", text)
-    text = re.sub(r"\bthey\b", "the partner", text)
-    return text
-
 
 def observer_system(sv: ScenarioV2, message_cap: int = 40,
                     mandate: str = DEFAULT_MANDATE) -> str:

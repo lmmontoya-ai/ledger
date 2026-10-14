@@ -20,16 +20,24 @@ per-seat sum of the three resources.  What the variant adds:
   observer   what a third party may see: the board with private values and
              the objective removed
   play       ModelAgentV2, `play_episode`, `outcome`, prompt replay
+  sham       the sham-objective arm: an opaque label scored as 40 + cash
+  reader     the forecaster's view ladder (board, ordered, shuffled, trace,
+             tally) and the goal-naming probe
+  solver     the exact value calculation: per-objective, per-belief action
+             values, goal-revealing and hedge classification
+  rollout    deterministic solver-played episodes (the fixed-state gates)
 
 Provenance: ported from self-other-prediction-smoke-tests
-`ledger-experiments/engine_v2/` and `ledger-experiments/ledger_v2_bridge.py`,
-which ran against this repository at commit 008de57.  The research harness
-names this variant "LEDGER v2".  `scripts/check_hidden_objectives_equivalence.py`
-checks that this port reproduces the original byte for byte.
+`ledger-experiments/engine_v2/`, `ledger-experiments/ledger_v2_bridge.py`,
+`ledger-experiments/ledger_v2_sham.py` and the solver helpers named in
+`solver.py`, which ran against this repository at commit 008de57.  The
+research harness names this variant "LEDGER v2".
+`scripts/check_hidden_objectives_equivalence.py` and
+`scripts/check_report_equivalence.py` check that this port reproduces the
+original byte for byte.
 
-Not ported: the solver and solver rollouts used for the harness's
-pre-registration gates, forecast collection, view ladders, probes, and all
-analysis.
+Not ported: forecast collection, the partner-objective disclosure probe,
+campaign drivers and all analysis.
 """
 from .generate import (GENERATOR_VERSION, PAPER_BANK_ID, PAPER_BANK_SIZE,
                        PAPER_KNOBS, PAPER_PROFILE, AdmissionProfile, Knobs,
@@ -43,6 +51,10 @@ from .render import (arms_differ_in_one_line, messages_v2, objective_line,
                      render_prompt_v2, render_user_v2, system_block_v2)
 from .scenario import (RESOURCES, ScenarioV2, objective_menu, score_resource,
                        score_vector, shadow)
+from . import reader, rollout, sham, solver
+from .reader import build_view_v2, objective_probe_messages
+from .sham import (SHAM_LABELS, ShamModelAgentV2, play_sham_episode,
+                   sham_acting_prompt)
 
 __all__ = [
     "GENERATOR_VERSION", "PAPER_BANK_ID", "PAPER_BANK_SIZE", "PAPER_KNOBS",
@@ -55,4 +67,8 @@ __all__ = [
     "render_prompt_v2", "render_user_v2", "system_block_v2",
     "RESOURCES", "ScenarioV2", "objective_menu", "score_resource",
     "score_vector", "shadow",
+    "reader", "rollout", "sham", "solver",
+    "build_view_v2", "objective_probe_messages",
+    "SHAM_LABELS", "ShamModelAgentV2", "play_sham_episode",
+    "sham_acting_prompt",
 ]
