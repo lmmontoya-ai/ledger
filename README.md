@@ -68,9 +68,6 @@ turn 8  them  PROPOSE deal 2: them do job 2 (13 from pot) · you do job 7 (25 fr
 To print the full prompt on your machine, run this from the repository root. The helper `worked_game` builds the same position the golden test uses:
 
 ```python
-import sys
-sys.path.insert(0, "src")
-sys.path.insert(0, ".")
 from tests.conftest import worked_game
 from ledger.render.render import render_prompt
 
@@ -138,13 +135,26 @@ An episode log is JSONL: one meta record, one event record per turn, one call re
 
 Banks are frozen files. Bank `v1-m0` holds 8 scenarios and `v1-e0` holds 12. Loading either returns both seat orders, 16 and 24 templates. The variant bank holds 12 scenarios, played with opening seat 1 or 2.
 
-Every paper-era LEDGER campaign ran against ledger commit `008de57`. Reproduction of the hidden-objectives variant against the original research code was checked with zero mismatches: generator output and admission verdicts for seeds 1 to 300 at default settings and seeds 1 to 200 at the studied settings; the studied bank file; acting and observer system blocks for all 12 scenarios at message caps 40 and 200; all 690 logged acting-call digests from the paper's 36 episode logs; 4,326 acting prompts across all three objectives; 1,442 observer boards; 690 model payloads; 36 folded final scores and 36 variant outcomes; 12 solver rollout episodes; and 25 scripted episodes. The scripted-episode and system-block digests are frozen in [tests/golden/hidden_objectives_equivalence.json](tests/golden/hidden_objectives_equivalence.json) and checked by `tests/test_hidden_objectives.py`, so a fresh clone can run that check. The full equivalence script, [scripts/check_hidden_objectives_equivalence.py](scripts/check_hidden_objectives_equivalence.py), needs the private study repository and is not part of a normal run.
+Every LEDGER run behind the accompanying paper used ledger commit `008de57`. This release was checked against the original research code, with no mismatches:
+
+- the scenarios the generator made, and its accept or reject decision for each one, for seeds 1 to 300 at default settings and seeds 1 to 200 at the settings used in the accompanying paper;
+- the file that holds the 12 studied scenarios;
+- the opening instruction text shown to a playing seat and to an outside observer, for all 12 scenarios, at message caps 40 and 200;
+- all 690 recorded prompt digests from the 36 recorded games behind the accompanying paper;
+- 4,326 prompts shown to a playing seat, across all three assigned resources;
+- 1,442 board views for an outside observer;
+- 690 sets of data sent to a model;
+- 36 final scores worked out from the recorded games, and 36 results under the variant scoring rules;
+- 12 games played by the solver (a program that chooses moves by calculation) in the original research code;
+- 25 games played by fixed scripted seats.
+
+The scripted-episode and system-block digests are frozen in [tests/golden/hidden_objectives_equivalence.json](tests/golden/hidden_objectives_equivalence.json) and checked by `tests/test_hidden_objectives.py`, so a fresh clone can run that check. The full equivalence script, [scripts/check_hidden_objectives_equivalence.py](scripts/check_hidden_objectives_equivalence.py), needs the private study repository and is not part of a normal run.
 
 ## Token budget
 
 The environment's own text is overhead, so prompt size is measured and bounded. Counts here use tiktoken `o200k_base` unless stated. The default system block measures 612 tokens (615 under `cl100k_base`) and is byte-identical in every call for a fixed mandate, so providers can cache it. The worked-episode board above measures 342 tokens against a bound of 360, and the board does not grow with the episode. History adds one line per turn, with per-class bounds checked by golden tests under both encodings. Typical default-game play runs about 650 to 950 variable tokens per call.
 
-The message cap has engine default 40 tokens, and the stated limit in the prompt always matches the enforced one. An earlier campaign on the default game froze a cap of 200. The Contracting campaign in the accompanying paper used 40. For the variant, measured at scenario index 0, seat 1, turn 1: system block 896 tokens, user block 365 tokens, board alone 216 tokens, observer system block 874 tokens, observer board 194 tokens. The variant tool schema (12 tools) is 5,337 JSON characters.
+The engine default for the message cap is 40 tokens, and the stated limit in the prompt always matches the enforced one. An earlier campaign on the default game froze a cap of 200. The Contracting campaign in the accompanying paper used 40. For the variant, measured at scenario index 0, seat 1, turn 1: system block 896 tokens, user block 365 tokens, board alone 216 tokens, observer system block 874 tokens, observer board 194 tokens. The variant tool schema (12 tools) is 5,337 JSON characters.
 
 ## Repository layout
 
@@ -190,11 +200,11 @@ models.example.json       example model registry (no key)
 
 ## Related environments
 
-LEDGER is one of three native environments in the accompanying paper. FORGE, called Engineering in the paper, is not published yet. Commons, called Office in the paper, is not published yet.
+This environment is one of three native environments in the accompanying paper. LEDGER, called Contracting in the accompanying paper, is public at [https://github.com/lmmontoya-ai/ledger](https://github.com/lmmontoya-ai/ledger). FORGE, called Engineering in the accompanying paper, is not published yet. Commons, called Office in the accompanying paper, is not published yet.
 
 ## Citation
 
-Placeholder. The owner will add the citation for the accompanying paper here. Do not cite this repository from this placeholder.
+Placeholder. The owner will add the citation for the accompanying paper here.
 
 ```bibtex
 % TODO(owner): replace with the paper citation.
@@ -202,4 +212,4 @@ Placeholder. The owner will add the citation for the accompanying paper here. Do
 
 ## License
 
-Not yet chosen. The owner will add a LICENSE file.
+Not yet chosen. The owner will add a LICENSE file before public release.

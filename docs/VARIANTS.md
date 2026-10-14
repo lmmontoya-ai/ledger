@@ -52,7 +52,7 @@ Zero-cost scripted run. It needs no key and no network:
 
 Expected result: objectives ('cash', 'standing'), assigned payoff (2, 0), scored window (turns 1 to 24) (2, 0), final tick 5, agreement False, reneges 0, $0.0000 over 0 calls. A second line reports resource scores by seat: cash (2, 2), materials (24, 31), standing (0, 0). Scripted seats do not read their assigned objective. The scores are still computed and reported.
 
-Run with language models through OpenRouter. Install the runtime extras, copy `models.example.json` to `models.json`, and edit the model slugs, providers and prices first. Set the key in your shell. Do not put a key in a file.
+Run with language models through OpenRouter. Install the runtime extras, copy `models.example.json` to `models.json`, and edit the model slugs, providers and prices first. Set the key in your shell. Do not put a key in any file.
 
 ```powershell
 .venv\Scripts\python -m pip install -e ".[runtime]"
@@ -64,7 +64,7 @@ Without a key, the command stops before any call with `no API key: pass api_key 
 
 ### Settings as studied
 
-The campaign behind the accompanying paper used bank `hidden-objectives-iter3`, openings 1 and 2, all 9 ordered objective assignments (each seat cash, materials or standing), mandate `principal`, message cap 40, 48 turns with scoring on turns 1 to 24, and temperature 1.0 for every model. Model settings, for building your own `models.json`:
+The campaign behind the accompanying paper used bank `hidden-objectives-iter3`, openings 1 and 2, all 9 ordered objective assignments (each seat assigned cash, materials or standing), mandate `principal`, message cap 40, 48 turns with scoring on turns 1 to 24, and temperature 1.0 for every model. Model settings, for building your own `models.json`:
 
 | Name | Slug | Provider | Max tokens | Tool choice |
 |---|---|---|---|---|
@@ -105,7 +105,7 @@ Measured sizes at the same position (tiktoken `o200k_base`): variant system bloc
 
 The system text served with this variant comes from `spec/templates.v2/system.txt`. It states "24 turns total", a renege "penalty of 6" and a default "penalty of 8". The renderer does not substitute scenario numbers into those three sentences. The studied bank enforces different numbers: 48 turns, renege penalty 2, default penalty 3. Two other served texts state the enforced horizon correctly: the board header ("turn 1 of 48") and the variant addendum, which says the bonus is scored on the first 24 turns of the 48-turn game.
 
-These exact bytes are what the models in the accompanying paper received. All 690 logged acting-call digests from the paper's episode logs match renders that include the three sentences above. The bytes are kept unchanged in this release so that replay of the original runs stays equivalent byte for byte. New runs through this variant receive the same text. The default-game banks have no such mismatch: text and engine both use 24 turns and penalties of 6 and 8.
+These exact bytes are what the models in the accompanying paper received. All 690 logged acting-call digests from the episode logs behind the accompanying paper match renders that include the three sentences above. The bytes are kept unchanged in this release so that replay of the original runs stays equivalent byte for byte. New runs through this variant receive the same text. The default-game banks have no such mismatch: text and engine both use 24 turns and penalties of 6 and 8.
 
 ## Observer view
 
@@ -137,8 +137,6 @@ All names below are exported from `ledger.variants.hidden_objectives`.
 Minimal example, run from the repository root. It prints the digest of the turn 1 prompt for the excerpt above:
 
 ```python
-import sys
-sys.path.insert(0, "src")
 from ledger.variants import hidden_objectives as ho
 
 sv = ho.load_bank()[0]
@@ -146,7 +144,7 @@ data, digest = ho.acting_prompt(sv, 1, [], 1, "cash")
 print(digest)
 ```
 
-Episode logs from `play_episode` add four fields to the meta record: `variant`, `variant_generator_version`, `objectives` and `scored_turns`. The older `generator_version` field still reads `ledger-gen-v1`, as it did in the paper's logs.
+Episode logs from `play_episode` add four fields to the meta record: `variant`, `variant_generator_version`, `objectives` and `scored_turns`. The older `generator_version` field still reads `ledger-gen-v1`, as it did in the logs behind the accompanying paper.
 
 ## The studied bank
 
