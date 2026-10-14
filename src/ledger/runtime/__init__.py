@@ -11,7 +11,8 @@ from .episode import run_episode
 from .log import EpisodeLogger, read_records
 from .openrouter import (BudgetExceeded, CallResult, CostMeter,
                          EpisodeAbandoned, OpenRouterClient, ProviderError)
-from .replay import PolicyBatch, load_events, sample_policy, state_at
+from .replay import (PolicyBatch, assert_replays_as_played, load_events,
+                     played_events, sample_policy, state_at)
 from .tools import action_from_tool_call, load_tools
 
 __all__ = [
@@ -21,6 +22,7 @@ __all__ = [
     "EpisodeLogger", "read_records",
     "BudgetExceeded", "CallResult", "CostMeter", "EpisodeAbandoned",
     "OpenRouterClient", "ProviderError",
-    "PolicyBatch", "load_events", "sample_policy", "state_at",
+    "PolicyBatch", "assert_replays_as_played", "load_events",
+    "played_events", "sample_policy", "state_at",
     "action_from_tool_call", "load_tools",
 ]

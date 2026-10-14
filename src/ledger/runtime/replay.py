@@ -12,8 +12,9 @@ from dataclasses import dataclass, field
 
 from ..core import fold as fold_mod
 from ..core import actions as actions_mod
-from ..core.events import Action, Event
+from ..core.events import MESSAGE_ACTIONS, Action, Event
 from ..render.render import DEFAULT_MANDATE, render_prompt, render_user, system_block
+from ..render.tokens import MESSAGE_TOKEN_CAP, truncate_message
 from .agents import MAX_BAD_OUTPUTS, MAX_TRUNCATIONS, parse_reply, _corrective
 from .config import ModelSpec
 from .openrouter import EpisodeAbandoned
@@ -21,10 +22,71 @@ from .tools import load_tools
 
 
 def load_events(scenario, records: list[dict]) -> list[Event]:
-    """Rebuild engine events from an episode log's event records."""
+    """Rebuild engine events from an episode log's event records, as logged.
+
+    `run_episode` logs the action the agent RETURNED.  `Game.play` caps CHAT
+    and REFUSE text at the message cap and marks the event `truncated`, and
+    both the capped text and the mark reach later prompts.  So for an episode
+    with an over-cap message these raw events do not reproduce what the game
+    played.  Use `played_events` to replay prompts."""
     return [Event(r["tick"], r["seat"],
                   Action(r["action"]["name"], r["action"]["args"]))
             for r in records if r.get("kind") == "event"]
+
+
+def played_events(records: list[dict],
+                  message_cap: int | None = None) -> list[Event]:
+    """Engine events from an episode log, normalised to what the game played.
+
+    Applies the engine's message truncation to every CHAT and REFUSE text,
+    which recovers the played event exactly because `truncate_message` is a
+    pure function of the logged text and the cap.  `message_cap` defaults to
+    the cap in the log's meta record, else the engine default.  The result
+    depends on the tokenizer: run with tiktoken installed, as live play was.
+    `assert_replays_as_played` checks the claim against `Game` itself."""
+    if message_cap is None:
+        meta = next((r for r in records if r.get("kind") == "meta"), {})
+        message_cap = int(meta.get("message_cap") or MESSAGE_TOKEN_CAP)
+    out = []
+    for r in records:
+        if r.get("kind") != "event":
+            continue
+        action = Action(r["action"]["name"], r["action"]["args"])
+        truncated = False
+        if action.name in MESSAGE_ACTIONS and "text" in action.args:
+            text, truncated = truncate_message(str(action.args["text"]),
+                                               cap=message_cap)
+            action = Action(action.name, {**action.args, "text": text})
+        out.append(Event(r["tick"], r["seat"], action, truncated=truncated))
+    return out
+
+
+def assert_replays_as_played(scenario, records: list[dict],
+                             message_cap: int | None = None) -> dict:
+    """Re-play the logged actions through `Game` and check, field by field,
+    that `played_events` returns the events the game recorded.  Raises on
+    any difference; returns a small summary."""
+    from ..game import Game
+    if message_cap is None:
+        meta = next((r for r in records if r.get("kind") == "meta"), {})
+        message_cap = int(meta.get("message_cap") or MESSAGE_TOKEN_CAP)
+    played = Game(scenario, message_cap=message_cap)
+    for r in records:
+        if r.get("kind") == "event":
+            played.play(Action(r["action"]["name"], r["action"]["args"]))
+    ours = played_events(records, message_cap)
+    if len(played.events) != len(ours):
+        raise AssertionError(
+            f"event count differs: game {len(played.events)} vs "
+            f"normalised {len(ours)}")
+    for a, b in zip(played.events, ours):
+        if ((a.tick, a.seat, a.action.name, a.action.args, a.truncated)
+                != (b.tick, b.seat, b.action.name, b.action.args, b.truncated)):
+            raise AssertionError(
+                f"normalised event differs from the played event at tick "
+                f"{a.tick}: game={a} normalised={b}")
+    return {"events": len(ours),
+            "truncated_messages": sum(1 for e in ours if e.truncated)}
 
 
 def state_at(scenario, events: list[Event], tick: int):
