@@ -1,0 +1,1583 @@
+{
+ "admission": {
+  "fallback_max": 0.55,
+  "g_band": [
+   0.1,
+   0.95
+  ],
+  "max_shared_plan_jobs": 1,
+  "pay_cap_max_frac_of_cash_w_star": 0.15,
+  "pay_temptation_min": 4,
+  "surplus_band": [
+   0.25,
+   0.9
+  ],
+  "wrong_plan_frac": 0.25
+ },
+ "bank_id": "hidden-objectives-iter3",
+ "generator_version": "ledger-gen-v2res-1",
+ "knobs": {
+  "B": 45,
+  "D": 48,
+  "K": 6,
+  "anti": 0.55,
+  "arrive_turn": 28,
+  "chain_len": [
+   2
+  ],
+  "chi_spread": 1.0,
+  "cost_hi": 30,
+  "cost_lo": 10,
+  "dom_hi": [
+   22,
+   36
+  ],
+  "dom_mid": [
+   10,
+   20
+  ],
+  "eps": 1,
+  "high_value_min": 22,
+  "kappa": [
+   3,
+   3
+  ],
+  "low_cost_max": 18,
+  "n_arrivals": 2,
+  "n_chains": [
+   1
+  ],
+  "off_max": 3,
+  "p": 2,
+  "p_def": 3,
+  "p_dom_hi": 0.5,
+  "p_zero": 0.15,
+  "pay_cap": 6,
+  "r": 2,
+  "scored_turns": 24,
+  "settle_window": 16,
+  "standing_broken": 14,
+  "standing_kept": 6,
+  "u": [
+   25,
+   25
+  ]
+ },
+ "knobs_digest": "b14bbd87a3ab",
+ "scenarios": [
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    28,
+    1,
+    1,
+    28,
+    1,
+    1
+   ],
+   "c": [
+    [
+     24,
+     14,
+     25,
+     15,
+     28,
+     24
+    ],
+    [
+     38,
+     12,
+     17,
+     29,
+     14,
+     12
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [
+     6
+    ],
+    [],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "1f1f46fb777e02dd2468d771509cc2e40bff54cbf7fffb868624a290fd9f3300",
+   "scored_turns": 24,
+   "seed": 17,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      0,
+      0,
+      0,
+      2,
+      24,
+      2
+     ],
+     [
+      2,
+      2,
+      31,
+      2,
+      0,
+      2
+     ]
+    ],
+    "materials": [
+     [
+      33,
+      1,
+      1,
+      1,
+      1,
+      24
+     ],
+     [
+      0,
+      1,
+      0,
+      1,
+      3,
+      31
+     ]
+    ],
+    "standing": [
+     [
+      3,
+      0,
+      1,
+      33,
+      2,
+      0
+     ],
+     [
+      1,
+      29,
+      0,
+      0,
+      3,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    1,
+    1,
+    1,
+    28,
+    28
+   ],
+   "c": [
+    [
+     23,
+     22,
+     26,
+     18,
+     16,
+     21
+    ],
+    [
+     14,
+     16,
+     37,
+     11,
+     10,
+     30
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    1,
+    1
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [],
+    [
+     3
+    ],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "dff7adb6f0da5d852960326c47fda5bd1f2fe3d778cdae91094355e6dd956274",
+   "scored_turns": 24,
+   "seed": 23,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      34,
+      1,
+      27,
+      1,
+      1,
+      2
+     ],
+     [
+      29,
+      1,
+      0,
+      1,
+      1,
+      1
+     ]
+    ],
+    "materials": [
+     [
+      3,
+      2,
+      3,
+      11,
+      27,
+      2
+     ],
+     [
+      2,
+      0,
+      0,
+      13,
+      32,
+      3
+     ]
+    ],
+    "standing": [
+     [
+      1,
+      16,
+      0,
+      1,
+      3,
+      13
+     ],
+     [
+      1,
+      19,
+      2,
+      1,
+      0,
+      20
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    1,
+    28,
+    1,
+    1,
+    28
+   ],
+   "c": [
+    [
+     26,
+     12,
+     19,
+     21,
+     19,
+     17
+    ],
+    [
+     45,
+     22,
+     29,
+     16,
+     16,
+     12
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    5,
+    5
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [],
+    [
+     2
+    ],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "e04f1a05b3f5ac4ed825f12431e3d889586ac96e9a3457dfdaf708181265301f",
+   "scored_turns": 24,
+   "seed": 26,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      0,
+      17,
+      3,
+      3,
+      0,
+      2
+     ],
+     [
+      32,
+      20,
+      1,
+      2,
+      1,
+      1
+     ]
+    ],
+    "materials": [
+     [
+      0,
+      3,
+      18,
+      0,
+      0,
+      17
+     ],
+     [
+      1,
+      0,
+      18,
+      1,
+      0,
+      18
+     ]
+    ],
+    "standing": [
+     [
+      1,
+      0,
+      1,
+      0,
+      35,
+      1
+     ],
+     [
+      1,
+      1,
+      2,
+      28,
+      0,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    28,
+    1,
+    28,
+    1,
+    1,
+    1
+   ],
+   "c": [
+    [
+     25,
+     17,
+     27,
+     14,
+     21,
+     27
+    ],
+    [
+     44,
+     13,
+     21,
+     26,
+     32,
+     14
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    1,
+    2,
+    4,
+    4
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+     5
+    ]
+   ],
+   "r": 2,
+   "scenario_id": "f378e20d55608f357f8c833bc7690283d82e5311286ffde409a314288fcedbf4",
+   "scored_turns": 24,
+   "seed": 50,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      18,
+      17,
+      3,
+      0,
+      3,
+      1
+     ],
+     [
+      24,
+      16,
+      2,
+      3,
+      2,
+      3
+     ]
+    ],
+    "materials": [
+     [
+      1,
+      0,
+      18,
+      0,
+      3,
+      0
+     ],
+     [
+      1,
+      1,
+      15,
+      0,
+      3,
+      31
+     ]
+    ],
+    "standing": [
+     [
+      0,
+      2,
+      3,
+      0,
+      28,
+      3
+     ],
+     [
+      0,
+      3,
+      3,
+      35,
+      0,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    1,
+    1,
+    28,
+    28,
+    1
+   ],
+   "c": [
+    [
+     27,
+     21,
+     27,
+     23,
+     26,
+     11
+    ],
+    [
+     18,
+     20,
+     28,
+     19,
+     21,
+     10
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    6,
+    6
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [
+     1
+    ],
+    [],
+    [],
+    [],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "f5d5a629fab360328df61675e093d5a8a0469b9888b266f5670a1e1fa403cdbe",
+   "scored_turns": 24,
+   "seed": 83,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      2,
+      2,
+      0,
+      3,
+      26,
+      3
+     ],
+     [
+      2,
+      1,
+      25,
+      1,
+      23,
+      3
+     ]
+    ],
+    "materials": [
+     [
+      12,
+      0,
+      0,
+      1,
+      2,
+      2
+     ],
+     [
+      11,
+      24,
+      1,
+      2,
+      1,
+      3
+     ]
+    ],
+    "standing": [
+     [
+      2,
+      0,
+      2,
+      32,
+      1,
+      36
+     ],
+     [
+      3,
+      1,
+      0,
+      23,
+      1,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    28,
+    1,
+    1,
+    28,
+    1
+   ],
+   "c": [
+    [
+     27,
+     22,
+     19,
+     23,
+     26,
+     30
+    ],
+    [
+     33,
+     27,
+     12,
+     15,
+     24,
+     26
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    4,
+    4
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+     3
+    ]
+   ],
+   "r": 2,
+   "scenario_id": "d233e5fc5b96f4f7d6431210a2d093d0fbce65cbc82610b9f0b7cd451935779f",
+   "scored_turns": 24,
+   "seed": 87,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      2,
+      32,
+      2,
+      28,
+      3,
+      0
+     ],
+     [
+      0,
+      16,
+      0,
+      0,
+      2,
+      2
+     ]
+    ],
+    "materials": [
+     [
+      1,
+      3,
+      0,
+      2,
+      29,
+      2
+     ],
+     [
+      2,
+      0,
+      30,
+      0,
+      0,
+      3
+     ]
+    ],
+    "standing": [
+     [
+      13,
+      0,
+      3,
+      1,
+      1,
+      10
+     ],
+     [
+      0,
+      0,
+      3,
+      2,
+      0,
+      13
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    1,
+    28,
+    1,
+    1,
+    28
+   ],
+   "c": [
+    [
+     19,
+     25,
+     14,
+     11,
+     19,
+     26
+    ],
+    [
+     12,
+     32,
+     10,
+     17,
+     35,
+     28
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    1,
+    1
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [
+     5
+    ],
+    [],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "f0edb06d5596c91e7aecdad4a4307ab19bcd8e057415b28eba35cbd650ded327",
+   "scored_turns": 24,
+   "seed": 95,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      0,
+      1,
+      3,
+      3,
+      12,
+      0
+     ],
+     [
+      1,
+      2,
+      3,
+      0,
+      15,
+      33
+     ]
+    ],
+    "materials": [
+     [
+      19,
+      2,
+      1,
+      25,
+      0,
+      2
+     ],
+     [
+      17,
+      1,
+      3,
+      0,
+      2,
+      3
+     ]
+    ],
+    "standing": [
+     [
+      3,
+      0,
+      31,
+      3,
+      3,
+      3
+     ],
+     [
+      3,
+      32,
+      0,
+      0,
+      2,
+      3
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    1,
+    1,
+    28,
+    1,
+    28
+   ],
+   "c": [
+    [
+     17,
+     30,
+     17,
+     12,
+     27,
+     23
+    ],
+    [
+     17,
+     21,
+     10,
+     10,
+     16,
+     12
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    1,
+    2,
+    1,
+    1
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [
+     5
+    ],
+    [],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "80e5ffc6c2ffd0025dc5b68f57faba933d42b657ea6d3013f3b570a1a6230814",
+   "scored_turns": 24,
+   "seed": 98,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      2,
+      1,
+      2,
+      14,
+      0,
+      10
+     ],
+     [
+      2,
+      0,
+      0,
+      17,
+      2,
+      35
+     ]
+    ],
+    "materials": [
+     [
+      3,
+      0,
+      10,
+      3,
+      0,
+      0
+     ],
+     [
+      2,
+      0,
+      12,
+      2,
+      28,
+      3
+     ]
+    ],
+    "standing": [
+     [
+      17,
+      35,
+      0,
+      1,
+      3,
+      1
+     ],
+     [
+      20,
+      0,
+      2,
+      0,
+      0,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    1,
+    28,
+    28,
+    1,
+    1
+   ],
+   "c": [
+    [
+     26,
+     18,
+     27,
+     13,
+     16,
+     15
+    ],
+    [
+     17,
+     11,
+     27,
+     10,
+     13,
+     10
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    2,
+    2
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [
+     6
+    ],
+    [],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "9294c5f3a939ed7bc1fb9faa2c93f7b7c500a2eee9c8fc47028628507854f27c",
+   "scored_turns": 24,
+   "seed": 104,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      0,
+      2,
+      3,
+      3,
+      25,
+      20
+     ],
+     [
+      0,
+      2,
+      3,
+      1,
+      0,
+      17
+     ]
+    ],
+    "materials": [
+     [
+      0,
+      1,
+      2,
+      36,
+      3,
+      3
+     ],
+     [
+      24,
+      2,
+      0,
+      18,
+      0,
+      3
+     ]
+    ],
+    "standing": [
+     [
+      1,
+      33,
+      19,
+      0,
+      0,
+      0
+     ],
+     [
+      2,
+      0,
+      17,
+      1,
+      1,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    1,
+    28,
+    1,
+    28,
+    1
+   ],
+   "c": [
+    [
+     20,
+     14,
+     13,
+     27,
+     24,
+     21
+    ],
+    [
+     10,
+     18,
+     19,
+     43,
+     35,
+     30
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    1,
+    2,
+    2,
+    2
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [
+     4
+    ],
+    [],
+    [],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "99579d069082efb03474a4c895e2d67d02f04c0c8ffc2a0f0db7c860d4e7cc67",
+   "scored_turns": 24,
+   "seed": 121,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      2,
+      0,
+      3,
+      15,
+      3,
+      3
+     ],
+     [
+      3,
+      35,
+      2,
+      14,
+      0,
+      1
+     ]
+    ],
+    "materials": [
+     [
+      0,
+      2,
+      0,
+      0,
+      2,
+      2
+     ],
+     [
+      13,
+      3,
+      28,
+      3,
+      2,
+      0
+     ]
+    ],
+    "standing": [
+     [
+      0,
+      3,
+      2,
+      1,
+      19,
+      0
+     ],
+     [
+      3,
+      3,
+      1,
+      3,
+      12,
+      27
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    28,
+    1,
+    1,
+    28,
+    1
+   ],
+   "c": [
+    [
+     26,
+     16,
+     29,
+     30,
+     17,
+     27
+    ],
+    [
+     17,
+     13,
+     21,
+     22,
+     18,
+     20
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    1,
+    1
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+     3
+    ]
+   ],
+   "r": 2,
+   "scenario_id": "01679f6fca01d9cf1bfaa168b795de18669f1a9e3c59d604cc11c993204718dc",
+   "scored_turns": 24,
+   "seed": 127,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      3,
+      18,
+      0,
+      0,
+      26,
+      1
+     ],
+     [
+      1,
+      16,
+      1,
+      2,
+      14,
+      1
+     ]
+    ],
+    "materials": [
+     [
+      0,
+      0,
+      26,
+      0,
+      3,
+      1
+     ],
+     [
+      1,
+      3,
+      14,
+      27,
+      2,
+      2
+     ]
+    ],
+    "standing": [
+     [
+      27,
+      1,
+      2,
+      2,
+      1,
+      13
+     ],
+     [
+      33,
+      0,
+      1,
+      3,
+      1,
+      12
+     ]
+    ]
+   }
+  },
+  {
+   "B": 45,
+   "D": 48,
+   "K": 6,
+   "available_from": [
+    1,
+    28,
+    1,
+    1,
+    1,
+    28
+   ],
+   "c": [
+    [
+     22,
+     28,
+     27,
+     21,
+     26,
+     15
+    ],
+    [
+     33,
+     29,
+     19,
+     11,
+     33,
+     10
+    ]
+   ],
+   "chat_enabled": true,
+   "eps": 1,
+   "exposure": [
+    2,
+    1,
+    4,
+    4
+   ],
+   "generator_version": "ledger-gen-v2res-1",
+   "kappa": [
+    3,
+    3
+   ],
+   "opening": 1,
+   "p": 2,
+   "p_def": 3,
+   "pay_cap": 6,
+   "prereqs": [
+    [],
+    [],
+    [],
+    [],
+    [
+     4
+    ],
+    []
+   ],
+   "r": 2,
+   "scenario_id": "79c828d4563d63f9e37475a224d410e63d6b10dcc5b09ee737d91342d7a4bdd9",
+   "scored_turns": 24,
+   "seed": 134,
+   "settle_window": 16,
+   "standing_broken": 14,
+   "standing_kept": 6,
+   "u": [
+    25,
+    25
+   ],
+   "yields": {
+    "cash": [
+     [
+      1,
+      16,
+      2,
+      3,
+      13,
+      3
+     ],
+     [
+      0,
+      20,
+      1,
+      1,
+      17,
+      0
+     ]
+    ],
+    "materials": [
+     [
+      0,
+      2,
+      0,
+      33,
+      2,
+      29
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      11
+     ]
+    ],
+    "standing": [
+     [
+      28,
+      3,
+      19,
+      1,
+      2,
+      1
+     ],
+     [
+      0,
+      2,
+      18,
+      1,
+      3,
+      3
+     ]
+    ]
+   }
+  }
+ ],
+ "seeds": [
+  17,
+  23,
+  26,
+  50,
+  83,
+  87,
+  95,
+  98,
+  104,
+  121,
+  127,
+  134
+ ]
+}
