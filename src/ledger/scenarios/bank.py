@@ -10,8 +10,9 @@ from pathlib import Path
 from ..core.scenario import Scenario
 from .admit import admit
 from .generate import GENERATOR_VERSION, generate
+from .._paths import DATA_ROOT
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = DATA_ROOT  # repository root in a checkout; see ledger/_paths.py
 BANKS_DIR = REPO_ROOT / "banks"
 
 

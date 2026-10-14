@@ -7,11 +7,11 @@ drift from the actions the engine accepts.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ..core.events import Action
+from .._paths import DATA_ROOT
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = DATA_ROOT  # repository root in a checkout; see ledger/_paths.py
 SPEC_PATH = REPO_ROOT / "spec" / "tools.v2.json"
 
 _cache: list[dict] | None = None

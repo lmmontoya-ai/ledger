@@ -8,9 +8,10 @@ is structurally impossible to render it.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+from .._paths import DATA_ROOT
+
+REPO_ROOT = DATA_ROOT  # repository root in a checkout; see ledger/_paths.py
 TEMPLATE_VERSION = "templates.v2"
 TEMPLATES_DIR = REPO_ROOT / "spec" / TEMPLATE_VERSION
 

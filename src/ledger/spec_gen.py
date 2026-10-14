@@ -7,9 +7,10 @@ the golden test asserts the file on disk equals the generated content.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+from ._paths import DATA_ROOT
+
+REPO_ROOT = DATA_ROOT  # repository root in a checkout; see ledger/_paths.py
 SPEC_DIR = REPO_ROOT / "spec"
 
 CONTRACT_SCHEMA = {

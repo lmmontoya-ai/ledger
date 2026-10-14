@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import json
 from fractions import Fraction
-from pathlib import Path
 
 from .core import actions as actions_mod
 from .core import fold as fold_mod
@@ -16,10 +15,11 @@ from .core.scenario import Scenario
 from .core.welfare import best_plan_assignment, d_i, w_eq, w_star
 from .render.render import render_prompt
 from .render.tokens import truncate_message
+from ._paths import DATA_ROOT
 
 IllegalAction = actions_mod.IllegalAction
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = DATA_ROOT  # repository root in a checkout; see ledger/_paths.py
 
 
 def tools_spec() -> list[dict]:
