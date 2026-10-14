@@ -5,13 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ledger"
 version = "0.1.0"
-description = "LEDGER: a two-agent contracting economy for language-model agents (M0 vertical slice)"
+description = "LEDGER: a two-agent contracting economy for language-model agents"
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest", "hypothesis", "tiktoken"]
-runtime = ["requests"]
+runtime = ["requests", "tiktoken"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
