@@ -34,6 +34,8 @@ After three failed attempts at a legal action, the live runtime plays a plain WA
 
 Banks are frozen files. Bank `v1-m0` holds 8 scenarios and `v1-e0` holds 12. Loading either returns both seat orders, 16 and 24 templates. The variant bank `hidden-objectives-iter3` holds 12 scenarios, played with opening seat 1 or 2.
 
+Bank `v2-d0` is the default-game bank of the report's ordinary-play Contracting studies. It holds 12 scenarios from the development generator `ledger-gen-v2-dev` (`src/ledger/scenarios/generate_v2.py`): 8 jobs, pot 100, 24 turns, renege penalty 6, default penalty 8, draw cap 40, payment cap 12 per deal, payments in the last 12 turns. The file is a byte copy of the research harness's frozen bank (sha256 `a62d64f18755c737100c567e34062961bd980782afe29cec5eb60ddc6eba871f`), stored as a bare list of scenarios with CRLF line endings; `.gitattributes` keeps those bytes unchanged on checkout. `load_bank("v2-d0")` returns 24 templates: template 2i is scenario i with seat 1 opening, template 2i+1 the other seat order. The report's runs on this bank used message cap 200 and mandate `principal`.
+
 ## Provenance and equivalence counts
 
 Every LEDGER run behind the accompanying paper used ledger commit `008de57` (tag `paper-runs-008de57`). This release was checked against the original research code, with no mismatches:
@@ -50,6 +52,50 @@ Every LEDGER run behind the accompanying paper used ledger commit `008de57` (tag
 - 25 games played by fixed scripted seats.
 
 The scripted-episode and system-block digests are frozen in [tests/golden/hidden_objectives_equivalence.json](../tests/golden/hidden_objectives_equivalence.json) and checked by `tests/test_hidden_objectives.py`, so a fresh clone can run that check. The full equivalence script, [scripts/check_hidden_objectives_equivalence.py](../scripts/check_hidden_objectives_equivalence.py), needs the private study repository and is not part of a normal run.
+
+## Report coverage
+
+The report (final report v4, 3 September 2026) used two Contracting versions: the default game on bank `v2-d0` for its ordinary-play studies, and the hidden-objectives variant, with an assigned-resource arm and a sham-objective arm, for its private-goal studies. [scripts/check_report_equivalence.py](../scripts/check_report_equivalence.py) reads the study repository's logs, stores and manifests read-only and checks this repository against them. All checks below passed with no mismatches.
+
+Acting prompts, every logged acting-call digest re-rendered from its log:
+
+| Run | Episodes | Digests |
+|---|---|---|
+| Default game, bank `v2-d0`, ordinary-play gate (`q0_gate`) | 24 | 476 of 476 |
+| Default game, bank `v2-d0`, fresh games for the gate's amended stakes test (`q0_c3val`) | 24 | 398 of 398 |
+| Default game, bank `v2-d0`, reasoning replication (`r1`) | 12 | 231 of 231 |
+| Variant, free play, assigned-resource arm | 45 | 1,372 of 1,372 |
+| Variant, free play, sham-objective arm | 45 | 1,357 of 1,357 |
+
+Each free-play log holds more than one attempt; the last attempt is the played one, and the check confirms it is a complete play (turns 1 to n, a result record).
+
+Forecaster prompts, against recorded prompt hashes:
+
+- ordinary-play forecaster panel: 1,152 of 1,152 cells (128 distinct prompts, views `L0` and `C-target`);
+- perspective study, ordinary play: 640 of 640 cells; perspective study, private goal: 480 of 480 cells (the perspective sentence itself is read from the study repository at check time and is not shipped here);
+- private-goal forecast store: 558 of 558 digests (board, ordered and shuffled 144 each, trace 126) and 126 recorded trace sizes;
+- nine-forecaster extension: 960 of 960 digests (board, ordered, shuffled and tally 240 each);
+- successor and own-policy replays at the private-goal positions: 48 of 48 and 192 of 192 acting digests.
+
+Where a run recorded no prompt hash, the views here are compared byte for byte with the study repository's own builders: 256 default-game views at 64 decisions, 128 reasoning traces, 134 reasoning-view messages, 43 summary-view messages and 96 goal-naming prompts. The recorded trace and summary sizes match as well.
+
+Exact value calculation:
+
+- goal-revealing census of the free-play decisions: 1,735 of 1,735 states reproduced field for field. In the assigned-resource arm, 856 decisions are classified: 469 goal-revealing (342 with no hedge, 127 with a hedge) and 387 not; 4 states are declined by the classifier's own rule;
+- fixed-state gate: the 24 solver-played episodes are identical to the recorded ones, and 545 of 545 position rows match. Under the primary solver family the best class changes with the partner's goal at 151 of 440 qualifying positions;
+- fixed-state position bank: rebuilt exactly, 24 positions, 16 of them goal-revealing. The model replays at these positions are not part of this check.
+
+The results are frozen in [tests/golden/report_v4_equivalence.json](../tests/golden/report_v4_equivalence.json) (counts and, per episode, a sha256 of the logged digests; no prompt text). [tests/test_report_v4.py](../tests/test_report_v4.py) checks the bank, the sham arm, the reader views and the solver without the study repository, against digests computed by the original code on scripted games ([tests/golden/report_v4_fixtures.json](../tests/golden/report_v4_fixtures.json)). The default-game fixtures were rendered by the engine at commit `008de57`. The reasoning text in the fixtures was written for them; no model output is shipped.
+
+Command (owner only; needs the private study repository, takes about 15 minutes on 16 cores):
+
+```text
+python scripts/check_report_equivalence.py --smoke-tests ../self-other-prediction-smoke-tests
+```
+
+Study-only manipulations are not part of this repository: the "being watched" notice, the model-name cue, the perspective sentence, the partner-goal disclosure line, the summarizer prompt, and moment selection with its salt. The views that use a salt (`C-shuf`, `shuffled`) take it as an argument.
+
+Default-game reader views live in `ledger.reader`. The variant's views, sham arm and solver are described in [VARIANTS.md](VARIANTS.md).
 
 ## Token budget
 
@@ -93,7 +139,7 @@ The studied variant bank, `hidden-objectives-iter3`, has 12 scenarios with 6 job
 
 ```text
 spec/                     frozen action, tool and template definitions (code reads the v2 files)
-banks/                    frozen scenario banks: v1-m0, v1-e0, hidden-objectives-iter3
+banks/                    frozen scenario banks: v1-m0, v1-e0, v2-d0, hidden-objectives-iter3
 src/ledger/_paths.py      finds spec/ and banks/ in a checkout or an installed wheel
 src/ledger/game.py        Game API: render, play, result, ledger, grade, replay
 src/ledger/core           pure engine: events, fold, actions, contracts, welfare, harm
@@ -101,8 +147,9 @@ src/ledger/render         pure rendering: board, history, system block, tokens
 src/ledger/runtime        the only network code: OpenRouter client, agents, log, replay
 src/ledger/scenarios      default-game generators, admission, bank loaders
 src/ledger/policies       scripted and rational policies
+src/ledger/reader         default-game forecaster views and reasoning blocks
 src/ledger/analysis       conduct labels (36 outcomes) and study statistics
-src/ledger/variants       the hidden-objectives variant
+src/ledger/variants       the hidden-objectives variant, its sham arm, reader views and solver
 scripts/                  episode runner, bank builder, equivalence and report tools
 tests/                    test suite and golden files
 docs/                     design, variant guide, plans and validation records

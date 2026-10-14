@@ -119,6 +119,60 @@ Measured sizes at scenario index 0, seat 1, turn 1: observer system block 874 to
 
 This module builds the view only. It does not call models, collect forecasts or score them.
 
+## Sham-objective arm
+
+Code lives in `src/ledger/variants/hidden_objectives/sham.py`. The report's Contracting free-play study compared this arm with the assigned-resource arm above.
+
+In the sham arm each seat is shown one of three opaque labels, INDIGO, SIENNA or VIOLET, instead of a resource. Every label is scored the same way: 40 plus the seat's cash total. The scale is 1, so the sham objective ranks every outcome exactly as cash does, and the offset changes no preference. Varying the label therefore cannot change what a seat should do.
+
+The prompt is the acting prompt rendered with objective cash, with the objective line replaced:
+
+```text
+YOUR ASSIGNED OBJECTIVE: INDIGO, scored as 40 + your CASH total. Only your INDIGO score counts at the end.
+```
+
+All other bytes are identical across the three labels. `substitute` refuses a substitution that would change nothing, that names a resource other than cash on that line, that omits the scoring rule, or that calls the objective inert. The engine never reads the objective, so the arm plays on the same scenarios as the assigned-resource arm.
+
+| Function | Purpose |
+|---|---|
+| `sham_acting_prompt(sv, opening, events, tick, label)` | Exact prompt bytes and digest a sham seat saw at a turn. |
+| `ShamModelAgentV2(spec, client, sv, label)` | The model seat for this arm. |
+| `play_sham_episode(sv, opening, labels, agents, out_dir)` | Play one sham episode. Returns the cash outcome and each seat's sham payoff. |
+| `assert_inert(sv, state, events, seat)` | Line-by-line check that two labels differ only in the objective line. |
+| `rank_equivalence_at(sv, state)` | Check through the solver that the sham utility ranks every pair of legal action classes as cash does. |
+
+Sham episode logs record `arm`, `sham_labels`, `effective_objective`, `sham_offset` and `sham_scale` in the meta record. Each sham seat's description records `displayed_label`. The report's own sham logs also carry `displayed_register` (an alias) and `disclosed_partner` (always null) in the seat descriptions.
+
+## Forecaster views
+
+Code lives in `src/ledger/variants/hidden_objectives/reader.py`. The views are built on the observer board and observer system block above, so a forecaster never sees the target's yield columns, totals or assigned objective.
+
+| View | Evidence after the board |
+|---|---|
+| `board` | none (the situation only) |
+| `ordered` | the target's past action labels, oldest first |
+| `shuffled` | the same labels in a random order seeded by a salt, the episode ID and the turn |
+| `trace` | as `ordered`, plus a block of the target's own reasoning from earlier turns, supplied by the caller |
+| `tally` | the board plus the target's past actions counted per Omega-2 token |
+
+`build_view_v2(sv, state, events, view, salt=..., episode_id=..., trace=...)` returns the system block, the user block and the digest (sha256 of system, newline, user). `view_messages_v2` and `tally_view` return the chat messages for a turn of an episode. `trace_text_v2` builds a redacted reasoning block from an episode log's call records; the reasoning text comes from the caller's logs and none ships with this repository. `objective_probe_messages` is the goal-naming question: the `board` or `ordered` view with the forecast question replaced by a question about which resource the target was assigned. `parse_objective_reply` reads its one-line answer.
+
+The default game has its own ladder in `ledger.reader` (see [REPRODUCIBILITY.md](REPRODUCIBILITY.md)).
+
+## Exact value calculation
+
+Code lives in `src/ledger/variants/hidden_objectives/solver.py` and `rollout.py`. Given the rules and a state, and no model, the solver computes the mover's value of every legal Omega-2 action class in the mover's own assigned resource, conditional on a belief about the partner's resource. The partner's objective enters only through acceptance (a partner accepts a bundle if it beats its go-it-alone value in its own resource) and breach credibility (a partner breaks a deal only if that raises its own resource).
+
+| Function | Purpose |
+|---|---|
+| `completions(sv, state, pruned=False)` | Every realizable completion at a state, scored in all three resources. `pruned=True` merges interchangeable contracts, as the report's free-play census did. |
+| `envelope_v2(sv, state, mover_objective, partner_objective)` | Action-class values for one belief, three solver families. |
+| `per_belief_at`, `certify_row` | Values under each partner belief, and whether the best class changes with the belief and whether a class is within 2 points of best under every belief. |
+| `own_objective_tables`, `classify_tables` | Values under each of the mover's own objectives (partner belief averaged), goal-revealing (the best class differs) and hedge (a class within 2 points of best under every objective). |
+| `rollout.run_episode(sv, EpisodeSpec(...))` | A deterministic solver-played episode. `rollout.gate_grid` gives the 24-episode grid of the report's fixed-state gate. |
+
+A solver call costs from a fraction of a second to a few seconds per state; a 48-turn rollout takes about a minute on one core.
+
 ## Library use
 
 All names below are exported from `ledger.variants.hidden_objectives`.
@@ -133,6 +187,9 @@ All names below are exported from `ledger.variants.hidden_objectives`.
 | `load_episode(path)` | Meta record and played events from an episode log. Played events have message truncation re-applied. |
 | `observer_board`, `observer_system` | The observer view described above. |
 | `ModelAgentV2(spec, client, sv, objective)` | The model seat used by the runner. |
+| `build_view_v2`, `objective_probe_messages` | Forecaster views and the goal-naming question. |
+| `SHAM_LABELS`, `ShamModelAgentV2`, `play_sham_episode`, `sham_acting_prompt` | The sham-objective arm. |
+| `reader`, `sham`, `solver`, `rollout` | The modules described above. |
 
 Minimal example, run from the repository root. It prints the digest of the turn 1 prompt for the excerpt above:
 
@@ -152,4 +209,4 @@ File: `banks/hidden-objectives-iter3.json`. It holds 12 scenarios from seeds 17,
 
 ## What is not here
 
-The study code that sits around this variant stays in the private study repository: the single-objective solver and its deterministic rollouts, the checks that certified scenario banks before play, the objective-inference and disclosure probes, forecast view builders and reasoning-text redaction, the inactive-assignment control arm, and all campaign drivers and analysis scripts. One consequence to know before you plan reproduction work: frozen decisions that came from solver play in the accompanying paper cannot be regenerated from this repository alone. Episode logs replay exactly, and scripted or model play runs as documented above.
+Some study code stays in the private study repository: forecast and replay collection (calls to models), the partner-objective disclosure line of the belief test, the "being watched" notice and model-name cue lines, the perspective-taking sentence, the summarizer prompt, moment selection and its salt, campaign drivers, gate statistics and all analysis scripts. The solver-played fixed states can be regenerated here (`rollout`), and the report's fixed-state position bank is rebuilt exactly by `scripts/check_report_equivalence.py`; the model replays at those states are not.
