@@ -1,0 +1,6023 @@
+{
+ "_note": "Digests computed by the ORIGINAL research-harness implementation (self-other-prediction-smoke-tests ledger-experiments/engine_v2 and ledger_v2_bridge.py) on these event lists. tests/test_hidden_objectives.py recomputes them with ledger.variants.hidden_objectives. Regenerate with scripts/check_hidden_objectives_equivalence.py --write-fixture.",
+ "episodes": [
+  {
+   "acting_digests_sha256": "0ba1ddcdf58dd325a72c9a88e41e9d34211563c55d6550c557a63fa2ebe6cebb",
+   "events": [
+    [
+     1,
+     1,
+     "DRAW",
+     {
+      "amount": 14,
+      "job": 2
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1,
+        "6": 2
+       },
+       "expires": 5,
+       "fund": {
+        "4": 15,
+        "6": 12
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "REJECT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1,
+        "6": 2
+       },
+       "expires": 7,
+       "fund": {
+        "4": 15,
+        "6": 12
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     5,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     6,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 18,
+   "objectives": [
+    "cash",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "ffdef2bcbe04e1eefb5c6a85f6699ef8f99dd9727240e1c2751d4bb05dc2efa0",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "1f1f46fb777e02dd2468d771509cc2e40bff54cbf7fffb868624a290fd9f3300"
+  },
+  {
+   "acting_digests_sha256": "1c11391478b3240e4c06e3907e242e6607d86e0369ca59abbf8eb23a61cfe5dd",
+   "events": [
+    [
+     1,
+     2,
+     "DRAW",
+     {
+      "amount": 12,
+      "job": 6
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 25,
+      "job": 3
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "EXECUTE",
+     {
+      "job": 6
+     },
+     false
+    ],
+    [
+     4,
+     1,
+     "EXECUTE",
+     {
+      "job": 3
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     6,
+     1,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 18,
+   "objectives": [
+    "cash",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "4a79196fc02dc20c6ec6c360bb61e84d1eb637fb904d1b6105ae5c33787bedc9",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     2,
+     0
+    ],
+    "scored_window_payoff": [
+     2,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      2,
+      33
+     ],
+     "materials": [
+      25,
+      31
+     ],
+     "standing": [
+      1,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      2,
+      33
+     ],
+     "materials": [
+      25,
+      31
+     ],
+     "standing": [
+      1,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "1f1f46fb777e02dd2468d771509cc2e40bff54cbf7fffb868624a290fd9f3300"
+  },
+  {
+   "acting_digests_sha256": "8f701fc15b08b0993ab3efbc6106d0acda34a95e222afd39f7da2f552b71a6bb",
+   "events": [
+    [
+     1,
+     1,
+     "DRAW",
+     {
+      "amount": 23,
+      "job": 1
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "4": 2
+       },
+       "expires": 5,
+       "fund": {
+        "2": 16,
+        "4": 11
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "EXECUTE",
+     {
+      "job": 1
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     5,
+     1,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 15,
+   "objectives": [
+    "cash",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "784d8bc9750fd03a08057eb99a866e4c7d87ed6980d59f1814cf8f97d1e2ebe3",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     34,
+     1
+    ],
+    "scored_window_payoff": [
+     34,
+     1
+    ],
+    "scored_window_scores": {
+     "cash": [
+      34,
+      29
+     ],
+     "materials": [
+      3,
+      2
+     ],
+     "standing": [
+      1,
+      1
+     ]
+    },
+    "scores": {
+     "cash": [
+      34,
+      29
+     ],
+     "materials": [
+      3,
+      2
+     ],
+     "standing": [
+      1,
+      1
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "dff7adb6f0da5d852960326c47fda5bd1f2fe3d778cdae91094355e6dd956274"
+  },
+  {
+   "acting_digests_sha256": "cd33832c1ae6a6112084787fd7df5c1c4b5a761ee45799af4331d5918cb77619",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 2,
+        "2": 2,
+        "4": 2
+       },
+       "expires": 4,
+       "fund": {
+        "1": 14,
+        "2": 16,
+        "4": 11
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "ACCEPT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "EXECUTE",
+     {
+      "job": 1
+     },
+     false
+    ],
+    [
+     4,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "EXECUTE",
+     {
+      "job": 2
+     },
+     false
+    ],
+    [
+     6,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     7,
+     2,
+     "EXECUTE",
+     {
+      "job": 4
+     },
+     false
+    ],
+    [
+     8,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     9,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 27,
+   "objectives": [
+    "materials",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "c588e3f2dc50f3d6f114b1b67f67aed6570a5d796bbaf9b6c8a371e1e0851d01",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     16,
+     31
+    ],
+    "scored_window_payoff": [
+     16,
+     31
+    ],
+    "scored_window_scores": {
+     "cash": [
+      36,
+      31
+     ],
+     "materials": [
+      16,
+      15
+     ],
+     "standing": [
+      18,
+      27
+     ]
+    },
+    "scores": {
+     "cash": [
+      36,
+      31
+     ],
+     "materials": [
+      16,
+      15
+     ],
+     "standing": [
+      18,
+      27
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "dff7adb6f0da5d852960326c47fda5bd1f2fe3d778cdae91094355e6dd956274"
+  },
+  {
+   "acting_digests_sha256": "932dcc3f894980442f47d9770be1fe06240905cd016840421a2feca8052fd313",
+   "events": [
+    [
+     1,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 4,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "REJECT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 6,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "REJECT",
+     {
+      "offer_id": 2
+     },
+     false
+    ],
+    [
+     5,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 8,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     6,
+     2,
+     "REJECT",
+     {
+      "offer_id": 3
+     },
+     false
+    ],
+    [
+     7,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 10,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     8,
+     2,
+     "REJECT",
+     {
+      "offer_id": 4
+     },
+     false
+    ],
+    [
+     9,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 12,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     10,
+     2,
+     "REJECT",
+     {
+      "offer_id": 5
+     },
+     false
+    ],
+    [
+     11,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 14,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     12,
+     2,
+     "REJECT",
+     {
+      "offer_id": 6
+     },
+     false
+    ],
+    [
+     13,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 16,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     14,
+     2,
+     "REJECT",
+     {
+      "offer_id": 7
+     },
+     false
+    ],
+    [
+     15,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 18,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     16,
+     2,
+     "REJECT",
+     {
+      "offer_id": 8
+     },
+     false
+    ],
+    [
+     17,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 20,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     18,
+     2,
+     "REJECT",
+     {
+      "offer_id": 9
+     },
+     false
+    ],
+    [
+     19,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 22,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     20,
+     2,
+     "REJECT",
+     {
+      "offer_id": 10
+     },
+     false
+    ],
+    [
+     21,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 24,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     22,
+     2,
+     "REJECT",
+     {
+      "offer_id": 11
+     },
+     false
+    ],
+    [
+     23,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 26,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     24,
+     2,
+     "REJECT",
+     {
+      "offer_id": 12
+     },
+     false
+    ],
+    [
+     25,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 28,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     26,
+     2,
+     "REJECT",
+     {
+      "offer_id": 13
+     },
+     false
+    ],
+    [
+     27,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 30,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     28,
+     2,
+     "REJECT",
+     {
+      "offer_id": 14
+     },
+     false
+    ],
+    [
+     29,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 32,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     30,
+     2,
+     "REJECT",
+     {
+      "offer_id": 15
+     },
+     false
+    ],
+    [
+     31,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 34,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     32,
+     2,
+     "REJECT",
+     {
+      "offer_id": 16
+     },
+     false
+    ],
+    [
+     33,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 36,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     34,
+     2,
+     "REJECT",
+     {
+      "offer_id": 17
+     },
+     false
+    ],
+    [
+     35,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 38,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     36,
+     2,
+     "REJECT",
+     {
+      "offer_id": 18
+     },
+     false
+    ],
+    [
+     37,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 40,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     38,
+     2,
+     "REJECT",
+     {
+      "offer_id": 19
+     },
+     false
+    ],
+    [
+     39,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 42,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     40,
+     2,
+     "REJECT",
+     {
+      "offer_id": 20
+     },
+     false
+    ],
+    [
+     41,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 44,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     42,
+     2,
+     "REJECT",
+     {
+      "offer_id": 21
+     },
+     false
+    ],
+    [
+     43,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 46,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     44,
+     2,
+     "REJECT",
+     {
+      "offer_id": 22
+     },
+     false
+    ],
+    [
+     45,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 48,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     46,
+     2,
+     "REJECT",
+     {
+      "offer_id": 23
+     },
+     false
+    ],
+    [
+     47,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "5": 1
+       },
+       "expires": 48,
+       "fund": {
+        "2": 22,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     48,
+     2,
+     "REJECT",
+     {
+      "offer_id": 24
+     },
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 144,
+   "objectives": [
+    "materials",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "729ef52fd69e2fd2d45e7ae6b724310ec04d796c744589ce64d28662401fb29d",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "e04f1a05b3f5ac4ed825f12431e3d889586ac96e9a3457dfdaf708181265301f"
+  },
+  {
+   "acting_digests_sha256": "339896c72947d4278e8f6e7b4d7ce137cfaf91ac1f50ec1ae9a48e18f3e2c982",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1,
+        "3": 1,
+        "6": 2
+       },
+       "expires": 4,
+       "fund": {
+        "2": 12,
+        "3": 19,
+        "6": 12
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 19,
+      "job": 5
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     4,
+     1,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 12,
+   "objectives": [
+    "materials",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "d554e7682672463a818b12b44ff8170215455ab2dbcf9d3f3c2e512390d6733d",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "e04f1a05b3f5ac4ed825f12431e3d889586ac96e9a3457dfdaf708181265301f"
+  },
+  {
+   "acting_digests_sha256": "6d1fb27df731c3d54ff66557f0f587eea6ebedcb67ed1ed3b1546e9c618c4fdd",
+   "events": [
+    [
+     1,
+     1,
+     "DRAW",
+     {
+      "amount": 17,
+      "job": 2
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 1
+       },
+       "expires": 5,
+       "fund": {
+        "1": 25
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "REJECT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 1
+       },
+       "expires": 7,
+       "fund": {
+        "1": 25
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     5,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     6,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 18,
+   "objectives": [
+    "materials",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "6123fa07b51921a1f3c895618dbba2bd5b706992a611016ef43a15dff7cb7986",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "f378e20d55608f357f8c833bc7690283d82e5311286ffde409a314288fcedbf4"
+  },
+  {
+   "acting_digests_sha256": "77c7cfd34ed0a7243e5b93a8b38d0c0495001d9a4fc14dc8264edd7d97d42aa5",
+   "events": [
+    [
+     1,
+     2,
+     "DRAW",
+     {
+      "amount": 14,
+      "job": 6
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 21,
+      "job": 5
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     4,
+     1,
+     "EXECUTE",
+     {
+      "job": 5
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "EXECUTE",
+     {
+      "job": 6
+     },
+     false
+    ],
+    [
+     6,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     7,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 21,
+   "objectives": [
+    "materials",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "24c8fe441c7c8a35776fd20360acafaf1b6ba5db4a86e907f3ace1e05a63de1b",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     3,
+     1
+    ],
+    "scored_window_payoff": [
+     3,
+     1
+    ],
+    "scored_window_scores": {
+     "cash": [
+      4,
+      5
+     ],
+     "materials": [
+      3,
+      34
+     ],
+     "standing": [
+      31,
+      1
+     ]
+    },
+    "scores": {
+     "cash": [
+      4,
+      5
+     ],
+     "materials": [
+      3,
+      34
+     ],
+     "standing": [
+      31,
+      1
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "f378e20d55608f357f8c833bc7690283d82e5311286ffde409a314288fcedbf4"
+  },
+  {
+   "acting_digests_sha256": "783e4649ef9c2979a0c73bf7d1e925af4c2031938094512f030512b4c15882c7",
+   "events": [
+    [
+     1,
+     1,
+     "DRAW",
+     {
+      "amount": 11,
+      "job": 6
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 2,
+        "5": 2
+       },
+       "expires": 5,
+       "fund": {
+        "4": 19,
+        "5": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "EXECUTE",
+     {
+      "job": 6
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     5,
+     1,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 15,
+   "objectives": [
+    "materials",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "8344fef81614a948523cdca72d83bc77d4ab52aee69394ed58cd73745e20872e",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     2,
+     0
+    ],
+    "scored_window_payoff": [
+     2,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      3,
+      3
+     ],
+     "materials": [
+      2,
+      3
+     ],
+     "standing": [
+      36,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      3,
+      3
+     ],
+     "materials": [
+      2,
+      3
+     ],
+     "standing": [
+      36,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "f5d5a629fab360328df61675e093d5a8a0469b9888b266f5670a1e1fa403cdbe"
+  },
+  {
+   "acting_digests_sha256": "90d14747fce2bdb2bbf9f1906e22ed0c27f7e88aad0a42afcb89ecc658139f2d",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 2,
+        "5": 2
+       },
+       "expires": 4,
+       "fund": {
+        "4": 19,
+        "5": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "ACCEPT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     4,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     6,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     7,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     8,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     9,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     10,
+     1,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     11,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     12,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     13,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     14,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     15,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     16,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 1
+       },
+       "expires": 19,
+       "fund": {
+        "1": 27
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     17,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     18,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     19,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     20,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     21,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     22,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     23,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     24,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     25,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     26,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     27,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     28,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 1
+       },
+       "expires": 31,
+       "fund": {
+        "1": 27
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     29,
+     2,
+     "EXECUTE",
+     {
+      "job": 4
+     },
+     false
+    ],
+    [
+     30,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     31,
+     2,
+     "EXECUTE",
+     {
+      "job": 5
+     },
+     false
+    ],
+    [
+     32,
+     1,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     33,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 99,
+   "objectives": [
+    "standing",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "ad5cd94b46e1340fb16624154c0776f3aef7e9578a2cc2d39153c922ebcf47b8",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     33,
+     24
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      29,
+      24
+     ],
+     "materials": [
+      3,
+      3
+     ],
+     "standing": [
+      33,
+      30
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "f5d5a629fab360328df61675e093d5a8a0469b9888b266f5670a1e1fa403cdbe"
+  },
+  {
+   "acting_digests_sha256": "7c514d52a8e4589aece2d8f1e78300737ecbab29ddde5fa294da5405280770da",
+   "events": [
+    [
+     1,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 4,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "REJECT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 6,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "REJECT",
+     {
+      "offer_id": 2
+     },
+     false
+    ],
+    [
+     5,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 8,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     6,
+     2,
+     "REJECT",
+     {
+      "offer_id": 3
+     },
+     false
+    ],
+    [
+     7,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 10,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     8,
+     2,
+     "REJECT",
+     {
+      "offer_id": 4
+     },
+     false
+    ],
+    [
+     9,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 12,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     10,
+     2,
+     "REJECT",
+     {
+      "offer_id": 5
+     },
+     false
+    ],
+    [
+     11,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 14,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     12,
+     2,
+     "REJECT",
+     {
+      "offer_id": 6
+     },
+     false
+    ],
+    [
+     13,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 16,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     14,
+     2,
+     "REJECT",
+     {
+      "offer_id": 7
+     },
+     false
+    ],
+    [
+     15,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 18,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     16,
+     2,
+     "REJECT",
+     {
+      "offer_id": 8
+     },
+     false
+    ],
+    [
+     17,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 20,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     18,
+     2,
+     "REJECT",
+     {
+      "offer_id": 9
+     },
+     false
+    ],
+    [
+     19,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 22,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     20,
+     2,
+     "REJECT",
+     {
+      "offer_id": 10
+     },
+     false
+    ],
+    [
+     21,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 24,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     22,
+     2,
+     "REJECT",
+     {
+      "offer_id": 11
+     },
+     false
+    ],
+    [
+     23,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 26,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     24,
+     2,
+     "REJECT",
+     {
+      "offer_id": 12
+     },
+     false
+    ],
+    [
+     25,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 28,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     26,
+     2,
+     "REJECT",
+     {
+      "offer_id": 13
+     },
+     false
+    ],
+    [
+     27,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 30,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     28,
+     2,
+     "REJECT",
+     {
+      "offer_id": 14
+     },
+     false
+    ],
+    [
+     29,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 32,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     30,
+     2,
+     "REJECT",
+     {
+      "offer_id": 15
+     },
+     false
+    ],
+    [
+     31,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 34,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     32,
+     2,
+     "REJECT",
+     {
+      "offer_id": 16
+     },
+     false
+    ],
+    [
+     33,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 36,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     34,
+     2,
+     "REJECT",
+     {
+      "offer_id": 17
+     },
+     false
+    ],
+    [
+     35,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 38,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     36,
+     2,
+     "REJECT",
+     {
+      "offer_id": 18
+     },
+     false
+    ],
+    [
+     37,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 40,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     38,
+     2,
+     "REJECT",
+     {
+      "offer_id": 19
+     },
+     false
+    ],
+    [
+     39,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 42,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     40,
+     2,
+     "REJECT",
+     {
+      "offer_id": 20
+     },
+     false
+    ],
+    [
+     41,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 44,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     42,
+     2,
+     "REJECT",
+     {
+      "offer_id": 21
+     },
+     false
+    ],
+    [
+     43,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 46,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     44,
+     2,
+     "REJECT",
+     {
+      "offer_id": 22
+     },
+     false
+    ],
+    [
+     45,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 48,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     46,
+     2,
+     "REJECT",
+     {
+      "offer_id": 23
+     },
+     false
+    ],
+    [
+     47,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 48,
+       "fund": {
+        "4": 23
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     48,
+     2,
+     "REJECT",
+     {
+      "offer_id": 24
+     },
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 144,
+   "objectives": [
+    "standing",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "b2aac2720f2fbe67581786983f669bd4346f0cfaa3ff2d1bfbb6aba3ce6714c7",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "d233e5fc5b96f4f7d6431210a2d093d0fbce65cbc82610b9f0b7cd451935779f"
+  },
+  {
+   "acting_digests_sha256": "e68de395c36ecdd9cfbfa1e74c9444bb588c91699add2157f054cde5d960d342",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "3": 2
+       },
+       "expires": 4,
+       "fund": {
+        "2": 27,
+        "3": 12
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 23,
+      "job": 4
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     4,
+     1,
+     "EXECUTE",
+     {
+      "job": 4
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "3": 2
+       },
+       "expires": 8,
+       "fund": {
+        "2": 27,
+        "3": 12
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     6,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     7,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 21,
+   "objectives": [
+    "standing",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "15ecd5e5e40435b67d4e36fea5cdd4353666bc4312c0298ec31612bd77371298",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     1,
+     0
+    ],
+    "scored_window_payoff": [
+     1,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      28,
+      0
+     ],
+     "materials": [
+      2,
+      0
+     ],
+     "standing": [
+      1,
+      2
+     ]
+    },
+    "scores": {
+     "cash": [
+      28,
+      0
+     ],
+     "materials": [
+      2,
+      0
+     ],
+     "standing": [
+      1,
+      2
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "d233e5fc5b96f4f7d6431210a2d093d0fbce65cbc82610b9f0b7cd451935779f"
+  },
+  {
+   "acting_digests_sha256": "ef2021673fa30fd73201c3f7302b1b6ff74ca8948281637db31785fa240ec56f",
+   "events": [
+    [
+     1,
+     1,
+     "DRAW",
+     {
+      "amount": 19,
+      "job": 1
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "3": 2,
+        "5": 1
+       },
+       "expires": 5,
+       "fund": {
+        "3": 10,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     5,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     6,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "3": 2,
+        "5": 1
+       },
+       "expires": 9,
+       "fund": {
+        "3": 10,
+        "5": 19
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     7,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     8,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 24,
+   "objectives": [
+    "standing",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "06739fe8be110a6688a53be22cfd2f2b98dd6634720b8f308a022e47027489f6",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "f0edb06d5596c91e7aecdad4a4307ab19bcd8e057415b28eba35cbd650ded327"
+  },
+  {
+   "acting_digests_sha256": "fb162b60504684cf9596f811e1b5b518bb517769ff8db80fb84b7ebb626df053",
+   "events": [
+    [
+     1,
+     2,
+     "DRAW",
+     {
+      "amount": 12,
+      "job": 1
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 11,
+      "job": 4
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "EXECUTE",
+     {
+      "job": 1
+     },
+     false
+    ],
+    [
+     4,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     5,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 15,
+   "objectives": [
+    "standing",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "3559dc339b3383c212f1ad8a2a9a84ed27aa9f3f6476467698fc8dfb868e7187",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     3,
+     3
+    ],
+    "scored_window_payoff": [
+     3,
+     3
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      1
+     ],
+     "materials": [
+      19,
+      17
+     ],
+     "standing": [
+      3,
+      3
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      1
+     ],
+     "materials": [
+      19,
+      17
+     ],
+     "standing": [
+      3,
+      3
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "f0edb06d5596c91e7aecdad4a4307ab19bcd8e057415b28eba35cbd650ded327"
+  },
+  {
+   "acting_digests_sha256": "2f07d111f0b091419d1e86d4ee84b252a06ca08debbbe76114f37fb2c27cac9c",
+   "events": [
+    [
+     1,
+     1,
+     "DRAW",
+     {
+      "amount": 17,
+      "job": 1
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "5": 2,
+        "6": 2
+       },
+       "expires": 5,
+       "fund": {
+        "5": 16,
+        "6": 12
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "EXECUTE",
+     {
+      "job": 1
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     5,
+     1,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 15,
+   "objectives": [
+    "standing",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "bc43d29cd40d9f63b79a0c6f0f2d783e13e3567270bf1fad5147ed45ae0a2f03",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     17,
+     20
+    ],
+    "scored_window_payoff": [
+     17,
+     20
+    ],
+    "scored_window_scores": {
+     "cash": [
+      2,
+      2
+     ],
+     "materials": [
+      3,
+      2
+     ],
+     "standing": [
+      17,
+      20
+     ]
+    },
+    "scores": {
+     "cash": [
+      2,
+      2
+     ],
+     "materials": [
+      3,
+      2
+     ],
+     "standing": [
+      17,
+      20
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "80e5ffc6c2ffd0025dc5b68f57faba933d42b657ea6d3013f3b570a1a6230814"
+  },
+  {
+   "acting_digests_sha256": "6f011c423c9abc1aa8fffed41f8da6771467c74fce232a3ca89aa5686722a27e",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 2,
+        "5": 2,
+        "6": 2
+       },
+       "expires": 4,
+       "fund": {
+        "1": 17,
+        "5": 16,
+        "6": 12
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "ACCEPT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "EXECUTE",
+     {
+      "job": 1
+     },
+     false
+    ],
+    [
+     4,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "EXECUTE",
+     {
+      "job": 5
+     },
+     false
+    ],
+    [
+     6,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     7,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     8,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     9,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     10,
+     1,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     11,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     12,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     13,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     14,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     15,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     16,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     17,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     18,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     19,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     20,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     21,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     22,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     23,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     24,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     25,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     26,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     27,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     28,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     29,
+     2,
+     "EXECUTE",
+     {
+      "job": 6
+     },
+     false
+    ],
+    [
+     30,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     31,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 93,
+   "objectives": [
+    "cash",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "a518d0a0878e5e6bf65f081f9c45a00bfce33dcaac3b12eb1c46f7d3ff0a4409",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     12,
+     39
+    ],
+    "scored_window_payoff": [
+     2,
+     4
+    ],
+    "scored_window_scores": {
+     "cash": [
+      2,
+      4
+     ],
+     "materials": [
+      3,
+      30
+     ],
+     "standing": [
+      20,
+      20
+     ]
+    },
+    "scores": {
+     "cash": [
+      12,
+      39
+     ],
+     "materials": [
+      3,
+      33
+     ],
+     "standing": [
+      21,
+      28
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "80e5ffc6c2ffd0025dc5b68f57faba933d42b657ea6d3013f3b570a1a6230814"
+  },
+  {
+   "acting_digests_sha256": "e52f285b1edf81c75286f394657aee0665e203b2781559e146be50a851042949",
+   "events": [
+    [
+     1,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 4,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "REJECT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 6,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "REJECT",
+     {
+      "offer_id": 2
+     },
+     false
+    ],
+    [
+     5,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 8,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     6,
+     2,
+     "REJECT",
+     {
+      "offer_id": 3
+     },
+     false
+    ],
+    [
+     7,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 10,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     8,
+     2,
+     "REJECT",
+     {
+      "offer_id": 4
+     },
+     false
+    ],
+    [
+     9,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 12,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     10,
+     2,
+     "REJECT",
+     {
+      "offer_id": 5
+     },
+     false
+    ],
+    [
+     11,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 14,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     12,
+     2,
+     "REJECT",
+     {
+      "offer_id": 6
+     },
+     false
+    ],
+    [
+     13,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 16,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     14,
+     2,
+     "REJECT",
+     {
+      "offer_id": 7
+     },
+     false
+    ],
+    [
+     15,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 18,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     16,
+     2,
+     "REJECT",
+     {
+      "offer_id": 8
+     },
+     false
+    ],
+    [
+     17,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 20,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     18,
+     2,
+     "REJECT",
+     {
+      "offer_id": 9
+     },
+     false
+    ],
+    [
+     19,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 22,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     20,
+     2,
+     "REJECT",
+     {
+      "offer_id": 10
+     },
+     false
+    ],
+    [
+     21,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 24,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     22,
+     2,
+     "REJECT",
+     {
+      "offer_id": 11
+     },
+     false
+    ],
+    [
+     23,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 26,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     24,
+     2,
+     "REJECT",
+     {
+      "offer_id": 12
+     },
+     false
+    ],
+    [
+     25,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 28,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     26,
+     2,
+     "REJECT",
+     {
+      "offer_id": 13
+     },
+     false
+    ],
+    [
+     27,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 30,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     28,
+     2,
+     "REJECT",
+     {
+      "offer_id": 14
+     },
+     false
+    ],
+    [
+     29,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 32,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     30,
+     2,
+     "REJECT",
+     {
+      "offer_id": 15
+     },
+     false
+    ],
+    [
+     31,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 34,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     32,
+     2,
+     "REJECT",
+     {
+      "offer_id": 16
+     },
+     false
+    ],
+    [
+     33,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 36,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     34,
+     2,
+     "REJECT",
+     {
+      "offer_id": 17
+     },
+     false
+    ],
+    [
+     35,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 38,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     36,
+     2,
+     "REJECT",
+     {
+      "offer_id": 18
+     },
+     false
+    ],
+    [
+     37,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 40,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     38,
+     2,
+     "REJECT",
+     {
+      "offer_id": 19
+     },
+     false
+    ],
+    [
+     39,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 42,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     40,
+     2,
+     "REJECT",
+     {
+      "offer_id": 20
+     },
+     false
+    ],
+    [
+     41,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 44,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     42,
+     2,
+     "REJECT",
+     {
+      "offer_id": 21
+     },
+     false
+    ],
+    [
+     43,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 46,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     44,
+     2,
+     "REJECT",
+     {
+      "offer_id": 22
+     },
+     false
+    ],
+    [
+     45,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 48,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     46,
+     2,
+     "REJECT",
+     {
+      "offer_id": 23
+     },
+     false
+    ],
+    [
+     47,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1
+       },
+       "expires": 48,
+       "fund": {
+        "2": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     48,
+     2,
+     "REJECT",
+     {
+      "offer_id": 24
+     },
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 144,
+   "objectives": [
+    "cash",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "607e9a9e42ba0ee7b8cc3db88cc62280c9fd5b300d844349953b3e40483c8a1e",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "9294c5f3a939ed7bc1fb9faa2c93f7b7c500a2eee9c8fc47028628507854f27c"
+  },
+  {
+   "acting_digests_sha256": "383fdc37fdce991dcd2e8570cf25d3e5da3a6f1d5561fb90a16c10fb29da9bc6",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 2,
+        "4": 2,
+        "6": 2
+       },
+       "expires": 4,
+       "fund": {
+        "2": 11,
+        "4": 10,
+        "6": 10
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 18,
+      "job": 2
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     4,
+     1,
+     "EXECUTE",
+     {
+      "job": 2
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 2,
+        "6": 2
+       },
+       "expires": 8,
+       "fund": {
+        "4": 10,
+        "6": 10
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     6,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     7,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 21,
+   "objectives": [
+    "cash",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "70b3f18ae589253c16dac92f4d0d85f825e4f202b8ef569d8a196354037b668d",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     2,
+     2
+    ],
+    "scored_window_payoff": [
+     2,
+     2
+    ],
+    "scored_window_scores": {
+     "cash": [
+      2,
+      2
+     ],
+     "materials": [
+      1,
+      2
+     ],
+     "standing": [
+      33,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      2,
+      2
+     ],
+     "materials": [
+      1,
+      2
+     ],
+     "standing": [
+      33,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "9294c5f3a939ed7bc1fb9faa2c93f7b7c500a2eee9c8fc47028628507854f27c"
+  },
+  {
+   "acting_digests_sha256": "4d2731703f0638b6331b8972dc044fdfd38e209b29dd0efc5d7dd483d5911916",
+   "events": [
+    [
+     1,
+     1,
+     "DRAW",
+     {
+      "amount": 20,
+      "job": 1
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1,
+        "6": 1
+       },
+       "expires": 5,
+       "fund": {
+        "2": 14,
+        "6": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     5,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     6,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "2": 1,
+        "6": 1
+       },
+       "expires": 9,
+       "fund": {
+        "2": 14,
+        "6": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     7,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     8,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 24,
+   "objectives": [
+    "cash",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "d1b8d1d4e332b27caaf53d06e073811dde16f2136d42a8636a2362e695ddf2ba",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "99579d069082efb03474a4c895e2d67d02f04c0c8ffc2a0f0db7c860d4e7cc67"
+  },
+  {
+   "acting_digests_sha256": "a4d97c54eaf353d1f787dafcc27929ddef0907b64df44c25188077a247e5586f",
+   "events": [
+    [
+     1,
+     2,
+     "DRAW",
+     {
+      "amount": 18,
+      "job": 2
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 21,
+      "job": 6
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "EXECUTE",
+     {
+      "job": 2
+     },
+     false
+    ],
+    [
+     4,
+     1,
+     "EXECUTE",
+     {
+      "job": 6
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     6,
+     1,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 18,
+   "objectives": [
+    "cash",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "04482971634d701cf17376fa255b7ac498a2859b7e9dc1b6381217ce305b0834",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     3,
+     30
+    ],
+    "scored_window_payoff": [
+     3,
+     30
+    ],
+    "scored_window_scores": {
+     "cash": [
+      3,
+      36
+     ],
+     "materials": [
+      4,
+      3
+     ],
+     "standing": [
+      3,
+      30
+     ]
+    },
+    "scores": {
+     "cash": [
+      3,
+      36
+     ],
+     "materials": [
+      4,
+      3
+     ],
+     "standing": [
+      3,
+      30
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "99579d069082efb03474a4c895e2d67d02f04c0c8ffc2a0f0db7c860d4e7cc67"
+  },
+  {
+   "acting_digests_sha256": "2c752a9bc5d12520d94d465efd6c0f798e00ccc3f1027b643d46f5d55a11dbed",
+   "events": [
+    [
+     1,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     2,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 2,
+        "5": 2
+       },
+       "expires": 5,
+       "fund": {
+        "1": 17,
+        "5": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     4,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 12,
+   "objectives": [
+    "cash",
+    "standing"
+   ],
+   "observer_board_digests_sha256": "0a20cdc0158cf22b3c04d1b8be5207c6d0840acddf80f151c61abae67d6ae09b",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "01679f6fca01d9cf1bfaa168b795de18669f1a9e3c59d604cc11c993204718dc"
+  },
+  {
+   "acting_digests_sha256": "f5b88631edb9a788945143cbf375648de6420f58a22388750dfa8ada7a79d61e",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "1": 2,
+        "5": 2
+       },
+       "expires": 4,
+       "fund": {
+        "1": 17,
+        "5": 18
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "ACCEPT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "EXECUTE",
+     {
+      "job": 1
+     },
+     false
+    ],
+    [
+     4,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     6,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     7,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     8,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     9,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     10,
+     1,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     11,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     12,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     13,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     14,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     15,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     16,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     17,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     18,
+     1,
+     "CHAT",
+     {
+      "text": "which jobs matter most to you?"
+     },
+     false
+    ],
+    [
+     19,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     20,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     21,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     22,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     23,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     24,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     25,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     26,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     27,
+     2,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     28,
+     1,
+     "CHAT",
+     {
+      "text": "thinking about a deal."
+     },
+     false
+    ],
+    [
+     29,
+     2,
+     "EXECUTE",
+     {
+      "job": 5
+     },
+     false
+    ],
+    [
+     30,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     31,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 93,
+   "objectives": [
+    "materials",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "9d70ab62b6735a4f6fa4ba981f6fa9fce2bbb63b10436541f872089f182c9412",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     3,
+     15
+    ],
+    "scored_window_payoff": [
+     0,
+     1
+    ],
+    "scored_window_scores": {
+     "cash": [
+      3,
+      1
+     ],
+     "materials": [
+      0,
+      1
+     ],
+     "standing": [
+      27,
+      33
+     ]
+    },
+    "scores": {
+     "cash": [
+      29,
+      15
+     ],
+     "materials": [
+      3,
+      3
+     ],
+     "standing": [
+      28,
+      40
+     ]
+    }
+   },
+   "policies": [
+    "random-legal",
+    "always-cooperate"
+   ],
+   "scenario_id": "01679f6fca01d9cf1bfaa168b795de18669f1a9e3c59d604cc11c993204718dc"
+  },
+  {
+   "acting_digests_sha256": "a5eb17a48d6ae812a6ffae8f3f08cead90dd2f18ad4ecd5f546e41a6cb17f1fb",
+   "events": [
+    [
+     1,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 4,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     2,
+     "REJECT",
+     {
+      "offer_id": 1
+     },
+     false
+    ],
+    [
+     3,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 6,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     4,
+     2,
+     "REJECT",
+     {
+      "offer_id": 2
+     },
+     false
+    ],
+    [
+     5,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 8,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     6,
+     2,
+     "REJECT",
+     {
+      "offer_id": 3
+     },
+     false
+    ],
+    [
+     7,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 10,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     8,
+     2,
+     "REJECT",
+     {
+      "offer_id": 4
+     },
+     false
+    ],
+    [
+     9,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 12,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     10,
+     2,
+     "REJECT",
+     {
+      "offer_id": 5
+     },
+     false
+    ],
+    [
+     11,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 14,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     12,
+     2,
+     "REJECT",
+     {
+      "offer_id": 6
+     },
+     false
+    ],
+    [
+     13,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 16,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     14,
+     2,
+     "REJECT",
+     {
+      "offer_id": 7
+     },
+     false
+    ],
+    [
+     15,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 18,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     16,
+     2,
+     "REJECT",
+     {
+      "offer_id": 8
+     },
+     false
+    ],
+    [
+     17,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 20,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     18,
+     2,
+     "REJECT",
+     {
+      "offer_id": 9
+     },
+     false
+    ],
+    [
+     19,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 22,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     20,
+     2,
+     "REJECT",
+     {
+      "offer_id": 10
+     },
+     false
+    ],
+    [
+     21,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 24,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     22,
+     2,
+     "REJECT",
+     {
+      "offer_id": 11
+     },
+     false
+    ],
+    [
+     23,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 26,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     24,
+     2,
+     "REJECT",
+     {
+      "offer_id": 12
+     },
+     false
+    ],
+    [
+     25,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 28,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     26,
+     2,
+     "REJECT",
+     {
+      "offer_id": 13
+     },
+     false
+    ],
+    [
+     27,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 30,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     28,
+     2,
+     "REJECT",
+     {
+      "offer_id": 14
+     },
+     false
+    ],
+    [
+     29,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 32,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     30,
+     2,
+     "REJECT",
+     {
+      "offer_id": 15
+     },
+     false
+    ],
+    [
+     31,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 34,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     32,
+     2,
+     "REJECT",
+     {
+      "offer_id": 16
+     },
+     false
+    ],
+    [
+     33,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 36,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     34,
+     2,
+     "REJECT",
+     {
+      "offer_id": 17
+     },
+     false
+    ],
+    [
+     35,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 38,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     36,
+     2,
+     "REJECT",
+     {
+      "offer_id": 18
+     },
+     false
+    ],
+    [
+     37,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 40,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     38,
+     2,
+     "REJECT",
+     {
+      "offer_id": 19
+     },
+     false
+    ],
+    [
+     39,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 42,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     40,
+     2,
+     "REJECT",
+     {
+      "offer_id": 20
+     },
+     false
+    ],
+    [
+     41,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 44,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     42,
+     2,
+     "REJECT",
+     {
+      "offer_id": 21
+     },
+     false
+    ],
+    [
+     43,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 46,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     44,
+     2,
+     "REJECT",
+     {
+      "offer_id": 22
+     },
+     false
+    ],
+    [
+     45,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 48,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     46,
+     2,
+     "REJECT",
+     {
+      "offer_id": 23
+     },
+     false
+    ],
+    [
+     47,
+     1,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "4": 1
+       },
+       "expires": 48,
+       "fund": {
+        "4": 21
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     48,
+     2,
+     "REJECT",
+     {
+      "offer_id": 24
+     },
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 144,
+   "objectives": [
+    "materials",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "6ef4db185b3dc556f2b2a44e1d6f6a2abd2bec28526bfe547a09f3b2bfb3ed5d",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "hold-up",
+    "always-defect"
+   ],
+   "scenario_id": "79c828d4563d63f9e37475a224d410e63d6b10dcc5b09ee737d91342d7a4bdd9"
+  },
+  {
+   "acting_digests_sha256": "6118705fe322a4033cddfac968adfd807ebaf1b01af5d218d426441cf43ae1ad",
+   "events": [
+    [
+     1,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "3": 2,
+        "4": 2,
+        "6": 2
+       },
+       "expires": 4,
+       "fund": {
+        "3": 19,
+        "4": 11,
+        "6": 10
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     2,
+     1,
+     "DRAW",
+     {
+      "amount": 21,
+      "job": 4
+     },
+     false
+    ],
+    [
+     3,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     4,
+     1,
+     "EXECUTE",
+     {
+      "job": 4
+     },
+     false
+    ],
+    [
+     5,
+     2,
+     "PROPOSE",
+     {
+      "contract": {
+       "assign": {
+        "3": 2,
+        "6": 2
+       },
+       "expires": 8,
+       "fund": {
+        "3": 19,
+        "6": 10
+       },
+       "pay": []
+      }
+     },
+     false
+    ],
+    [
+     6,
+     1,
+     "END",
+     {},
+     false
+    ],
+    [
+     7,
+     2,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 21,
+   "objectives": [
+    "materials",
+    "materials"
+   ],
+   "observer_board_digests_sha256": "07d8793c62dae1efde5a0445d3af70068c95e14402fa9b83b0fbe55f07bde0b4",
+   "opening": 2,
+   "outcome": {
+    "assigned_payoff": [
+     33,
+     0
+    ],
+    "scored_window_payoff": [
+     33,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      3,
+      1
+     ],
+     "materials": [
+      33,
+      0
+     ],
+     "standing": [
+      1,
+      1
+     ]
+    },
+    "scores": {
+     "cash": [
+      3,
+      1
+     ],
+     "materials": [
+      33,
+      0
+     ],
+     "standing": [
+      1,
+      1
+     ]
+    }
+   },
+   "policies": [
+    "greedy-optimal",
+    "tit-for-tat"
+   ],
+   "scenario_id": "79c828d4563d63f9e37475a224d410e63d6b10dcc5b09ee737d91342d7a4bdd9"
+  },
+  {
+   "acting_digests_sha256": "49de57ef1ea4e45ce7fa34e8db8ca1685f3a7afeafb5fd765333d54036ae207f",
+   "events": [
+    [
+     1,
+     1,
+     "CHAT",
+     {
+      "text": "I will fund job three if you take job five, and I can pay on settlement; tell me which resource matters to you so we can split the remaining pot fairly between us before the late jobs open"
+     },
+     true
+    ],
+    [
+     2,
+     2,
+     "REFUSE",
+     {
+      "text": "no. I will fund job three if you take job five, and I can pay on settlement; tell me which resource matters to you so we can split the remaining pot fairly between us before the late"
+     },
+     true
+    ],
+    [
+     3,
+     1,
+     "WAIT",
+     {},
+     false
+    ],
+    [
+     4,
+     2,
+     "END",
+     {},
+     false
+    ],
+    [
+     5,
+     1,
+     "END",
+     {},
+     false
+    ]
+   ],
+   "message_cap": 40,
+   "n_prompts": 15,
+   "objectives": [
+    "standing",
+    "cash"
+   ],
+   "observer_board_digests_sha256": "31929f0b3d9afb555c83ab4f4f97df911004fc32c5bf9832ca4c6852be6fd8ea",
+   "opening": 1,
+   "outcome": {
+    "assigned_payoff": [
+     0,
+     0
+    ],
+    "scored_window_payoff": [
+     0,
+     0
+    ],
+    "scored_window_scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    },
+    "scores": {
+     "cash": [
+      0,
+      0
+     ],
+     "materials": [
+      0,
+      0
+     ],
+     "standing": [
+      0,
+      0
+     ]
+    }
+   },
+   "policies": [
+    "hand-written",
+    "hand-written"
+   ],
+   "scenario_id": "1f1f46fb777e02dd2468d771509cc2e40bff54cbf7fffb868624a290fd9f3300"
+  }
+ ],
+ "harness_commit": "e5673cdcb6c5ff4acbb8d519734a750ff215c0a4",
+ "ledger_commit_at_generation": "fbc95f7fad5c767e0a59738c741f4ece8719ac46",
+ "system_blocks": {
+  "01679f6fca01d9cf1bfaa168b795de18669f1a9e3c59d604cc11c993204718dc": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "1f1f46fb777e02dd2468d771509cc2e40bff54cbf7fffb868624a290fd9f3300": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "79c828d4563d63f9e37475a224d410e63d6b10dcc5b09ee737d91342d7a4bdd9": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "80e5ffc6c2ffd0025dc5b68f57faba933d42b657ea6d3013f3b570a1a6230814": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "9294c5f3a939ed7bc1fb9faa2c93f7b7c500a2eee9c8fc47028628507854f27c": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "99579d069082efb03474a4c895e2d67d02f04c0c8ffc2a0f0db7c860d4e7cc67": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "d233e5fc5b96f4f7d6431210a2d093d0fbce65cbc82610b9f0b7cd451935779f": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "dff7adb6f0da5d852960326c47fda5bd1f2fe3d778cdae91094355e6dd956274": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "e04f1a05b3f5ac4ed825f12431e3d889586ac96e9a3457dfdaf708181265301f": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "f0edb06d5596c91e7aecdad4a4307ab19bcd8e057415b28eba35cbd650ded327": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "f378e20d55608f357f8c833bc7690283d82e5311286ffde409a314288fcedbf4": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  },
+  "f5d5a629fab360328df61675e093d5a8a0469b9888b266f5670a1e1fa403cdbe": {
+   "observer_system_sha256": "e1075ee8fef6ae007896744a73d5540b8ee409024b2e1eaba09953bdae080364",
+   "system_block_sha256": "ee29335f416ba4bc44ac0e76dbfa33c5fc65613d249235c5f00cf2cfaa0ceb07"
+  }
+ },
+ "tokenizer": "o200k_base"
+}
