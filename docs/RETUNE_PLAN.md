@@ -2,6 +2,8 @@
 
 **v1.0, 2026-08-11.** This document governs the redesign of the LEDGER economy after the E0/E0b pilots failed their admission criteria on behavioral variety (c1) and distinctness (c2), twice, with goal delivery proven in traces. It specifies two offline gates, a search procedure over scenario space, one pre-declared live smoke, and the conditions under which a fresh confirmatory registration is written. No live model call is made before Gate C passes on a sealed validation bank. [`EXPERIMENT_PLAN.md`](EXPERIMENT_PLAN.md) v1.20 remains the record of E0/E0b; those results are reclassified as development evidence and hypothesis source for this program. The v1.15 tuning guardrail remains in force: every lever here is scenario or economy structure; instructions, mandate texts, and willingness are never touched.
 
+> Release note, 2026-10-14. Historical redesign plan, kept as written. The work that followed this plan produced the hidden-objectives variant now shipped under `src/ledger/variants/hidden_objectives/`. For current run instructions use [VARIANTS.md](VARIANTS.md) and [../README.md](../README.md), not the checks and sequencing below.
+
 Provenance: merged from the owner's trace diagnosis, the 2026-08-11 advisor call (Gendron), an external methods review, and code-level verification of the engine's scoring and admission rules. Decisions in conflict were resolved as recorded in §12.
 
 ---

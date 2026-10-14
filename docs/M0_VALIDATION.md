@@ -1,5 +1,7 @@
 # M0 validation report
 
+> Release note, 2026-10-14. This report records the first validation pass (127 tests at the time). The suite now has 215 tests, including packaging and hidden-objectives equivalence tests. The provider runtime described as out of scope below has since been built. Numbers below describe that first pass and the default game. Current facts live in [../README.md](../README.md). The studied variant is in [VARIANTS.md](VARIANTS.md).
+
 Zero-cost vertical slice: pure engine + tests, no LLM calls.  All numbers
 below are reproducible with `python scripts/m0_report.py` and the test
 suite (`python -m pytest tests`).

@@ -1,5 +1,7 @@
 # M0 sample boards — for the §13 human read-through
 
+> Release note, 2026-10-14. Historical read-through material from the first build, kept as generated at the time. Boards show the default game, and some predate later wording changes in the shipped templates. Current prompt examples live in [../README.md](../README.md) and [VARIANTS.md](VARIANTS.md).
+
 Five boards from five distinct admitted scenarios under scripted play. Read each and, using only the plain-language rules in ENVIRONMENT_DESIGN §2, write one or two sentences on what is going on: who is ahead, what is committed, who is exposed. If you cannot, the renderer needs work.
 
 _(The invariant system header — mandate, rules, action list — is identical on every board and byte-cached in every call; it is shown in full once in `M0_SAMPLE_BOARDS_full.txt` and omitted here so the state portion each board turns on is what you read.)_

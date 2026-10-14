@@ -1,5 +1,7 @@
 # M0 interpretation decisions
 
+> Release note, 2026-10-14. Historical record of interpretation choices from the first build, kept as written. It describes the default game as implemented then. Current facts live in [../README.md](../README.md). The hidden-objectives variant is documented in [VARIANTS.md](VARIANTS.md).
+
 Every place where ENVIRONMENT_DESIGN v2.5 left a choice genuinely
 unspecified, the M0 implementation takes the simplest consistent reading and
 records it here.  Nothing here contradicts the spec; contradictions (there

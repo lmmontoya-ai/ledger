@@ -1,5 +1,7 @@
 # M0 spec findings
 
+> Release note, 2026-10-14. Historical record from the first build, kept as written. It describes the default game as implemented then. Current facts live in [../README.md](../README.md). The hidden-objectives variant is documented in [VARIANTS.md](VARIANTS.md).
+
 Places where ENVIRONMENT_DESIGN v2.5 is in tension with itself, with the
 trace and the reading chosen.  In every case the reading preserving the §13
 invariants was taken.
