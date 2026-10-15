@@ -1,6 +1,6 @@
 # LEDGER hidden-objectives variant and observer view
 
-This page gives exact usage for the hidden-objectives variant used in the accompanying paper, where LEDGER is called Contracting. Code lives in `src/ledger/variants/hidden_objectives/`. The core engine runs unmodified: legality, the fold, contracts, settlement and rendering all operate on the variant's base scenario. The default game renders byte-identically with or without the variant code present.
+This page gives exact usage for the hidden-objectives variant used in the report, where LEDGER is called Contracting. Code lives in `src/ledger/variants/hidden_objectives/`. The core engine runs unmodified: legality, the fold, contracts, settlement and rendering all operate on the variant's base scenario. The default game renders byte-identically with or without the variant code present.
 
 ## The variant in one paragraph
 
@@ -64,7 +64,7 @@ Without a key, the command stops before any call with `no API key: pass api_key 
 
 ### Settings as studied
 
-The campaign behind the accompanying paper used bank `hidden-objectives-iter3`, openings 1 and 2, all 9 ordered objective assignments (each seat assigned cash, materials or standing), mandate `principal`, message cap 40, 48 turns with scoring on turns 1 to 24, and temperature 1.0 for every model. Model settings, for building your own `models.json`:
+The private-goal campaign behind the report used bank `hidden-objectives-iter3`, openings 1 and 2, all 9 ordered objective assignments (each seat assigned cash, materials or standing), mandate `principal`, message cap 40, 48 turns with scoring on turns 1 to 24, and temperature 1.0 for every model. Model settings, for building your own `models.json`:
 
 | Name | Slug | Provider | Max tokens | Tool choice |
 |---|---|---|---|---|
@@ -105,7 +105,7 @@ Measured sizes at the same position (tiktoken `o200k_base`): variant system bloc
 
 The system text served with this variant comes from `spec/templates.v2/system.txt`. It states "24 turns total", a renege "penalty of 6" and a default "penalty of 8". The renderer does not substitute scenario numbers into those three sentences. The studied bank enforces different numbers: 48 turns, renege penalty 2, default penalty 3. Two other served texts state the enforced horizon correctly: the board header ("turn 1 of 48") and the variant addendum, which says the bonus is scored on the first 24 turns of the 48-turn game.
 
-These exact bytes are what the models in the accompanying paper received. All 690 logged acting-call digests from the episode logs behind the accompanying paper match renders that include the three sentences above. The bytes are kept unchanged in this release so that replay of the original runs stays equivalent byte for byte. New runs through this variant receive the same text. The default-game banks have no such mismatch: text and engine both use 24 turns and penalties of 6 and 8.
+These exact bytes are what the models in the report received. All 690 logged acting-call digests from the episode logs behind the report match renders that include the three sentences above. The bytes are kept unchanged in this release so that replay of the original runs stays equivalent byte for byte. New runs through this variant receive the same text. The default-game banks have no such mismatch: text and engine both use 24 turns and penalties of 6 and 8.
 
 ## Observer view
 
@@ -201,7 +201,7 @@ data, digest = ho.acting_prompt(sv, 1, [], 1, "cash")
 print(digest)
 ```
 
-Episode logs from `play_episode` add four fields to the meta record: `variant`, `variant_generator_version`, `objectives` and `scored_turns`. The older `generator_version` field still reads `ledger-gen-v1`, as it did in the logs behind the accompanying paper.
+Episode logs from `play_episode` add four fields to the meta record: `variant`, `variant_generator_version`, `objectives` and `scored_turns`. The older `generator_version` field still reads `ledger-gen-v1`, as it did in the logs behind the report.
 
 ## The studied bank
 

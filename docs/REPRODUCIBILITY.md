@@ -1,6 +1,6 @@
 # LEDGER reproducibility
 
-This page holds the detailed reproducibility record for LEDGER. The [README](../README.md) gives the short form. Exact usage for the variant used in the accompanying paper is in [VARIANTS.md](VARIANTS.md).
+This page holds the detailed reproducibility record for LEDGER. The [README](../README.md) gives the short form. Exact usage for the variant used in the report is in [VARIANTS.md](VARIANTS.md).
 
 ## Determinism and replay
 
@@ -38,12 +38,12 @@ Bank `v2-d0` is the default-game bank of the report's ordinary-play Contracting 
 
 ## Provenance and equivalence counts
 
-Every LEDGER run behind the accompanying paper used ledger commit `008de57` (tag `paper-runs-008de57`). This release was checked against the original research code, with no mismatches:
+The LEDGER runs behind the report used ledger commit `7471c9a` for the first gate games on bank `v2-d0`. The later runs used commit `008de57`. Tag `paper-runs-008de57` marks that commit. Names that contain the word "paper" refer to the same study runs. This release was checked against the original research code, with no mismatches:
 
-- the scenarios the generator made, and its accept or reject decision for each one, for seeds 1 to 300 at default settings and seeds 1 to 200 at the settings used in the accompanying paper;
+- the scenarios the generator made, and its accept or reject decision for each one, for seeds 1 to 300 at default settings and seeds 1 to 200 at the studied settings;
 - the file that holds the 12 studied scenarios;
 - the opening instruction text shown to a playing seat and to an outside observer, for all 12 scenarios, at message caps 40 and 200;
-- all 690 recorded prompt digests from the 36 recorded games behind the accompanying paper;
+- all 690 recorded prompt digests from the 36 recorded games behind the report;
 - 4,326 prompts shown to a playing seat, across all three assigned resources;
 - 1,442 board views for an outside observer;
 - 690 sets of data sent to a model;
@@ -101,7 +101,7 @@ Default-game reader views live in `ledger.reader`. The variant's views, sham arm
 
 The environment's own text is overhead, so prompt size is measured and bounded. Counts here use tiktoken `o200k_base` unless stated. The default system block measures 612 tokens (615 under `cl100k_base`) and is byte-identical in every call for a fixed mandate, so providers can cache it. The worked-episode board measures 342 tokens against a bound of 360, and the board does not grow with the episode. History adds one line per turn, with per-class bounds checked by golden tests under both encodings. Typical default-game play runs about 650 to 950 variable tokens per call.
 
-The engine default for the message cap is 40 tokens, and the stated limit in the prompt always matches the enforced one. An earlier campaign on the default game froze a cap of 200. The Contracting campaign in the accompanying paper used 40. For the variant, measured at scenario index 0, seat 1, turn 1: system block 896 tokens, user block 365 tokens, board alone 216 tokens, observer system block 874 tokens, observer board 194 tokens. The variant tool schema (12 tools) is 5,337 JSON characters.
+The engine default for the message cap is 40 tokens, and the stated limit in the prompt always matches the enforced one. An earlier campaign on the default game froze a cap of 200. The report's ordinary-play runs on bank `v2-d0` used 200. Its private-goal Contracting campaign used 40. For the variant, measured at scenario index 0, seat 1, turn 1: system block 896 tokens, user block 365 tokens, board alone 216 tokens, observer system block 874 tokens, observer board 194 tokens. The variant tool schema (12 tools) is 5,337 JSON characters.
 
 Message truncation depends on tiktoken `o200k_base`. Without it, CHAT and REFUSE text is cut by whitespace word count, which changes prompts. The episode runner refuses model seats in that case. The library itself does not.
 
@@ -111,7 +111,7 @@ The release was tested on Python 3.10, 3.11 and 3.12. The core package has no de
 
 A regular install also works: `.venv\Scripts\python -m pip install ".[dev]"`. The wheel carries `spec/` and `banks/` as `ledger/_data/`. Scripts and tests are not in the wheel, so run them from a checkout.
 
-Model names such as `sonnet` and `gpt` are labels in `models.json`. The flag `--cap-usd` bounds total spend, and the runner refuses a model with no price in `models.json` before any call. Only OpenRouter works as a provider in this release. On first use, tiktoken downloads the `o200k_base` encoding file and caches it. That download is not a model call. The example file `models.example.json` is a generic starting point, not the model settings from the accompanying paper.
+Model names such as `sonnet` and `gpt` are labels in `models.json`. The flag `--cap-usd` bounds total spend, and the runner refuses a model with no price in `models.json` before any call. Only OpenRouter works as a provider in this release. On first use, tiktoken downloads the `o200k_base` encoding file and caches it. That download is not a model call. The example file `models.example.json` is a generic starting point, not the model settings from the report.
 
 Scripted policies are always-cooperate, always-defect, hold-up, greedy-optimal, tit-for-tat and random-legal. Scripted seats do not read their assigned objective in the variant. The scores are still computed and reported.
 

@@ -1,6 +1,6 @@
 # LEDGER
 
-LEDGER is a research environment for language-model agents. Two agents run one venture together, make contracts, spend a shared budget, and finish jobs before a deadline. You can use it to study whether one agent can predict what another agent will do next. In the accompanying paper, LEDGER is called Contracting.
+LEDGER is a research environment for language-model agents. Two agents run one venture together, make contracts, spend a shared budget, and finish jobs before a deadline. You can use it to study whether one agent can predict what another agent will do next. In the report (report v4, 3 September 2026), LEDGER is called Contracting.
 
 ## How the game works
 
@@ -29,7 +29,7 @@ python -m venv .venv
 .venv\Scripts\python -m pytest -q
 ```
 
-The clone makes a folder named `ledger`. The next lines make a `.venv` folder for this project and install LEDGER and the test tools into it. The last line runs the tests: expect 215 tests to pass. On Linux or macOS, use `.venv/bin/python` in place of `.venv\Scripts\python`. Run a free scripted game with the next command.
+The clone makes a folder named `ledger`. The next lines make a `.venv` folder for this project and install LEDGER and the test tools into it. The last line runs the tests: expect 236 tests to pass. On Linux or macOS, use `.venv/bin/python` in place of `.venv\Scripts\python`. Run a free scripted game with the next command.
 
 ```powershell
 .venv\Scripts\python scripts\run_episode.py --bank v1-e0 --index 0 --p1 scripted:always-cooperate --p2 scripted:tit-for-tat --out data\runs\smoke
@@ -71,9 +71,9 @@ JOB  YOUR-COST  THEIR-COST  YOUR-VALUE  NEEDS FIRST  STATUS
  6       28         15          35            3  open            <- them must do this (deal 1)
 ```
 
-## Use in the accompanying paper
+## Use in the report
 
-The paper used the hidden-objectives variant. Each job pays in three resources: cash, materials, and standing. Each seat is told in private which one resource counts for it, and the other seat is not told. Games last 48 turns, and the score uses turns 1 to 24. One point needs care: the rules text in the prompt states 24 turns and penalties of 6 and 8, while the studied game used 48 turns and penalties of 2 and 3. The full statement is in [docs/VARIANTS.md](docs/VARIANTS.md#the-rules-text-and-the-enforced-parameters).
+The report used the default game on bank `v2-d0` for ordinary play. It used the hidden-objectives variant for private goals. Each job pays in three resources: cash, materials, and standing. Each seat is told in private which one resource counts for it, and the other seat is not told. Games last 48 turns, and the score uses turns 1 to 24. One point needs care: the rules text in the prompt states 24 turns and penalties of 6 and 8, while the studied game used 48 turns and penalties of 2 and 3. The full statement is in [docs/VARIANTS.md](docs/VARIANTS.md#the-rules-text-and-the-enforced-parameters).
 
 Run the variant at no cost with scripted seats:
 
@@ -81,15 +81,25 @@ Run the variant at no cost with scripted seats:
 .venv\Scripts\python scripts\run_episode.py --variant hidden-objectives --index 0 --opening 1 --objectives cash,standing --p1 scripted:greedy-optimal --p2 scripted:tit-for-tat --out data\runs\smoke
 ```
 
-Expect assigned payoff (2, 0) and final tick 5. Full usage is in [docs/VARIANTS.md](docs/VARIANTS.md).
+Expect assigned payoff (2, 0) and final tick 5. Full usage is in [docs/VARIANTS.md](docs/VARIANTS.md). Package `ledger.reader` holds the default-game forecaster views. The variant package holds its own forecaster views, sham arm and exact solver.
+
+## Versions used in the report
+
+The git tag `report-v4` marks the code that reproduces the environments used in report v4. Older names that contain the word "paper", such as the tag `paper-runs-008de57`, refer to the same study runs.
+
+| Report result (Contracting) | Version in this repository | Module or flag |
+|---|---|---|
+| Ordinary play | Default game on bank `v2-d0` | Runner flags `--bank v2-d0 --message-cap 200`. Views in `ledger.reader`. |
+| Private goals | Hidden-objectives variant | Runner flag `--variant hidden-objectives`. Views in `ledger.variants.hidden_objectives.reader`. |
+| Matched label | Sham arm of the variant | Module `ledger.variants.hidden_objectives.sham`. Function `play_sham_episode`. |
 
 ## Reproducibility
 
-The game is deterministic. The same scenario and the same actions always give the same prompts and the same scores, and any recorded game replays exactly. This release was checked against the recorded runs behind the accompanying paper, with zero mismatches. All counts and log details are in [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
+The game is deterministic. The same scenario and the same actions always give the same prompts and the same scores, and any recorded game replays exactly. This release was checked against the recorded runs behind the report, with zero mismatches. All counts and log details are in [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md).
 
 ## Documentation
 
-- [docs/VARIANTS.md](docs/VARIANTS.md): exact usage for the hidden-objectives variant and its observer view.
+- [docs/VARIANTS.md](docs/VARIANTS.md): exact usage for the hidden-objectives variant, its observer view, sham arm, forecaster views and exact solver.
 - [docs/ENVIRONMENT_DESIGN.md](docs/ENVIRONMENT_DESIGN.md): the full design of the default game.
 - [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md): determinism, replay, log format, equivalence counts, token budget, and repository layout.
 - [docs/EXPERIMENT_PLAN.md](docs/EXPERIMENT_PLAN.md), [docs/RETUNE_PLAN.md](docs/RETUNE_PLAN.md), [docs/M0_VALIDATION.md](docs/M0_VALIDATION.md), [docs/M0_DECISIONS.md](docs/M0_DECISIONS.md), [docs/M0_SPEC_FINDINGS.md](docs/M0_SPEC_FINDINGS.md), [docs/M0_SAMPLE_BOARDS.md](docs/M0_SAMPLE_BOARDS.md): dated plans and first-build records, kept as written.
@@ -100,24 +110,32 @@ The game is deterministic. The same scenario and the same actions always give th
 - Only OpenRouter works as a provider. Model names and prices in `models.example.json` are examples. Check current OpenRouter pricing before a run.
 - Short messages are cut by token count with tiktoken. The episode runner refuses model seats if tiktoken is missing.
 - Some core functions describe the default game only. For the variant, use `acting_prompt` and `outcome` from `ledger.variants.hidden_objectives`.
-- The full equivalence check needs the private research code. Public users can run the frozen-fixture tests in `tests/test_hidden_objectives.py`.
+- The full equivalence check needs the private research code. Public users can run the frozen-fixture tests in `tests/test_hidden_objectives.py` and `tests/test_report_v4.py`.
 
 ## Related environments
 
-All three native environments in the accompanying paper are public:
+All three native environments in the report are public:
 
-- LEDGER, called Contracting in the accompanying paper: [https://github.com/lmmontoya-ai/ledger](https://github.com/lmmontoya-ai/ledger).
-- FORGE, called Engineering in the accompanying paper: [https://github.com/lmmontoya-ai/forge](https://github.com/lmmontoya-ai/forge).
-- Commons, called Office in the accompanying paper: [https://github.com/lmmontoya-ai/commons](https://github.com/lmmontoya-ai/commons).
+- LEDGER, called Contracting in the report: [https://github.com/lmmontoya-ai/ledger](https://github.com/lmmontoya-ai/ledger).
+- FORGE, called Engineering in the report: [https://github.com/lmmontoya-ai/forge](https://github.com/lmmontoya-ai/forge).
+- Commons, called Office in the report: [https://github.com/lmmontoya-ai/commons](https://github.com/lmmontoya-ai/commons).
 
 ## Citation
 
-Placeholder. The owner will add the citation for the accompanying paper here.
+If you use this environment, please cite the report.
 
 ```bibtex
-% TODO(owner): replace with the paper citation.
+@techreport{montoya2026predict,
+  author      = {Luis M. Montoya},
+  title       = {When can language models predict each other? Forecasting another agent's next action in three interactive settings},
+  institution = {Pivotal Research Fellowship},
+  type        = {Final report, version 4},
+  year        = {2026},
+  month       = sep,
+  url         = {https://luismmontoya.dev/r/self-other-prediction-sep26/v4/}
+}
 ```
 
 ## License
 
-Not yet chosen. The owner will add a LICENSE file.
+MIT. See LICENSE.
